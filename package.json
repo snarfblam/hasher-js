@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/snarfblam/hasher-js/issues"
   },
-  "homepage": "https://github.com/snarfblam/hasher-js#readme"
+  "homepage": "https://github.com/snarfblam/hasher-js#readme",
+  "dependencies": {},
+  "optionalDependencies": {
+    "sha1": "^1.1.1"
+  }
 }
