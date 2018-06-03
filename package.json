@@ -1,0 +1,19 @@
+{
+  "name": "hasher-js",
+  "version": "1.0.0",
+  "description": "Javascript-based ROM validation tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snarfblam/hasher-js.git"
+  },
+  "author": "Thomas Hudson",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/snarfblam/hasher-js/issues"
+  },
+  "homepage": "https://github.com/snarfblam/hasher-js#readme"
+}
