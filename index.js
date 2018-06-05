@@ -22,26 +22,41 @@ console.log(filePath);
 
 if (crypto) {
     fs.readFile(filePath, (err, data) => {
-        console.log(data);
+        // console.log(data.toString());
+        // console.log(data.constructor.name);
+        // console.log(data.slice(0, 10).buffer === data.buffer);
+
         if (err) {
             console.error(err);
         } else {
             var romData = new RomData(data);
             var regions = romData.hashRegions.map(reg => ({
                 name: reg.name,
-                data: new Uint8Array(data.buffer, reg.start, reg.length)
+                data: data.slice(reg.start, reg.start + reg.length),
             }));
+
             // console.log(sha1Hash.digest('hex'));
             // console.log(sha1(data));
             regions.forEach(reg => {
                 var x = data;
                 console.log(reg.name, sha1(reg.data));
-                
+
                 var sha1Hash = crypto.createHash('sha1');
                 // sha1Hash.update(data);
                 sha1Hash.update(reg.data);
                 console.log(reg.name, sha1Hash.digest('hex'));
             })
+            // romData.hashRegions.forEach(reg => {
+            //     var region = data.toString('ascii', reg.start, reg.start + reg.length);
+            //     region = data.slice(reg.start, reg.start + reg.length);
+
+            //     console.log(reg.name, sha1(region));
+
+            //     var sha1Hash = crypto.createHash('sha1');
+            //     // sha1Hash.update(data);
+            //     sha1Hash.update(region);
+            //     console.log(reg.name, sha1Hash.digest('hex'));
+            // })
             var ass = platform.getAssociatedPlatform(data);
             console.log(ass.method, ass.platform.name);
         }
