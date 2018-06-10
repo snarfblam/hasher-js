@@ -1,5 +1,5 @@
 import platform from './platform';
-import hasher from './hasher';
+import * as hasher from './hasher';
 
 /**
  * @constructor
