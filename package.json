@@ -16,7 +16,10 @@
     "url": "https://github.com/snarfblam/hasher-js/issues"
   },
   "homepage": "https://github.com/snarfblam/hasher-js#readme",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.18.0",
+    "crypto-js": "^3.1.9-1"
+  },
   "optionalDependencies": {
     "sha1": "^1.1.1"
   }
