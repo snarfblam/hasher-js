@@ -1,26 +1,28 @@
 // optional packages
-let crypto = null; // native, preferred method
-let sha1 = null; // possible fallback
+// let crypto = null; // native, preferred method
+// let sha1 = null; // possible fallback
 // required packages
 const fs = require('fs');
 const platform = require('./platform');
 const RomData = require('./RomData');
+const sha1 = require('./Hasher').sha1;
+// try {
+//     crypto = require('crypto');
+// } catch (err) {
+//     console.log('crypto support is disabled!');
+// }
+// crypto.createHash('donut'); //.update("spice").digest('hex'));
 
-try {
-    crypto = require('crypto');
-} catch (err) {
-    console.log('crypto support is disabled!');
-}
-try {
-    sha1 = require('sha1');
-} catch (err) {
-    console.log('sha1 package not installed!');
-}
+// try {
+//     sha1 = require('sha1');
+// } catch (err) {
+//     console.log('sha1 package not installed!');
+// }
 
 const filePath = process.argv[2];
 console.log(filePath);
 
-if (crypto) {
+{
     fs.readFile(filePath, (err, data) => {
         // console.log(data.toString());
         // console.log(data.constructor.name);
@@ -41,22 +43,12 @@ if (crypto) {
                 var x = data;
                 console.log(reg.name, sha1(reg.data));
 
-                var sha1Hash = crypto.createHash('sha1');
+                // var sha1Hash = crypto.createHash('sha1');
                 // sha1Hash.update(data);
-                sha1Hash.update(reg.data);
-                console.log(reg.name, sha1Hash.digest('hex'));
+                // sha1Hash.update(reg.data);
+                // console.log(reg.name, sha1Hash.digest('hex'));
             })
-            // romData.hashRegions.forEach(reg => {
-            //     var region = data.toString('ascii', reg.start, reg.start + reg.length);
-            //     region = data.slice(reg.start, reg.start + reg.length);
 
-            //     console.log(reg.name, sha1(region));
-
-            //     var sha1Hash = crypto.createHash('sha1');
-            //     // sha1Hash.update(data);
-            //     sha1Hash.update(region);
-            //     console.log(reg.name, sha1Hash.digest('hex'));
-            // })
             var ass = platform.getAssociatedPlatform(data);
             console.log(ass.method, ass.platform.name);
         }
