@@ -44,7 +44,7 @@ function getDB(name) {
     return axios.get('db/' + name + '.json')
         .then(response => {
             if (response.status == 200) {
-                db = JSON.parse(response.data);
+                db = response.data;
                 db.getTitle = getTitle;
                 return db;
             } else {
