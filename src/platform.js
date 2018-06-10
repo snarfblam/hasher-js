@@ -1,5 +1,5 @@
-const path = require('path');
-const fs = require('fs');
+// const path = require('path');
+import plats from './platforms';
 
 // Exported object
 var platform = {
@@ -46,11 +46,19 @@ var platform = {
 
 // Load platform objects from platforms dir
 {
-    var platformsDir = require("path").join(__dirname, "platforms");
+    // var platformsDir = require("path").join(__dirname, "platforms");
 
-    fs.readdirSync(platformsDir).forEach(file => {
-        var platformObj = require(path.join(platformsDir, file));
+    // fs.readdirSync(platformsDir).forEach(file => {
+    //     var platformObj = require(path.join(platformsDir, file));
         
+    //     if (platform.hasOwnProperty(platformObj.name) || platform[platformObj.name]) {
+    //         console.error("Invalid platform name: \"" + platformObj.name + "\" conflicts with reserved name and will be excluded.")
+    //     } else {
+    //         platform[platformObj.name] = platformObj;
+    //         platform.platformList.push(platformObj);
+    //     }
+    // });
+    plats.forEach(platformObj => {
         if (platform.hasOwnProperty(platformObj.name) || platform[platformObj.name]) {
             console.error("Invalid platform name: \"" + platformObj.name + "\" conflicts with reserved name and will be excluded.")
         } else {
@@ -73,4 +81,4 @@ var platform = {
  */
 
 
-module.exports = platform;
+export default platform;

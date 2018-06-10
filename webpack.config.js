@@ -1,3 +1,8 @@
 module.exports = {
-    entry: './src/index.js'
+    mode: 'development',
+    entry: './src/index.js',
+    output: {
+        libraryTarget: 'var',
+        library: 'hasher',
+    }
 };

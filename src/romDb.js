@@ -13,7 +13,7 @@
             .then(title => console.log(title));
 */
 
-const axios = require('axios').default;
+import axios from 'axios';
 
 var dbs = {};
 var dbNameValidator = /^[a-zA-Z0-9 ]*$/;
@@ -64,4 +64,5 @@ function getTitle(sha1_hex) {
     return Promise.resolve(this[sha1_hex.toUpperCase()] || null);
 }
 
-module.exports = getDB;
+// module.exports = getDB;
+export default getDB;

@@ -1,5 +1,5 @@
-const platform = require('./platform');
-const hasher = require('./hasher');
+import platform from './platform';
+import hasher from './hasher';
 
 /**
  * @constructor
@@ -33,4 +33,5 @@ function RomData(romImage, hashAlgos) {
 }
 
 
-module.exports = RomData;
+// module.exports = RomData;
+export default RomData;

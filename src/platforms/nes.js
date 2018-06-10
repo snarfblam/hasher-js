@@ -39,4 +39,5 @@ var nesPlatform = {
 }
 
 
-module.exports = nesPlatform;
+// module.exports = nesPlatform;
+export default nesPlatform;
