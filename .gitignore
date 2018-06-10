@@ -66,4 +66,7 @@ typings/
 # Serverless directories
 .serverless
 
+# Build files
 dist/
+server/db
+server/main.js
