@@ -8,8 +8,20 @@
 <body>
 
     <input type='file' id='file'>
-    <button>Doet</button>
+    <button id='btn-hash'>Hash</button>
 
     <script src='main.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btn-hash').addEventListener('click', function() {
+                var romFile = document.getElementById('file').files[0];
+                hasher.getFileBytes(romFile).then(processRom);
+            })
+        }, false);
+
+        function processRom(fileContents) {
+            hasher.getRomData(fileContents).then(console.log).catch(console.error);
+        }
+    </script>
 </body>
 </html>
