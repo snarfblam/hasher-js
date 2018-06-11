@@ -10,8 +10,10 @@
 var buffer;
 
 function getBufferPolyfill() {
-    function Buffer() {
-        Uint8Array.apply(this, arguments);
+    function Buffer(x, y, z) {
+        var result = new Uint8Array(x, y, z);
+        Object.setPrototypeOf(result, Buffer.prototype);
+        return result;
     }
     Buffer.prototype = Object.create(Uint8Array.prototype);
     Buffer.prototype.constructor = Buffer;

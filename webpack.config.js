@@ -16,4 +16,7 @@ module.exports = {
             }
         ]
     },
+    node: {
+        Buffer: false,
+    }
 };
