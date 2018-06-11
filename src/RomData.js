@@ -1,5 +1,12 @@
+/*
+ *  RomData
+ * 
+ *  Retrieves all available information about a ROM
+ */
+
 import platform from './platform';
 import * as hasher from './hasher';
+import romDb from './romDb';
 
 /**
  * @constructor
@@ -11,10 +18,13 @@ import * as hasher from './hasher';
 function RomData(romImage, hashAlgos) {
     hashAlgos = hashAlgos || ['file_sha1', 'rom_sha1'];
     var plat = platform.getAssociatedPlatform(romImage);
+
     this.platformIdent = plat.method;
     this.platform = plat.platform;
     this.hashRegions = plat.platform.getHashRegions(romImage);
     this.hasExternalHeader = plat.platform.hasExternalHeader(romImage);
+    this.dbInfo = { name: 'not found', version: 'not found' };
+    this.dbMatch = 'not found';
 
     this.hashes = hashAlgos.map(algo => {
         if (!typeof algo === 'string') throw Error('Invalid value specified for hashAlgos');
@@ -30,8 +40,45 @@ function RomData(romImage, hashAlgos) {
             return null;
         }
     }).filter(item => item); // remove nulls
+
+    this.dbLookupPromise = romDb(this.platform.name)
+        .catch(err => {
+            console.error(err);
+            return null;
+        })
+        .then(db => {
+            if (db) {
+                if (db.meta) {
+                    this.dbInfo = {
+                        name: db.meta.name || this.dbInfo.name,
+                        version: db.meta.version || this.dbInfo.version
+                    };
+                }
+
+                // TODO: DB should specify what kind of hash it's looking for, e.g. TOSEC wants FILE hashes
+                var rom_sha1 = this.hashes.find(hash => hash.name == 'rom_sha1');
+                if (rom_sha1) {
+                    return db.getTitle(rom_sha1.value);
+                }
+            }
+            
+            return null;
+        })
+        .then(title => {
+            if(title) this.dbMatch = title;
+        })
+        .catch(console.error);
+
 }
 
+function getData(romImage) {
+    var result = new RomData(romImage);
+    return result.dbLookupPromise.then(() => {
+        delete result.dbLookupPromise; // done with this
+        return result;
+    });
+}
 
 // module.exports = RomData;
-export default RomData;
+// export default RomData;
+export default { getData: getData };

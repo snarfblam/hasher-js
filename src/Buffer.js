@@ -1,5 +1,5 @@
 /*
-    Buffer Polyfill
+    Buffer Shim
 
     The Buffer class is required by the 'sha1' module to support binary data.
     It also provides useful functionality (.slice returning an object that shares

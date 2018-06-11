@@ -1,7 +1,23 @@
-// const path = require('path');
+/*
+ *  platform
+ *  
+ *  Provides 'platform' objects that can be used to obtain
+ *  platform-specific information about a ROM.
+ */
+
 import plats from './platforms';
 
-// Exported object
+// Platform interface
+/**
+ * @typedef {Object} Platform
+ * @property {string} name
+ * @property {string[]} knownExtensions
+ * @property {function(Uint8Array): boolean} isPlatformMatch
+ * @property {function(Uint8Array): boolean} hasExternalHeader
+ * @property {function(Uint8Array): {name: string, start: number, length: number}[]} getHashRegions
+ * 
+ */
+
 var platform = {
     platformList: [],
 
@@ -46,18 +62,6 @@ var platform = {
 
 // Load platform objects from platforms dir
 {
-    // var platformsDir = require("path").join(__dirname, "platforms");
-
-    // fs.readdirSync(platformsDir).forEach(file => {
-    //     var platformObj = require(path.join(platformsDir, file));
-        
-    //     if (platform.hasOwnProperty(platformObj.name) || platform[platformObj.name]) {
-    //         console.error("Invalid platform name: \"" + platformObj.name + "\" conflicts with reserved name and will be excluded.")
-    //     } else {
-    //         platform[platformObj.name] = platformObj;
-    //         platform.platformList.push(platformObj);
-    //     }
-    // });
     plats.forEach(platformObj => {
         if (platform.hasOwnProperty(platformObj.name) || platform[platformObj.name]) {
             console.error("Invalid platform name: \"" + platformObj.name + "\" conflicts with reserved name and will be excluded.")
@@ -69,16 +73,6 @@ var platform = {
 }
 
 
-// Interface implemented by modules in /platforms
-/**
- * @typedef {Object} Platform
- * @property {string} name
- * @property {string[]} knownExtensions
- * @property {function(Uint8Array): boolean} isPlatformMatch
- * @property {function(Uint8Array): boolean} hasExternalHeader
- * @property {function(Uint8Array): {name: string, start: number, length: number}[]} getHashRegions
- * 
- */
 
 
 export default platform;

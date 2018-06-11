@@ -1,34 +1,37 @@
-// const fs = require('fs');
-import platform from './platform';
+/*
+ *  hasher public interface
+ *  
+ *  Usage:
+ *      // Display object with hashes, db match, etc.
+ *      hasher.getRomData(someFileInput.files[0])
+ *          .then(data => console.log(data));
+ * 
+ *      // Convenience method to get binary data from a File object
+ *      hasher.getFileBytes(someFileInput.files[0])
+ *          .then(buffer => console.log(buffer));
+ */
+
+
+
 import RomData from './RomData';
-// import {sha1} from './hasher';
-import getDB from './romDb';
 import Buffer from './Buffer';
 
-// Create Buffer type for browsers (essentially a Uint8Array)
-// Needed by sha1 library
+// Apply Buffer shim (needed by sha1 library and for slice method)
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
 }
 
 
-function doHash(buffer) {
-    var romData = new RomData(buffer);
-    var regions = romData.hashRegions.map(reg => ({
-        name: reg.name,
-        data: buffer.slice(reg.start, reg.start + reg.length),
-    }));
 
-    romData.hashes.forEach(hash => {
-        console.log(hash.name.replace('_', '/'), hash.value);
-    });
-
-    var ass = platform.getAssociatedPlatform(buffer);
-    console.log(ass.method, ass.platform.name);
-
-    getDB(romData.platform.name).then(db => {
-        return db.getTitle(romData.hashes.find(hash => hash.name == 'rom_sha1').value);
-    }).then(title => console.log(title));
+/** Returns a promise that resolves to an object containing metadata about a ROM
+ *  @param {Buffer | File} rom 
+ */
+function getRomData(rom) {
+    if (rom instanceof File || rom instanceof Blob) {
+        return getFileBytes(rom).then(data => RomData.getData(data));
+    } else {
+        RomData.getData(rom);
+    }
 }
 
 /**
@@ -36,6 +39,7 @@ function doHash(buffer) {
  * @param {File | Blob} file 
  */
 function getFileBytes(file) {
+    // What a pain
     return new Promise((resolve, reject) => {
         var reader = new FileReader();
         reader.onload = function () {
@@ -45,11 +49,11 @@ function getFileBytes(file) {
             reject();
         };
         reader.readAsArrayBuffer(file);
-    }).then(buffer => {
-        return new Buffer(buffer);
+    }).then(arrayBuffer => {
+        return new Buffer(arrayBuffer);
     });
 }
 
 
-// export default doHash;
-export { doHash, getFileBytes };
+
+export { getRomInfo, getFileBytes };
