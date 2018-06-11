@@ -1,4 +1,8 @@
 {
+    "meta" : {
+        "name" : "Nintendo - Nintendo Entertainment System",
+        "version" : "20130731-235630"
+    },
 	"56FE858D1035DCE4B68520F457A0858BAE7BB16D": "'89 Dennou Kyuusei Uranai (Japan)",
 	"55DC03A493150258E10166CF38ED76DFADE605D6": "10-Yard Fight (Japan)",
 	"016818BF6BAAF779F4F5C1658880B81D23EA40CA": "10-Yard Fight (USA, Europe)",
