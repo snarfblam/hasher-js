@@ -7,8 +7,8 @@ import common from './common';
 const category = common.romDataCategory;
 
 var nesPlatform = {
-    name: 'NES',
-    knownExtensions: ['nes'],
+    name: 'SNES',
+    knownExtensions: ['smc', 'sfc'],
 
     /**
      * Determines whether the specified ROM is for this platform, based on a platform-specific heuristic.

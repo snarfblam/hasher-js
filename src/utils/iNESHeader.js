@@ -126,4 +126,4 @@ function iNESHeader(romImage) {
     this.mapperName = mappers[this.mapper] || 'unknown';
 }
 
-module.exports = iNESHeader;
+export default iNESHeader;
