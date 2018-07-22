@@ -35,6 +35,21 @@ var nesPlatform = {
         var romRegion = { name: 'rom', start: 0x10, length: romImage.length - 0x10 };
 
         return this.hasExternalHeader(romImage) ? [fileRegion, romRegion] : [fileRegion];
+    },
+
+    /**
+     * Returns an array of extended information for the ROM image.
+     * @param {Uint8Array} romImage ROM image to examine
+     * @returns {{label: string, category: string, value: string}[]} Array of details
+     */
+    getExtendedData: function (romImage) {
+        var result = [];
+
+        if (!this.hasExternalHeader(romImage)) return result;
+    },
+
+    getFormatName: function (romImage) {
+        return this.hasExternalHeader(romImage) ? 'INES' : 'NES rom image';
     }
 }
 

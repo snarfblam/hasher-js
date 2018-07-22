@@ -25,6 +25,8 @@ function RomData(romImage, hashAlgos) {
     this.hasExternalHeader = plat.platform.hasExternalHeader(romImage);
     this.dbInfo = { name: 'not found', version: 'not found' };
     this.dbMatch = 'not found';
+    this.extendedData = plat.platform.getExtendedData(romImage);
+    this.format = plat.platform.getFormatName(romImage);
 
     this.hashes = hashAlgos.map(algo => {
         if (!typeof algo === 'string') throw Error('Invalid value specified for hashAlgos');

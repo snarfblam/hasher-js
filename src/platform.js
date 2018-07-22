@@ -15,6 +15,8 @@ import plats from './platforms';
  * @property {function(Uint8Array): boolean} isPlatformMatch
  * @property {function(Uint8Array): boolean} hasExternalHeader
  * @property {function(Uint8Array): {name: string, start: number, length: number}[]} getHashRegions
+ * @property {function(Uint8Array): {{label: string, category: string, value: string}[]}} getExtendedData
+ * @property {function(Uint8Array): string} getFormatName
  * 
  */
 
