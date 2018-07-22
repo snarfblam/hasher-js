@@ -7,11 +7,17 @@
 </head>
 <body>
 
-    <input type='file' id='file'>
-    <button id='btn-hash'>Hash</button>
+    <h2>Hasher-js Test Page</h2>
+    <p>See <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p>
+    <input type='file' id='file'><br>
+    <button id='btn-hash' style="margin-top: 10px">Hash</button>
+    <div id="hasher-output" style="font-family: monospace; margin-top: 1em; white-space: pre;"></div>
 
     <script src='main.js'></script>
     <script>
+        var output = document.getElementById('hasher-output');
+        output.innerText += 'Output:\n\n'
+
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('btn-hash').addEventListener('click', function() {
                 var romFile = document.getElementById('file').files[0];
@@ -20,7 +26,11 @@
         }, false);
 
         function processRom(fileContents) {
-            hasher.getRomData(fileContents).then(console.log).catch(console.error);
+            hasher.getRomData(fileContents)
+                .then(function(result) {
+                    output.innerText += JSON.stringify(result, null, 4);
+                })
+                .catch(console.error);
         }
     </script>
 </body>
