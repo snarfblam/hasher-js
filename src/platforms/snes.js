@@ -2,13 +2,14 @@
  * Object containing NES-specific data and functions
  */
 
-import iNESHeader from '../utils/iNESHeader';
+import snesUtil from '../utils/snesUtil';
+import SnesHeader from '../utils/SnesHeader';
 import common from './common';
 const category = common.romDataCategory;
 
-var nesPlatform = {
+var snesPlatform = {
     name: 'SNES',
-    knownExtensions: ['smc', 'sfc'],
+    knownExtensions: ['smc', 'sfc', 'swc', 'fig'],
 
     /**
      * Determines whether the specified ROM is for this platform, based on a platform-specific heuristic.
@@ -16,8 +17,18 @@ var nesPlatform = {
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
     isPlatformMatch: function (romImage) {
-        // NES ROMs are identified by their iNES headers.
-        return this.hasExternalHeader(romImage);
+        if (romImage.length < 0x2000) return false;
+
+        if (romImage.length < 4200000 && romImage.Length >= 0x8000) {
+            var checksum = snesUtil.calculateChecksum(romImage);
+
+            if (checksum != 0 && checksum == snesUtil.getInternalChecksum(romImage)) return true;
+        }
+        
+        if (snesUtil.hasGoodSmcHeader(rom)) return true;
+        if (snesUtil.hasGoodSwcHeader(rom)) return true;
+        
+        return false;
     },
 
     /**
@@ -27,7 +38,7 @@ var nesPlatform = {
      */
     hasExternalHeader: function (romImage) {
         // Check for iNES header tag ('NES\u001a')
-        return (romImage.length > 0x10 && (romImage[0] == 0x4e && romImage[1] == 0x45 && romImage[2] == 0x53 && romImage[3] == 0x1a));
+        return snesUtil.hasExternalHeader(romImage);
     },
 
     /**
@@ -37,9 +48,15 @@ var nesPlatform = {
      */
     getHashRegions: function (romImage) {
         var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0x10, length: romImage.length - 0x10 };
+        var romRegion;
 
-        return this.hasExternalHeader(romImage) ? [fileRegion, romRegion] : [fileRegion];
+        if (this.hasExternalHeader(romImage)) {
+            romRegion = { name: 'rom', start: snesUtil.externalHeaderSize, length: romImage.length - snesUtil.externalHeaderSize }
+        } else {
+            romRegion = { name: 'rom', start: 0, length: romImage.length }
+        }
+
+        return [fileRegion, romRegion];
     },
 
     /**
@@ -49,24 +66,20 @@ var nesPlatform = {
      */
     getExtendedData: function (romImage) {
         var result = [];
-        function addHeader(label, value) {
-            result.push({ category: category.Header, label: label, value: value });
-        }
+        
+        var addHeader = (label, value) => result.push({category: category.Header, label: label, value: value });
+        var addRom = (label, value) => result.push({category: category.ROM, label: label, value: value });
+
+        var internalHeader = new SnesHeader(romImage);
+        var checksum = snesUtil.calculateChecksum(romImage);
 
         if (this.hasExternalHeader(romImage)) {
-            var ines = new iNESHeader(romImage);
-
-            addHeader("CHR banks", ines.chrRomCount);
-            addHeader("PRG banks", ines.prgRomCount);
-            addHeader("Battery backed", ines.hasBattery);
-            addHeader("Mapper #", ines.mapper);
-            addHeader("Mapper name", ines.mapperName || 'unknown');
-            addHeader("Mirroring", ines.mirroring);
-            addHeader("Region", ines.palFlagSet ? "PAL" : "NTSC");
-            addHeader("Trainer present", ines.hasTrainer);
-            addHeader("VS Unisystem", ines.vsUnisystem);
-            addHeader("Placechoice 10", ines.playchoice10);
-            addHeader("NES 2.0", ines.nes2);
+            addRom("Actual checksum", checksum);
+            addRom("Mapping", internalHeader.mapping);
+            
+            addHeader("Header offset", internalHeader.internalHeaderOffset);
+            addHeader("Checksum", internalHeader.checksum);
+            addHeader("Checksum complement", internalHeader.checksumComplement);
         }
         
         return result;
@@ -77,5 +90,5 @@ var nesPlatform = {
     }
 }
 
-// module.exports = nesPlatform;
-export default nesPlatform;
+// module.exports = snesPlatform;
+export default snesPlatform;
