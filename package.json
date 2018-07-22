@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack && cpx \"src\\db\\*.*\" \"server\\db\" && cpx \"dist\\main.js\" \"server\""
+    "build": "npx webpack && cpx \"src\\db\\*.*\" \"dist\\db\" && cpx \"server\\*.*\" \"dist\""
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "crypto-js": "^3.1.9-1",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "ts-loader": "^4.4.1"
   },
   "optionalDependencies": {
     "sha1": "^1.1.1"

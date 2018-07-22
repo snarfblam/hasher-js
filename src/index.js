@@ -9,6 +9,9 @@
  *      // Convenience method to get binary data from a File object
  *      hasher.getFileBytes(someFileInput.files[0])
  *          .then(buffer => console.log(buffer));
+ * 
+ *  Webpack:
+ *      
  */
 
 
@@ -30,7 +33,7 @@ function getRomData(rom) {
     if (rom instanceof File || rom instanceof Blob) {
         return getFileBytes(rom).then(data => RomData.getData(data));
     } else {
-        RomData.getData(rom);
+        return RomData.getData(rom);
     }
 }
 
@@ -56,4 +59,4 @@ function getFileBytes(file) {
 
 
 
-export { getRomInfo, getFileBytes };
+export { getRomData, getFileBytes };
