@@ -1,6 +1,11 @@
 /**
  * Object containing NES-specific data and functions
  */
+
+var common = require('./common');
+var category = common.romDataCategory;
+var iNESHeader = require('../utils/iNESHeader');
+
 var nesPlatform = {
     name: 'NES',
     knownExtensions: ['nes'],
@@ -40,19 +45,37 @@ var nesPlatform = {
     /**
      * Returns an array of extended information for the ROM image.
      * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{label: string, category: string, value: string}[]} Array of details
+     * @returns {{label: string, category: string, value: any}[]} Array of details
      */
     getExtendedData: function (romImage) {
         var result = [];
+        function addHeader(label, value) {
+            result.push({ category: category.Header, label: label, value: value });
+        }
 
-        if (!this.hasExternalHeader(romImage)) return result;
+        if (this.hasExternalHeader(romImage)) {
+            var ines = new iNESHeader(romImage);
+
+            addHeader("CHR banks", ines.chrRomCount);
+            addHeader("PRG banks", ines.prgRomCount);
+            addHeader("Battery backed", ines.hasBattery);
+            addHeader("Mapper #", ines.mapper);
+            addHeader("Mapper name", ines.mapperName || 'unknown');
+            addHeader("Mirroring", ines.mirroring);
+            addHeader("Region", ines.palFlagSet ? "PAL" : "NTSC");
+            addHeader("Trainer present", ines.hasTrainer);
+            addHeader("VS Unisystem", ines.vsUnisystem);
+            addHeader("Placechoice 10", ines.playchoice10);
+            addHeader("NES 2.0", ines.nes2);
+        }
+        
+        return result;
     },
 
     getFormatName: function (romImage) {
         return this.hasExternalHeader(romImage) ? 'INES' : 'NES rom image';
     }
 }
-
 
 // module.exports = nesPlatform;
 export default nesPlatform;

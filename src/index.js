@@ -11,7 +11,15 @@
  *          .then(buffer => console.log(buffer));
  * 
  *  Webpack:
- *      
+ *      In the root directory, run the command `npm run build`.
+ *      This runs webpack, and copies the bundle and the ROM
+ *      database to the server folder.
+ * 
+ *  Test Server:
+ *      Build the project as described above first. From the
+ *      "server" directory, run the command `node index.js`.
+ *      You can the access the test page at 
+ *      http://localhost:8000/
  */
 
 
