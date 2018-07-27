@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
     mode: 'production',
     entry: './src/index.js',
@@ -6,6 +8,7 @@ module.exports = {
         libraryTarget: 'var',
         library: 'hasher',
     },
+    devtool: 'source-map',
     module: {
         rules: [
             // {
@@ -30,5 +33,10 @@ module.exports = {
     },
     node: {
         Buffer: false,
-    }
+    },
+    plugins: [
+        new webpack.LoaderOptionsPlugin({
+          debug: true
+        })
+    ]
 };
