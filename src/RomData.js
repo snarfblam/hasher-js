@@ -21,6 +21,7 @@ function RomData(romImage, hashAlgos) {
 
     this.platformIdent = plat.method;
     this.platform = plat.platform;
+    console.log(plat);
     this.hashRegions = plat.platform.getHashRegions(romImage);
     this.hasExternalHeader = plat.platform.hasExternalHeader(romImage);
     this.dbInfo = { name: 'not found', version: 'not found' };

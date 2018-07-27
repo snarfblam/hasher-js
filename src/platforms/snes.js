@@ -17,16 +17,19 @@ var snesPlatform = {
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
     isPlatformMatch: function (romImage) {
+        console.log('debugger?');
+        {{debugger;}}
+
         if (romImage.length < 0x2000) return false;
 
-        if (romImage.length < 4200000 && romImage.Length >= 0x8000) {
+        if (romImage.length < 4200000 && romImage.length >= 0x8000) {
             var checksum = snesUtil.calculateChecksum(romImage);
 
             if (checksum != 0 && checksum == snesUtil.getInternalChecksum(romImage)) return true;
         }
         
-        if (snesUtil.hasGoodSmcHeader(rom)) return true;
-        if (snesUtil.hasGoodSwcHeader(rom)) return true;
+        if (snesUtil.hasGoodSmcHeader(romImage)) return true;
+        if (snesUtil.hasGoodSwcHeader(romImage)) return true;
         
         return false;
     },
