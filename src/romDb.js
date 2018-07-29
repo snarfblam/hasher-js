@@ -34,12 +34,16 @@ function getDB(name) {
 
     if (!dbNameValidator.test(name)) return Promise.reject(Error('Invalid platform database name.'));
 
-    // HACK: for testing in node
-    if (typeof window === 'undefined') {
-        db = require('./db/' + name + '.json');
-        db.getTitle = getTitle;
-        return Promise.resolve(db);
-    }
+    // Note: Apparently this code causes the json files to be included in the bundle.
+    //       Not sure exactly how webpack analyzes dymanic requires like these...
+
+    // // HACK: for testing in node
+    // if (typeof window === 'undefined') {
+    //     console.log("required")
+    //     db = require('./db/' + name + '.json');
+    //     db.getTitle = getTitle;
+    //     return Promise.resolve(db);
+    // }
 
     return axios.get('db/' + name + '.json')
         .then(response => {
