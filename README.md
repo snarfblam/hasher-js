@@ -4,7 +4,9 @@ Hasher-js is the javascript counterpart to ROM Hasher. It calculates checksums t
 ## What It Consists Of
 The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES.
 
-Hasher-js includes a test page (a build is still required), but eventually a more polished page will created for a stand-alone version of hasher-js.
+Hasher-js includes a test page (a build is required), but eventually a more polished page will created for a stand-alone version of hasher-js.
+
+Hasher-js is currently being developed and tested with current versions of Node and Chrome. One all functionality is implemented, compatability testing will be done.
 
 ## Test Server
 

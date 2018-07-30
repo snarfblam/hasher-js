@@ -37,11 +37,11 @@ if (typeof window !== 'undefined') {
 /** Returns a promise that resolves to an object containing metadata about a ROM
  *  @param {Buffer | File} rom 
  */
-function getRomData(rom) {
+function getRomData(rom, filename) {
     if (rom instanceof File || rom instanceof Blob) {
-        return getFileBytes(rom).then(data => RomData.getData(data));
+        return getFileBytes(rom).then(data => RomData.getData(data, filename));
     } else {
-        return RomData.getData(rom);
+        return RomData.getData(rom, filename);
     }
 }
 

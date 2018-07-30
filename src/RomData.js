@@ -15,9 +15,10 @@ import romDb from './romDb';
  * where content matches a portion of the ROM identified by Platform.getHashRegions and
  * the algorithm matches the name of a supported hash function in the Hasher module.
  */
-function RomData(romImage, hashAlgos) {
+function RomData(romImage, filename, hashAlgos) {
     hashAlgos = hashAlgos || ['file_sha1', 'rom_sha1'];
-    var plat = platform.getAssociatedPlatform(romImage);
+    var ext = getExtension(filename);
+    var plat = platform.getAssociatedPlatform(romImage, ext);
 
     this.platformIdent = plat.method;
     this.platform = plat.platform;
@@ -74,12 +75,27 @@ function RomData(romImage, hashAlgos) {
 
 }
 
-function getData(romImage) {
-    var result = new RomData(romImage);
+function getData(romImage, filename) {
+    var result = new RomData(romImage, filename);
     return result.dbLookupPromise.then(() => {
         delete result.dbLookupPromise; // done with this
         return result;
     });
+}
+
+/**
+ * Gets the file extension for the given filename
+ * @param {string} filename 
+ */
+function getExtension(filename) {
+    if (!filename) filename = '';
+
+    var index = filename.lastIndexOf('.');
+    if (index >= 0) {
+        return filename.substr(index + 1);
+    } else {
+        return '';
+    }
 }
 
 // module.exports = RomData;

@@ -84,7 +84,7 @@ var snesUtil = {
      * @returns {number | null}
      */
     getInternalChecksum: function (romImage) {
-        var romImageOffset = snesUtil.hasExternalHeader(romImage) ? snesUtil.snesUtil.externalHeaderSize : 0;
+        var romImageOffset = snesUtil.hasExternalHeader(romImage) ? snesUtil.externalHeaderSize : 0;
 
         //if (offset + 1 >= rom.Length) return 0;
         //return (ushort)(rom[offset] | (rom[offset + 1] << 8));
