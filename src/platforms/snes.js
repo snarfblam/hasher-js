@@ -80,16 +80,21 @@ var snesPlatform = {
             addRom("Actual checksum", checksum);
             addRom("Mapping", internalHeader.mapping);
             
-            addHeader("Header offset", internalHeader.internalHeaderOffset);
-            addHeader("Checksum", internalHeader.checksum);
-            addHeader("Checksum complement", internalHeader.checksumComplement);
+            if (internalHeader.valid) {
+                addHeader("Header offset", internalHeader.internalHeaderOffset);
+                addHeader("Checksum", internalHeader.checksum);
+                addHeader("Checksum complement", internalHeader.checksumComplement);
+            }
         }
         
         return result;
     },
 
     getFormatName: function (romImage) {
-        return this.hasExternalHeader(romImage) ? 'INES' : 'NES rom image';
+        if (snesUtil.hasGoodSmcHeader(romImage)) return "Super Magic Com ROM";
+        if (snesUtil.hasGoodSwcHeader(romImage)) return "Super Wild Card ROM";
+        if (snesUtil.hasExternalHeader(romImage)) return "SNES ROM image (headered)";
+        return "SNES ROM image";
     }
 }
 

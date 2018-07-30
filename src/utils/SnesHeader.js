@@ -11,31 +11,42 @@ function SnesHeader(romImage, hasExternalHeader) {
     this.mapping = "unknown";
     /** Size of the external header. Zero for no header. */
     this.externalHeaderSize = hasExternalHeader ? snesUtil.externalHeaderSize : 0;
+    /** Indicates whether a valid header could be found and decoded */
+    this.valid = true;
 
-    if (romImage.length < SnesHeader.minimumRomSize) throw Error('ROM image too small');
-    var layout = snesUtil.checkHiromOrLorom(romImage);
+    if (romImage.length >= SnesHeader.minimumRomSize) {
+        
+        var layout = snesUtil.checkHiromOrLorom(romImage);
 
-    if (layout.lorom && !layout.hirom) {
-        this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
-        this.mapping = "lorom";
-    } else if (layout.hirom && !layout.lorom) {
-        this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.hiromHeaderOffset;
-        this.mapping = "hirom";
+        if (layout.lorom && !layout.hirom) {
+            this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
+            this.mapping = "lorom";
+        } else if (layout.hirom && !layout.lorom) {
+            this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.hiromHeaderOffset;
+            this.mapping = "hirom";
+        } else {
+            // in the event that the hirom/lorom heuristic gives us an ambiguous result, we guess
+            this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
+        }
+
+        /** A 16-bit internal checksum */
+        this.checksum = (0xFFFF & (
+            (romImage[this.internalHeaderOffset + 0x1F] << 8) |
+            (romImage[this.internalHeaderOffset + 0x1e])
+        ));
+        /** A 16-bit complement to the internal checksum */
+        this.checksumComplement = (0xFFFF & (
+            (romImage[this.internalHeaderOffset + 0x1D] << 8) |
+            (romImage[this.internalHeaderOffset + 0x1C])
+        ));
     } else {
-        // in the event that the hirom/lorom heuristic gives us an ambiguous result, we guess
-        this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
+        this.internalHeaderOffset = this.externalHeaderSize;
+        this.mapping = "none";
+        this.checksum = 0;
+        this.checksumComplement = 0;
+        this.valid = false;
     }
 
-    /** A 16-bit internal checksum */
-    this.checksum = (0xFFFF & (
-        (romImage[this.internalHeaderOffset + 0x1F] << 8) |
-        (romImage[this.internalHeaderOffset + 0x1e])
-    ));
-    /** A 16-bit complement to the internal checksum */
-    this.checksumComplement = (0xFFFF & (
-        (romImage[this.internalHeaderOffset + 0x1D] << 8) |
-        (romImage[this.internalHeaderOffset + 0x1C])
-    ));
 
 } { // Static
 
