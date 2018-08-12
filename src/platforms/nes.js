@@ -39,7 +39,9 @@ var nesPlatform = {
         var fileRegion = { name: 'file', start: 0, length: romImage.length };
         var romRegion = { name: 'rom', start: 0x10, length: romImage.length - 0x10 };
 
-        return this.hasExternalHeader(romImage) ? [fileRegion, romRegion] : [fileRegion];
+        if(!this.hasExternalHeader(romImage)) romRegion = { name: 'rom', start: 0, length: romImage.length }
+
+        return [fileRegion, romRegion];
     },
 
     /**
