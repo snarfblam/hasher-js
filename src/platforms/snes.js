@@ -17,9 +17,6 @@ var snesPlatform = {
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
     isPlatformMatch: function (romImage) {
-        console.log('debugger?');
-        {{debugger;}}
-
         if (romImage.length < 0x2000) return false;
 
         if (romImage.length < 4200000 && romImage.length >= 0x8000) {
