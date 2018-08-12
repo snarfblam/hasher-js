@@ -61,6 +61,7 @@ var gbPlatform = {
         try {
             var gbHeader = new GbHeader(romImage);
         } catch (err) {
+            console.warn(err);
             return result;
         }
 

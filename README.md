@@ -50,3 +50,17 @@ Using the hasher-js library, you'll be given the following output, as a javascri
     } [],
 }
 ```
+## Notes
+
+### Databases
+
+After identifying the platform of a ROM image, the software attempts to request the appropriate database at the relative URL `db/*platform-name*.json`. The default databases are No-Intro databases, converted to JSON. The JSON objects contain a property, `meta`, with additional information about the database.
+
+The following regex is used to convert the Clr-Mame-Pro formatted No-Intro databases to json (using VSCode) (additional massaging will be required):
+
+``` regex
+replace:
+    game \(.*\n\Wname\W"(.*)\".*\n.*\n?.*\n.*sha1 ([a-zA-Z0-9]*).*\n\W?\)\W\n
+with:
+    "$2": "$1",\n
+```
