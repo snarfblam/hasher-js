@@ -2,6 +2,7 @@ import NES from './nes';
 import FDS from './fds';
 import SNES from './snes';
 import GB from './gb';
-import GBA from './gba'
+import GBA from './gba';
+import SMS from './sms';
 
-export default [NES, SNES, GB, GBA, FDS];
+export default [NES, SNES, GB, GBA, FDS, SMS];
