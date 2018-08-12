@@ -64,6 +64,8 @@ function getDB(name) {
  *  @param {*} sha1_hex
  *  @returns {Promise<string>}
  */
+// Remarks: this function returns a promise so that it can easily be modified
+//          to fetch get the database match via a web API, for example.
 function getTitle(sha1_hex) {
     return Promise.resolve(this[sha1_hex.toUpperCase()] || null);
 }

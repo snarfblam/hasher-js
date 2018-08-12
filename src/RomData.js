@@ -36,8 +36,10 @@ function RomData(romImage, filename, hashAlgos) {
         if (parts.length != 2) throw Error('Invalid value specified for hashAlgos');
         
         var region = this.hashRegions.find(reg => reg.name == parts[0]);
+        // Get the function that actually performs the hash
         var algoFunc = hasher[parts[1]];
 
+        // TODO: optimize this by not re-hashing redundant regions (frequently ROM and FILE regions are identical)
         if (region && algoFunc) {
             return { name: algo, value: algoFunc(romImage.slice(region.start, region.length + region.start)) };
         } else {
