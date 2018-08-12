@@ -16,6 +16,7 @@ function hasFdsHeaderTag(romImage) {
 
 var fdsPlatform = {
     name: 'FDS',
+    longName: "Famicom Disk System",
     knownExtensions: ['fds'],
 
     /**

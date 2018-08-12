@@ -13,6 +13,7 @@ function yesNo(bool) {
 
 var smsPlatform = {
     name: 'SMS',
+    longName: "Master System",
     knownExtensions: ['sms'],
 
     /**

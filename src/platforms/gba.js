@@ -14,6 +14,7 @@ function yesNo(bool) {
 
 var gbaPlatform = {
     name: 'GBA',
+    longName: "Game Boy Advance",
     knownExtensions: ['gba'],
 
     /**

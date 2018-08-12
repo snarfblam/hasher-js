@@ -14,6 +14,7 @@ function yesNo(bool) {
 
 var gbPlatform = {
     name: 'GB',
+    longName: "Game Boy",
     knownExtensions: ['gb', 'gbc'],
 
     /**

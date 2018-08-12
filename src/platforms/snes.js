@@ -9,6 +9,7 @@ const category = common.romDataCategory;
 
 var snesPlatform = {
     name: 'SNES',
+    longName: 'Super Nintendo Entertainment System',
     knownExtensions: ['smc', 'sfc', 'swc', 'fig'],
 
     /**

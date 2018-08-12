@@ -8,6 +8,7 @@ const category = common.romDataCategory;
 
 var nesPlatform = {
     name: 'NES',
+    longName: "Nintendo Entertainment System",
     knownExtensions: ['nes'],
 
     /**

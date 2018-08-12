@@ -13,6 +13,7 @@ function yesNo(bool) {
 
 var ggPlatform = {
     name: 'GG',
+    longName: "Game Gear",
     knownExtensions: ['gg'],
 
     /**
