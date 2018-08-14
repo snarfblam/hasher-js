@@ -24,6 +24,8 @@ function RomData(romImage, filename, hashAlgos) {
     this.platform = plat.platform;
     console.log(plat);
     this.hashRegions = plat.platform.getHashRegions(romImage);
+    // We don't want whole ROMs included in JSON, so we make the hashRegion.rom property non-enumerable
+    this.hashRegions.forEach(rgn => Object.defineProperty(rgn, 'rom', { value: rgn.rom || null, enumerable: false }));
     this.hasExternalHeader = plat.platform.hasExternalHeader(romImage);
     this.dbInfo = { name: 'not found', version: 'not found' };
     this.dbMatch = 'not found';
@@ -38,10 +40,11 @@ function RomData(romImage, filename, hashAlgos) {
         var region = this.hashRegions.find(reg => reg.name == parts[0]);
         // Get the function that actually performs the hash
         var algoFunc = hasher[parts[1]];
+        var romToHash = region.rom || romImage;
 
         // TODO: optimize this by not re-hashing redundant regions (frequently ROM and FILE regions are identical)
         if (region && algoFunc) {
-            return { name: algo, value: algoFunc(romImage.slice(region.start, region.length + region.start)) };
+            return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
         } else {
             return null;
         }

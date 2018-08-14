@@ -1,0 +1,3 @@
+- have platform objects inherit a platform class
+- provide standard functionality to platform objects to associate data with rom (e.g. header, de-interleved ROM)
+    - this will prevent rundantand processessing, e.g. multiple functions which decode the header to get one piece of info
