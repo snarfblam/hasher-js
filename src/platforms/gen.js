@@ -4,6 +4,8 @@
 
 import common from './common';
 import genUtil from '../utils/genUtil';
+import util from '../utils/util';
+import GenHeader from '../utils/GenHeader';
 const category = common.romDataCategory;
 
 var genPlatform = {
@@ -49,8 +51,37 @@ var genPlatform = {
      * @returns {{label: string, category: string, value: any}[]} Array of details
      */
     getExtendedData: function (romImage) {
-        // so many results
+        try {
+            var header = new GenHeader(romImage);
+        }
+        catch (err) {
+            console.warn(err);
+            return [];
+        }
+
         var result = [];
+        var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
+        var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
+
+        addHeader("Title", header.gameName);
+        addHeader("Alt Title", header.altName);
+        addHeader("Platform", header.platform);
+        addHeader("Region", header.region);
+        addHeader("Copyright", header.copyrightFormatted);
+        addHeader("Product ID", header.productID);
+        addHeader("Checksum", util.toHex(header.checksum, 4));
+        addHeader("IO Devices", header.ioSupportFormatted);
+        addHeader("Memo", header.memo);
+        addHeader("Modem", header.modem);
+
+        var romStart = util.toHex(header.romStart, 8);
+        var romEnd = util.toHex(header.romEnd, 8);
+        var ramStart = util.toHex(header.ramStart, 8);
+        var ramEnd = util.toHex(header.ramEnd, 8);
+
+        addHeader("ROM range", romStart + "-" + romEnd);
+        addHeader("RAM range", ramStart + "-" + ramEnd);
+
         return result;
     },
 
