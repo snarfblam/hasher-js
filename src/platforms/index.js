@@ -6,5 +6,6 @@ import GBA from './gba';
 import SMS from './sms';
 import GG from './gg';
 import GEN from './gen';
+import NGP from './ngp';
 
-export default [NES, SNES, GB, GBA, FDS, SMS, GG, GEN];
+export default [NES, SNES, GB, GBA, FDS, SMS, GG, GEN, NGP];
