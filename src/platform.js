@@ -6,7 +6,7 @@
  */
 
 import plats from './platforms';
-
+import RomRegion from './RomRegion';
 // Platform interface
 /**
  * @typedef {Object} Platform
@@ -14,7 +14,7 @@ import plats from './platforms';
  * @property {string[]} knownExtensions
  * @property {function(Uint8Array): boolean} isPlatformMatch
  * @property {function(Uint8Array): boolean} hasExternalHeader
- * @property {function(Uint8Array): {name: string, start: number, length: number, rom?: Uint8Array}[]} getHashRegions
+ * @property {function(Uint8Array): RomRegion[]} getHashRegions
  * @property {function(Uint8Array): {{label: string, category: string, value: string}[]}} getExtendedData
  * @property {function(Uint8Array): string} getFormatName
  * 

@@ -4,6 +4,7 @@
 
 import smsUtil from '../utils/smsUtil';
 import util from '../utils/util';
+import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;
 
@@ -45,8 +46,8 @@ var smsPlatform = {
      * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0, length: romImage.length };
+        var fileRegion = new RomRegion('file', romImage, 0,romImage.length );
+        var romRegion = new RomRegion('file', romImage, 0, romImage.length);
 
         return [fileRegion, romRegion];
     },

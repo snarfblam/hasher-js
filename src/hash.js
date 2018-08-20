@@ -5,6 +5,12 @@
  */
 
 import sha1 from 'sha1';
+import { resolve } from 'path';
+
+import jsSha1 from 'js-sha1';
+
+
+const chunkSize = 0x1000;
 
 const poly16 = new Uint16Array([
     0x0000, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf, 0x8c48, 0x9dc1, 0xaf5a, 0xbed3, 0xca6c, 0xdbe5, 0xe97e, 0xf8f7,
@@ -40,6 +46,77 @@ function crc16(buffer) {
 }
 
 
+/**
+ * 
+ * @param {Blob | Uint8Array} buffer 
+ * @param {number} offset 
+ * @param {number} length 
+ * @returns {Promise<string>}
+ */
+function sha1Async(buffer, offset, length) {
+    console.log('hi?');
+    var end = offset + length;
+    var sha1 = jsSha1.create(); // crypto.createHash('sha1');
+    console.log('hello?');
+    
+
+    return new Promise((resolve, reject) => {
+        console.log(buffer);
+        if (buffer instanceof Uint8Array) {
+            var subBuffer = buffer;
+
+            if (offset != 0 || length != buffer.length) {
+                if (buffer.subarray) {
+                    subBuffer = buffer.subarray(offset, end);
+                } else {
+                    subBuffer = buffer.slice(offset, end);
+                }
+            }
+
+            sha1.update(subBuffer);
+            resolve(sha1.hex());
+            // resolve(sha1.update(subBuffer).digest("hex"));
+        } else if (buffer instanceof Blob) {
+
+            end = Math.min(end, buffer.size);
+
+            var reader = new FileReader();
+            var currentOffset = offset;
+            var readNextChunk = () => {
+                currentOffset += chunkSize;
+
+                if (currentOffset < end) {
+                    // don't include anything beyond end of blob in length
+                    var currentLength = Math.min(currentOffset + chunkSize, end - currentOffset);
+
+                    reader.readAsArrayBuffer(buffer.slice(currentOffset, currentLength));
+                } else {
+                    // We've finished processing the file
+                    // resolve(sha1.digest('hex'));
+                    resolve(sha1.hex());
+                }
+            };
+            var dataReady = () => {
+                var data = new Uint8Array(reader.result);
+                sha1.update(data);
+
+                readNextChunk();
+            };
+
+            reader.onload = dataReady;
+            reader.onerror = () => { reject(reader.error || Error("Unknown error reading a file")) };
+
+            // start it off
+            readNextChunk();
+        }
+
+        reject(Error('unknown input type'));
+    });
+}
+
+function crc16Async(buffer) {
+    return Promise.resolve(crc16(buffer));
+}
 
 
-export {sha1, crc16}
+export { sha1, crc16, sha1Async, crc16Async };

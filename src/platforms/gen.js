@@ -2,6 +2,7 @@
  * Object containing Genesis-specific data and functions
  */
 
+import RomRegion from '../RomRegion';
 import common from './common';
 import genUtil from '../utils/genUtil';
 import util from '../utils/util';
@@ -34,13 +35,13 @@ var genPlatform = {
     /**
      * Returns an array of region descriptors for sections of the ROM to be hashed
      * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{name: string, start: number, length: number, romImage?: Uint8Array}[]} Array of region descriptors
+     * @returns {RomRegion[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
         var binRom = genUtil.getBinFormat(romImage);
 
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0, length: binRom.length, rom: binRom };
+        var fileRegion = new RomRegion('file', romImage, 0,romImage.length );
+        var romRegion = new RomRegion('rom', binRom, 0, binRom.length);
 
         return [fileRegion, romRegion];
     },

@@ -4,9 +4,11 @@
  *  Retrieves all available information about a ROM
  */
 
+import RomRegion from './RomRegion';
 import platform from './platform';
-import * as hasher from './hasher';
+import * as hasher from './hash';
 import romDb from './romDb';
+import RomHasher from './RomHasher';
 
 /**
  * @constructor
@@ -23,39 +25,116 @@ function RomData(romImage, filename, hashAlgos) {
     this.platformIdent = plat.method;
     this.platform = plat.platform;
     console.log(plat);
-    this.hashRegions = plat.platform.getHashRegions(romImage);
-    // We don't want whole ROMs included in JSON, so we make the hashRegion.rom property non-enumerable
-    this.hashRegions.forEach(rgn => Object.defineProperty(rgn, 'rom', { value: rgn.rom || null, enumerable: false }));
     this.hasExternalHeader = plat.platform.hasExternalHeader(romImage);
     this.dbInfo = { name: 'not found', version: 'not found' };
     this.dbMatch = 'not found';
     this.extendedData = plat.platform.getExtendedData(romImage);
     this.format = plat.platform.getFormatName(romImage);
 
-    this.hashes = hashAlgos.map(algo => {
-        if (!typeof algo === 'string') throw Error('Invalid value specified for hashAlgos');
-        var parts = algo.split('_');
-        if (parts.length != 2) throw Error('Invalid value specified for hashAlgos');
+    this.hashRegions = plat.platform.getHashRegions(romImage);
+    
+    // var hashlist = hashAlgos.map(algo => {
+    //     // throw error on constructor for invalid parameters
+    //     if (typeof algo !== 'string') throw Error('Invalid value specified for hashAlgos');
+    //     var parts = algo.split('_');
+    //     if (parts.length != 2) throw Error('Invalid value specified for hashAlgos');
+
+    //     var [regionName, algoName] = parts;
+    //     var region = this.hashRegions.find(reg => reg.name == parts[0]);
+
+    //     return {
+    //         algoName: algoName,
+    //         /**@type {RomRegion} */
+    //         region: region,
+    //     };
+    // });
+
+    // /** @type {{region: RomRegion, algoName: string, value: string}[]} */
+    // var hashResults = [];
+    // /** @type {{rom: Uint8Array, algoName: string, region: RomRegion}[]} */
+    // var hashTasks = []; 
+    // hashlist.forEach(item => {
+    //     hashResults.push({
+    //         region: item.region,
+    //         algoName: item.algoName,
+    //         value: null // tbd
+    //     });
+
+    //     // Don't want to queue multiple tasks that have same data, region, and algo
+    //     var existingTask = hashTasks.find(task => task.region.isSameRegion(item.region));
+
+    //     if (!existingTask) hashTasks.push({
+    //         rom: item.rom,
+    //         region: item.region,
+    //         algoName: item.algoName,
+    //     });
+    // });
+
+    // var hashPromises = hashTasks.map(task => {
+    //     /** @type {Promise<string>} */
+    //     var algoFunc = hasher[task.algoName + 'Async'];
+    //     if (!algoFunc) return Promise.reject("Hash algorithm " + task.algoName + " is not available");
+
+    //     // return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
+    //     return algoFunc(task.rom, task.region.offset, task.region.length)
+    //         .then(hash => {
+    //             hashResults.find(result => result.region.isSameRegion(task.region));
+    //         })
         
-        var region = this.hashRegions.find(reg => reg.name == parts[0]);
-        // Get the function that actually performs the hash
-        var algoFunc = hasher[parts[1]];
-        var romToHash = region.rom || romImage;
+    // });
 
-        // TODO: optimize this by not re-hashing redundant regions (frequently ROM and FILE regions are identical)
-        if (region && algoFunc) {
-            return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
-        } else {
-            return null;
-        }
-    }).filter(item => item); // remove nulls
+    // this.hashPromises = hashAlgos.map(algo => { 
+    //     // throw error on constructor for invalid parameters
+    //     if (typeof algo !== 'string') throw Error('Invalid value specified for hashAlgos');
+    //     var parts = algo.split('_');
+    //     if (parts.length != 2) throw Error('Invalid value specified for hashAlgos');
+        
+    //     var region = this.hashRegions.find(reg => reg.name == parts[0]);
+    //     // Get the function that actually performs the hash
+    //     var algoFunc = hasher[parts[1]];
+    //     var romToHash = region.rom || romImage;
 
-    this.dbLookupPromise = romDb(this.platform.name)
+    //     // TODO: optimize this by not re-hashing redundant regions (frequently ROM and FILE regions are identical)
+    //     if (region && algoFunc) {
+    //         return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
+    //     } else {
+    //         return null;
+    //     }
+    // });
+    
+    
+    // this.hashes = hashAlgos.map(algo => {
+    //     if (!typeof algo === 'string') throw Error('Invalid value specified for hashAlgos');
+    //     var parts = algo.split('_');
+    //     if (parts.length != 2) throw Error('Invalid value specified for hashAlgos');
+        
+    //     var region = this.hashRegions.find(reg => reg.name == parts[0]);
+    //     // Get the function that actually performs the hash
+    //     var algoFunc = hasher[parts[1]];
+    //     var romToHash = region.rom || romImage;
+
+    //     // TODO: optimize this by not re-hashing redundant regions (frequently ROM and FILE regions are identical)
+    //     if (region && algoFunc) {
+    //         return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
+    //     } else {
+    //         return null;
+    //     }
+    // }).filter(item => item); // remove nulls
+
+    var hasher = new RomHasher(romImage, this.hashRegions, hashAlgos);
+    var hashPromise = hasher.performHashes()
+        .then(hashlist => {
+            this.hashes = hashlist;
+        });
+
+    var dbGetPromise = romDb(this.platform.name)
         .catch(err => {
             console.error(err);
             return null;
-        })
-        .then(db => {
+        });
+    
+    var dbLookupPromise = Promise.all([dbGetPromise, hashPromise])
+        .then(([db]) => {
             if (db) {
                 if (db.meta) {
                     this.dbInfo = {
@@ -65,7 +144,7 @@ function RomData(romImage, filename, hashAlgos) {
                 }
 
                 // TODO: DB should specify what kind of hash it's looking for, e.g. TOSEC wants FILE hashes
-                var rom_sha1 = this.hashes.find(hash => hash.name == 'rom_sha1');
+                var rom_sha1 = this.hashes.find(hash => hash.algoName === 'sha1' && hash.region.name === 'rom');
                 if (rom_sha1) {
                     return db.getTitle(rom_sha1.value);
                 }
@@ -78,12 +157,16 @@ function RomData(romImage, filename, hashAlgos) {
         })
         .catch(console.error);
 
+    hashPromise.then(() => console.log('hash'));
+    dbGetPromise.then(() => console.log('dbget'));
+    dbLookupPromise.then(() => console.log('dblookup'));
+    this.processingCompletePromise = Promise.all([hashPromise, dbLookupPromise]);
 }
 
 function getData(romImage, filename) {
     var result = new RomData(romImage, filename);
-    return result.dbLookupPromise.then(() => {
-        delete result.dbLookupPromise; // done with this
+    return result.processingCompletePromise.then(() => {
+        delete result.processingCompletePromise; // done with this
         return result;
     });
 }

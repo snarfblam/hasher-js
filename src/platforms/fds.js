@@ -3,6 +3,7 @@
  */
 
 import common from './common';
+import RomRegion from '../RomRegion';
 const category = common.romDataCategory;
 
 /**
@@ -45,10 +46,13 @@ var fdsPlatform = {
      * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0x10, length: romImage.length - 0x10 };
-
-        if(!this.hasExternalHeader(romImage)) romRegion = { name: 'rom', start: 0, length: romImage.length }
+        var fileRegion = new RomRegion('file', romImage, 0, romImage.length);
+        var romRegion;
+        if (this.hasExternalHeader) {
+            romRegion = new RomRegion('rom', romImage, 0x10, romImage.length - 0x10);
+        } else {
+            romRegion = new RomRegion('rom', romImage, 0, romImage.length);
+        } 
 
         return [fileRegion, romRegion];
     },

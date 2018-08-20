@@ -2,6 +2,7 @@
  * Object containing NES-specific data and functions
  */
 
+import RomRegion from '../RomRegion';
 import iNESHeader from '../utils/iNESHeader';
 import common from './common';
 const category = common.romDataCategory;
@@ -34,13 +35,13 @@ var nesPlatform = {
     /**
      * Returns an array of region descriptors for sections of the ROM to be hashed
      * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
+     * @returns {RomRegion[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0x10, length: romImage.length - 0x10 };
+        var fileRegion = new RomRegion('file', romImage, 0,romImage.length );
+        var romRegion = new RomRegion('rom', romImage, 0x10, romImage.length - 0x10);
 
-        if(!this.hasExternalHeader(romImage)) romRegion = { name: 'rom', start: 0, length: romImage.length }
+        if(!this.hasExternalHeader(romImage)) romRegion = new RomRegion('rom', romImage, 0, romImage.length);
 
         return [fileRegion, romRegion];
     },

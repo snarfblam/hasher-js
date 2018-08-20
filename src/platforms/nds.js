@@ -3,8 +3,9 @@
  */
 
 import util from '../utils/util'
-import { crc16 } from '../hasher';
+import { crc16 } from '../hash';
 import common from './common';
+import RomRegion from '../RomRegion';
 const category = common.romDataCategory;
 
 function yesNo(bool) {
@@ -31,8 +32,8 @@ var ndsPlatform = {
         var bytesToHash = romImage.subarray(0, headerCrcRegionSize);
 
         var hash = crc16(bytesToHash);
-        console.log(util.toHex(hash,4));
-        console.log(romImage[0x15e], romImage[0x15F])
+        // console.log(util.toHex(hash,4));
+        // console.log(romImage[0x15e], romImage[0x15F])
         return ((hash & 0xFF) === romImage[0x15e] && (hash >> 8) === romImage[0x15F]);
     },
 
@@ -51,10 +52,10 @@ var ndsPlatform = {
      * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
-        var romRegion = { name: 'rom', start: 0, length: romImage.length };
-
-        return [fileRegion, romRegion];
+        return [
+            new RomRegion('file', romImage, 0, romImage.length),
+            new RomRegion('rom', romImage, 0, romImage.length),
+        ];
     },
 
     /**

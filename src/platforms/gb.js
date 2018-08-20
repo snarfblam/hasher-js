@@ -3,6 +3,7 @@
  */
 
 import util from '../utils/util';
+import RomRegion from '../RomRegion';
 import gbUtil from '../utils/gbUtil';
 import GbHeader from '../utils/GbHeader';
 import common from './common';
@@ -39,12 +40,12 @@ var gbPlatform = {
     /**
      * Returns an array of region descriptors for sections of the ROM to be hashed
      * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
+     * @returns {RomRegion[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
         return [
-            { name: 'file', start: 0, length: romImage.length },
-            { name: 'rom', start: 0, length: romImage.length },
+            new RomRegion('file', rom, 0, romImage.length),
+            new RomRegion('rom', rom, 0, romImage.length),
         ];
     },
 

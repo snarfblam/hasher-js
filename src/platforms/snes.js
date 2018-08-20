@@ -4,6 +4,7 @@
 
 import snesUtil from '../utils/snesUtil';
 import SnesHeader from '../utils/SnesHeader';
+import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;
 
@@ -45,16 +46,16 @@ var snesPlatform = {
     /**
      * Returns an array of region descriptors for sections of the ROM to be hashed
      * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{name: string, start: number, length: number}[]} Array of region descriptors
+     * @returns {RomRegion[]} Array of region descriptors
      */
     getHashRegions: function (romImage) {
-        var fileRegion = { name: 'file', start: 0, length: romImage.length };
+        var fileRegion = new RomRegion('file', romImage, 0, romImage.length);
         var romRegion;
 
         if (this.hasExternalHeader(romImage)) {
-            romRegion = { name: 'rom', start: snesUtil.externalHeaderSize, length: romImage.length - snesUtil.externalHeaderSize }
+            romRegion = new RomRegion('file', romImage, snesUtil.externalHeaderSize, romImage.length - snesUtil.externalHeaderSize );
         } else {
-            romRegion = { name: 'rom', start: 0, length: romImage.length }
+            romRegion = new RomRegion('file', romImage, 0, romImage.length);
         }
 
         return [fileRegion, romRegion];

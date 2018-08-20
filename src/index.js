@@ -23,14 +23,16 @@
  */
 
 
-
-import RomData from './RomData';
 import Buffer from './Buffer';
-
 // Apply Buffer shim (needed by sha1 library and for slice method)
 if (typeof window !== 'undefined') {
     window.Buffer = Buffer;
 }
+
+
+import RomData from './RomData';
+
+
 
 
 
