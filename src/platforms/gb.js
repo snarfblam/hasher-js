@@ -2,10 +2,10 @@
  * Object containing NES-specific data and functions
  */
 
-import util from '../utils/util';
+import util from '../romUtils/util';
 import RomRegion from '../RomRegion';
-import gbUtil from '../utils/gbUtil';
-import GbHeader from '../utils/GbHeader';
+import gbUtil from '../romUtils/gbUtil';
+import GbHeader from '../romUtils/GbHeader';
 import common from './common';
 const category = common.romDataCategory;
 

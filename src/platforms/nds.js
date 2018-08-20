@@ -2,7 +2,7 @@
  * Object containing Neo-Geo-Pocket-specific data and functions
  */
 
-import util from '../utils/util'
+import util from '../romUtils/util'
 import { crc16 } from '../hash';
 import common from './common';
 import RomRegion from '../RomRegion';

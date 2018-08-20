@@ -3,7 +3,7 @@
  */
 
 import RomRegion from '../RomRegion';
-import iNESHeader from '../utils/iNESHeader';
+import iNESHeader from '../romUtils/iNESHeader';
 import common from './common';
 const category = common.romDataCategory;
 

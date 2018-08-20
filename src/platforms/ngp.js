@@ -3,7 +3,7 @@
  */
 
 import RomRegion from '../RomRegion';
-import util from '../utils/util'
+import util from '../romUtils/util'
 import common from './common';
 const category = common.romDataCategory;
 

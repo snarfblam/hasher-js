@@ -7,8 +7,8 @@ const cgbFlagNames = {
 };
 
 
-import gbUtil from '../utils/gbUtil';
-import util from '../utils/util';
+import gbUtil from '../romUtils/gbUtil';
+import util from '../romUtils/util';
 
 /**
  * Decodes a GameBoy ROM internal header

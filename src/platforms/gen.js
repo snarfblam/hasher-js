@@ -4,9 +4,9 @@
 
 import RomRegion from '../RomRegion';
 import common from './common';
-import genUtil from '../utils/genUtil';
-import util from '../utils/util';
-import GenHeader from '../utils/GenHeader';
+import genUtil from '../romUtils/genUtil';
+import util from '../romUtils/util';
+import GenHeader from '../romUtils/GenHeader';
 const category = common.romDataCategory;
 
 var genPlatform = {

@@ -2,8 +2,8 @@
  * Object containing NES-specific data and functions
  */
 
-import smsUtil from '../utils/smsUtil';
-import util from '../utils/util';
+import smsUtil from '../romUtils/smsUtil';
+import util from '../romUtils/util';
 import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;

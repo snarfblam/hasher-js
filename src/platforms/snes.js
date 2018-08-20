@@ -2,8 +2,8 @@
  * Object containing NES-specific data and functions
  */
 
-import snesUtil from '../utils/snesUtil';
-import SnesHeader from '../utils/SnesHeader';
+import snesUtil from '../romUtils/snesUtil';
+import SnesHeader from '../romUtils/SnesHeader';
 import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;
