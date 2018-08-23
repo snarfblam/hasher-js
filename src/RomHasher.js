@@ -2,6 +2,7 @@
 
 import RomRegion from './RomRegion';
 import * as hasher from './hash';
+import Rom from './Rom';
 
 class RomHasher {
     /**
@@ -66,7 +67,10 @@ class RomHasher {
             if (!algoFunc) return Promise.reject("Hash algorithm " + task.algoName + " is not available");
     
             // return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
-            return algoFunc(task.region.rom, task.region.offset, task.region.length)
+            var rom = task.region.rom;
+            if (rom instanceof Rom) rom = rom.file;
+            console.log(rom);
+            return algoFunc(rom, task.region.offset, task.region.length)
                 .then(hash => {
                     var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region));
                     if (matches.length === 0) console.warn("task to result error");

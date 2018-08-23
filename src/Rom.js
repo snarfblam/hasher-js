@@ -1,18 +1,24 @@
 import {readBytesFromBlob, getFileExtension} from './util';
-import { resolve } from 'dns';
 
 class Rom {
     /**
      * 
-     * @param {File} romFile
+     * @param {File | Blob} romFile
      */
     constructor(romFile) {
         /** The File object that is encapsulated */
         this.file = romFile;
-        /** The name of the file */
-        this.filename = this.file.name;
-        /** The file extension, not including the dot. */
-        this.fileExtension = getFileExtension(this.filename);
+
+        if (romFile instanceof File) {
+            /** The name of the file */
+            this.filename = romFile.name;
+            /** The file extension, not including the dot. */
+            this.fileExtension = getFileExtension(this.filename);
+        } else {
+            this.filename = null;
+            this.fileExtension = null;
+        }
+
         /** Size of the ROM file in bytes */
         this.size = this.file.size;
 
@@ -24,11 +30,21 @@ class Rom {
          * */
         this.preview = null;
 
-        /** Resolves once the ROM preview has been read from disk. */
-        this.previewPromise = readBytesFromBlob(romFile, 0, Rom.contentsPreviewSize)
+        /**
+         * Get/set. Stores the BIN format of this ROM, if this object was created
+         * from a ROM file.
+         * @type {Rom}
+         */
+        this.binFormat = null;
+
+        /** Get/set. Stores the decoded header for this ROM. */
+        this.decodedHeader = null;
+
+        /** Resolves once this object is ready to be accessed. */
+        this.loaded = readBytesFromBlob(romFile, 0, Rom.contentsPreviewSize)
             .then(byteArray => {
                 this.preview = byteArray;
-                return byteArray;
+                return null;
             });
     }
 
@@ -93,7 +109,7 @@ class Rom {
 }
 
 /** Number of bytes that will be loaded and readily accessible in the Rom.preview property. */
-Rom.contentsPreviewSize = 0x1000;
+Rom.contentsPreviewSize = 0x10000;
 
 
 

@@ -3,6 +3,7 @@
 */
 
 import RomRegion from '../RomRegion';
+import Rom from '../Rom';
 
 class Platform {
     /**
@@ -24,43 +25,93 @@ class Platform {
 
     /**
      * Determines whether the specified ROM is for this platform, based on a platform-specific heuristic.
-     * @param {Uint8Array} romImage ROM image to examine
+     * @param {Rom} rom ROM image to examine
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
-    isPlatformMatch(romImage) { notImplemented(); }
+    isPlatformMatch(rom) { notImplemented(); }
 
     /**
      * Determines whether the specified ROM contains an external (non-embedded) header using platform-specific logic
-     * @param {Uint8Array} romImage ROM image to examine
+     * @param {Rom} rom ROM image to examine
      * @returns {boolean} Boolean indicating whether the ROM contains an external header
      */
-    hasExternalHeader(romImage) { notImplemented(); }
-
-    
-    /**
-     * Returns an array of region descriptors for sections of the ROM to be hashed
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {RomRegion[]} Array of region descriptors
-     */
-    getHashRegions(romImage) { notImplemented(); }
+    hasExternalHeader(rom) { notImplemented(); }
 
     /**
-     * Returns an array of extended information for the ROM image.
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{label: string, category: string, value: any}[]} Array of details
-     */
-    getExtendedData(romImage) { notImplemented(); }
+         * Returns an array of region descriptors for sections of the ROM to be hashed
+         * @param {Rom} rom ROM image to examine
+         * @returns {RomRegion[]} Array of region descriptors
+         */
+    getHashRegions(rom) { notImplemented(); }
 
     /**
-     * 
-     * @param {Uint8Array} romImage
+     * Promise. Returns an array of extended information for the ROM image.
+     * @param {Rom} rom ROM image to examine
+     * @returns {Promise<{label: string, category: string, value: any}[]>} Array of details
      */
-    getFormatName(romImage) { notImplemented(); }
+    getExtendedData(rom) { notImplemented(); }
+
+    /**
+     * Gets a display name for the ROM file format.
+     * @param {Rom} rom ROM image to examine
+     * @returns {string}
+     */
+    getFormatName(rom) { notImplemented(); }
+
+    /**
+     * Promise. Returns a BIN-formatted version of the ROM.
+     * @param {Rom} rom ROM image to examine
+     * @returns {Promise<Blob>}
+     */
+    getBinFormat(rom) {
+        if (rom.binFormat) return Promise.resolve(rom.binFormat);
+
+        return this._convertToBin(rom)
+            .then(rom => {
+                if (rom instanceof Blob) {
+                    rom.binFormat = new Rom(rom);
+                } else if (rom instanceof Rom) {
+                    rom.binFormat = rom;
+                } else {
+                    return Promise.reject("BIN ROM invalid type");
+                }
+
+                return rom.binFormat;
+            });
+    }
+
+    /**
+     * Private. Promise. Converts a ROM to BIN format. Default implementation
+     * returns the original ROM. Should return a Blob.
+     * @param {Rom} rom ROM image to examine
+     * @returns {Promise<Blob>}
+     */
+    _convertToBin(rom) {
+        return Promise.resolve(rom);
+    }
+
+    /**
+     * Promise. Returns decoded header, if applicable.
+     * @param {Rom} rom ROM image to examine
+     * @returns {Promise<any>}
+     */
+    getHeader(rom) {
+        if (rom.decodedHeader) return Promise.resolve(rom.decodedHeader);
+         
+        return Promise.resolve(this._decodeHeader(rom));
+    }
+
+    /**
+     * Private. Promise. Override to add header decoding logic. Return either
+     * a header or a promise that resolves to a header.
+     * @param {Rom} rom ROM image to examine
+     * @returns {Promise<any> | any}
+     */
+    _decodeHeader(rom) {
+        return null;
+    }
 }
 
-// Todo: implement a class that encapsulated the rom File object, exposes a 4KB or so "preview" buffer,
-// and exposes an interface to traverse the ROM with a chunk based method (obtaining slices of the Blob).
-platform.romPreviewSize = 0x1000;
 
 function notImplemented() { throw Error("Function is not implemented.") };
 

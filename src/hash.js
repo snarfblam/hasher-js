@@ -54,14 +54,10 @@ function crc16(buffer) {
  * @returns {Promise<string>}
  */
 function sha1Async(buffer, offset, length) {
-    console.log('hi?');
     var end = offset + length;
     var sha1 = jsSha1.create(); // crypto.createHash('sha1');
-    console.log('hello?');
-    
 
     return new Promise((resolve, reject) => {
-        console.log(buffer);
         if (buffer instanceof Uint8Array) {
             var subBuffer = buffer;
 
@@ -75,7 +71,6 @@ function sha1Async(buffer, offset, length) {
 
             sha1.update(subBuffer);
             resolve(sha1.hex());
-            // resolve(sha1.update(subBuffer).digest("hex"));
         } else if (buffer instanceof Blob) {
 
             end = Math.min(end, buffer.size);
@@ -83,16 +78,15 @@ function sha1Async(buffer, offset, length) {
             var reader = new FileReader();
             var currentOffset = offset;
             var readNextChunk = () => {
-                currentOffset += chunkSize;
 
                 if (currentOffset < end) {
                     // don't include anything beyond end of blob in length
-                    var currentLength = Math.min(currentOffset + chunkSize, end - currentOffset);
+                    var currentEnd = Math.min(currentOffset + chunkSize, end);
 
-                    reader.readAsArrayBuffer(buffer.slice(currentOffset, currentLength));
-                } else {
+                    reader.readAsArrayBuffer(buffer.slice(currentOffset, currentEnd));
+                    currentOffset += chunkSize;
+            } else {
                     // We've finished processing the file
-                    // resolve(sha1.digest('hex'));
                     resolve(sha1.hex());
                 }
             };
@@ -108,9 +102,9 @@ function sha1Async(buffer, offset, length) {
 
             // start it off
             readNextChunk();
+        } else {
+            reject(Error('unknown input type'));
         }
-
-        reject(Error('unknown input type'));
     });
 }
 

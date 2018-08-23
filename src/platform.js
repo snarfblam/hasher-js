@@ -7,37 +7,41 @@
 
 import plats from './platforms';
 import RomRegion from './RomRegion';
-// Platform interface
-/**
- * @typedef {Object} Platform
- * @property {string} name
- * @property {string[]} knownExtensions
- * @property {function(Uint8Array): boolean} isPlatformMatch
- * @property {function(Uint8Array): boolean} hasExternalHeader
- * @property {function(Uint8Array): RomRegion[]} getHashRegions
- * @property {function(Uint8Array): {{label: string, category: string, value: string}[]}} getExtendedData
- * @property {function(Uint8Array): string} getFormatName
- * 
- */
+import Platform from './platforms/Platform';
+import Rom from './Rom';
+
+// // Platform interface
+// /**
+//  * @typedef {Object} Platform
+//  * @property {string} name
+//  * @property {string[]} knownExtensions
+//  * @property {function(Uint8Array): boolean} isPlatformMatch
+//  * @property {function(Uint8Array): boolean} hasExternalHeader
+//  * @property {function(Uint8Array): RomRegion[]} getHashRegions
+//  * @property {function(Uint8Array): {{label: string, category: string, value: string}[]}} getExtendedData
+//  * @property {function(Uint8Array): string} getFormatName
+//  * 
+//  */
 
 var platform = {
+    /** @type {Platform[]} */
     platformList: [],
 
     /**
-     * @param {Uint8Array} romImage ROM to be examined
+     * @param {Rom} rom ROM to be examined
      * @param {string} ext File extension, not including the dot, or null if not applicable.
      * @returns {{method: string, platform: Platform}} - The associated platform, and the method used 
      * to identify the platform ('contents' = ROM contents alone, 'extension' = file extension,
      * 'contents extension' = by ROM contents first, then by file extension to disambiguate
      * multiple platform matches, 'none' = platform could not be identified).
      */
-    getAssociatedPlatform: function (romImage, ext) {
+    getAssociatedPlatform: function (rom, ext) {
         // TODO: return unknown platform object when no match is found
         var platformMatches = [];
 
         // Match by contents
         this.platformList.forEach(plat => {
-            if (plat.isPlatformMatch(romImage)) {
+            if (plat.isPlatformMatch(rom)) {
                 platformMatches.push(plat);
             }
         });
