@@ -22,12 +22,13 @@
             document.getElementById('btn-hash').addEventListener('click', function() {
                 var romFile = document.getElementById('file').files[0];
                 console.log(romFile);
-                hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
+                // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
+                processRom(romFile);
             })
         }, false);
 
-        function processRom(fileContents, fileName) {
-            hasher.getRomData(fileContents, fileName)
+        function processRom(file) { // fileContents, fileName) {
+            hasher.getRomData(file)
                 .then(function(result) {
                     output.innerText += JSON.stringify(result, null, 4);
                 })
