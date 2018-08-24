@@ -110,8 +110,8 @@ var snesUtil = {
      * @param romImage {Uint8Array}
      * @returns {boolean}
      */
-    hasExternalHeader: function (romImage) {
-        return (romImage.length % 1024) === snesUtil.externalHeaderSize;
+    hasExternalHeader: function (romSize) {
+        return (romSize % 1024) === snesUtil.externalHeaderSize;
     },
 
     /**

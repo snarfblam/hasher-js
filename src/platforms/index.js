@@ -1,6 +1,6 @@
 import NES, { NesPlatform } from './nes';
 import FDS from './fds';
-import SNES from './snes';
+import SNES, {SnesPlatform} from './snes';
 import GB from './gb';
 import GBA from './gba';
 import SMS from './sms';
@@ -11,4 +11,4 @@ import NDS from './nds';
 
 // export default [NES, SNES, GB, GBA, FDS, SMS, GG, GEN, NGP, NDS];
 
-export default [new NesPlatform()];
+export default [new NesPlatform(), new SnesPlatform()];

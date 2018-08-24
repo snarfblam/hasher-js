@@ -1,4 +1,5 @@
 - have platform objects inherit a platform class
+    - most if not all 'util.js' code should be made accessible via Platform base class
 - provide standard functionality to platform objects to associate data with rom (e.g. header, de-interleved ROM)
     - this will prevent rundantand processessing, e.g. multiple functions which decode the header to get one piece of info
 - update NoIntro DBs... these are from 2012
@@ -12,3 +13,8 @@
             - convertFile(chunks: {start: number, length: number}[], conversion: function(input: data: Uint8Array, output: Uint8Array, offset: number))
 
 - credit and license for js-sha1: https://github.com/emn178/js-sha1
+- remove old sha-1 library and remove references
+- refactoring: there is both a "platform.js" and a "Platform.js". rename "platform.js" to reduce confusion
+
+- review snes platform and consider whether rom preview should be expanded to a large enough size to verify
+  internal header checksum via Rom.preview
