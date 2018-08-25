@@ -31,18 +31,29 @@ function RomData(rom, hashAlgos) {
     this.dbMatch = 'not found';
     this.format = plat.platform.getFormatName(rom);
 
-    this.hashRegions = plat.platform.getHashRegions(rom);
 
     var extendedDataPromise = plat.platform.getExtendedData(rom)
         .then(extendedData => {
             this.extendedData = extendedData;
         });
     
-    var hasher = new RomHasher(rom, this.hashRegions, hashAlgos);
-    var hashPromise = hasher.performHashes()
+    var hashPromise = plat.platform.getHashRegions(rom)
+        .then(hashRegions => {
+            this.hashRegions = hashRegions;
+            var hasher = new RomHasher(rom, this.hashRegions, hashAlgos);
+            return hasher.performHashes();
+        })
         .then(hashlist => {
             this.hashes = hashlist;
         });
+    
+    // this.hashRegions = plat.platform.getHashRegions(rom);
+    
+    // var hasher = new RomHasher(rom, this.hashRegions, hashAlgos);
+    // var hashPromise = hasher.performHashes()
+    //     .then(hashlist => {
+    //         this.hashes = hashlist;
+    //     });
 
     var dbGetPromise = romDb(this.platform.name)
         .catch(err => {

@@ -55,7 +55,7 @@ class SnesPlatform extends Platform {
             romRegion = new RomRegion('rom', rom.file, 0, rom.size);
         }
 
-        return [fileRegion, romRegion];
+        return Promise.resolve([fileRegion, romRegion]);
     }
 
     /** @param {Rom} rom */

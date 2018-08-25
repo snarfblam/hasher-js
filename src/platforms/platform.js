@@ -38,9 +38,9 @@ class Platform {
     hasExternalHeader(rom) { notImplemented(); }
 
     /**
-         * Returns an array of region descriptors for sections of the ROM to be hashed
+         * Promise. Returns an array of region descriptors for sections of the ROM to be hashed
          * @param {Rom} rom ROM image to examine
-         * @returns {RomRegion[]} Array of region descriptors
+         * @returns {Promise<RomRegion[]>} Array of region descriptors
          */
     getHashRegions(rom) { notImplemented(); }
 
