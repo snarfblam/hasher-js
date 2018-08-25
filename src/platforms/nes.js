@@ -1,3 +1,5 @@
+//@ts-check
+
 /**
  * Object containing NES-specific data and functions
  */

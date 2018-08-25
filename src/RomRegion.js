@@ -1,7 +1,9 @@
+import Rom from './Rom';
+
 class RomRegion{
     /**
      * @param {string} name 
-     * @param {Blob | Uint8Array} rom 
+     * @param {Blob | Uint8Array | Rom} rom 
      * @param {number} offset 
      * @param {number} length 
      */
@@ -13,7 +15,7 @@ class RomRegion{
         /** Size of the region. */
         this.length = length;
         /** Data this region refers to.
-         * @type {Uint8Array | Blob}
+         * @type {Uint8Array | Blob | Rom}
          */
         this.rom = rom;
     
