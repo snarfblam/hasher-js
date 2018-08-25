@@ -1,3 +1,4 @@
+//@ts-check
 /*
     Provides a base class for common functionality 
 */
@@ -28,50 +29,66 @@ class Platform {
      * @param {Rom} rom ROM image to examine
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
-    isPlatformMatch(rom) { notImplemented(); }
+    isPlatformMatch(rom) {
+        // @ts-ignore
+        return notImplemented();
+    }
 
     /**
      * Determines whether the specified ROM contains an external (non-embedded) header using platform-specific logic
      * @param {Rom} rom ROM image to examine
      * @returns {boolean} Boolean indicating whether the ROM contains an external header
      */
-    hasExternalHeader(rom) { notImplemented(); }
+    hasExternalHeader(rom) {
+        // @ts-ignore
+        return notImplemented();
+    }
 
     /**
          * Promise. Returns an array of region descriptors for sections of the ROM to be hashed
          * @param {Rom} rom ROM image to examine
          * @returns {Promise<RomRegion[]>} Array of region descriptors
          */
-    getHashRegions(rom) { notImplemented(); }
+    getHashRegions(rom) {
+        // @ts-ignore
+        return notImplemented();
+    }
 
     /**
      * Promise. Returns an array of extended information for the ROM image.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<{label: string, category: string, value: any}[]>} Array of details
      */
-    getExtendedData(rom) { notImplemented(); }
+    getExtendedData(rom) {
+        // @ts-ignore
+        return notImplemented();
+    }
 
     /**
      * Gets a display name for the ROM file format.
      * @param {Rom} rom ROM image to examine
      * @returns {string}
      */
-    getFormatName(rom) { notImplemented(); }
+    getFormatName(rom) {
+        // @ts-ignore
+        return notImplemented();
+    }
 
     /**
      * Promise. Returns a BIN-formatted version of the ROM.
      * @param {Rom} rom ROM image to examine
-     * @returns {Promise<Blob>}
+     * @returns {Promise<Rom>}
      */
     getBinFormat(rom) {
         if (rom.binFormat) return Promise.resolve(rom.binFormat);
 
         return this._convertToBin(rom)
-            .then(rom => {
-                if (rom instanceof Blob) {
-                    rom.binFormat = new Rom(rom);
+            //@ts-ignore
+            .then(binRom => {
+                if (binRom instanceof Blob) {
+                    rom.binFormat = new Rom(binRom);
                 } else if (rom instanceof Rom) {
-                    rom.binFormat = rom;
+                    rom.binFormat = binRom;
                 } else {
                     return Promise.reject("BIN ROM invalid type");
                 }
@@ -84,7 +101,7 @@ class Platform {
      * Private. Promise. Converts a ROM to BIN format. Default implementation
      * returns the original ROM. Should return a Blob.
      * @param {Rom} rom ROM image to examine
-     * @returns {Promise<Blob>}
+     * @returns {Promise<Blob | Rom>}
      */
     _convertToBin(rom) {
         return Promise.resolve(rom);
