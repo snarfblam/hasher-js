@@ -19,3 +19,5 @@
 - review snes platform and consider whether rom preview should be expanded to a large enough size to verify
   internal header checksum via Rom.preview
 - there should be something built into Platform to parse and persist internal header
+- convert platform classes from export {class} to export default class
+- make platform names consistent (i.e. getFormatName)

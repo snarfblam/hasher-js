@@ -1,11 +1,10 @@
-import NES, { NesPlatform } from './nes';
+import { NesPlatform } from './nes';
 import { FdsPlatform} from './fds';
-import SNES, {SnesPlatform} from './snes';
+import {SnesPlatform} from './snes';
 import {GbPlatform} from './gb';
 import {GbaPlatform} from './gba';
-import SMS from './sms';
-import GG from './gg';
-// import GEN from './gen';
+import {SmsPlatform} from './sms';
+import {GgPlatform} from './gg';
 import { GenPlatform } from './gen';
 import {NgpPlatform} from './ngp';
 import NDS from './nds';
@@ -20,4 +19,6 @@ export default [
     new GbPlatform(),
     new GbaPlatform(),
     new NgpPlatform(),
+    new GgPlatform(),
+    new SmsPlatform(),
 ];

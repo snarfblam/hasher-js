@@ -8,9 +8,26 @@ import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;
 
+import Platform_gg_sms from './Platform_gg_sms';
+
+class SmsPlatform extends Platform_gg_sms {
+    constructor() {
+        super(
+            // Name, long name, extensions
+            'SMS', 'Master System', ['sms'],
+            // Region codes
+            [3, 4],
+            // File format name
+            'Master System ROM image'
+        );
+    }
+}
+
 function yesNo(bool) {
     return bool ? "yes" : "no";
 }
+
+
 
 var smsPlatform = {
     name: 'SMS',
@@ -83,4 +100,5 @@ var smsPlatform = {
     }
 }
 
+export { SmsPlatform };
 export default smsPlatform;
