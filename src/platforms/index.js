@@ -7,7 +7,7 @@ import SMS from './sms';
 import GG from './gg';
 // import GEN from './gen';
 import { GenPlatform } from './gen';
-import NGP from './ngp';
+import {NgpPlatform} from './ngp';
 import NDS from './nds';
 
 // export default [NES, SNES, GB, GBA, FDS, SMS, GG, GEN, NGP, NDS];
@@ -19,4 +19,5 @@ export default [
     new FdsPlatform(),
     new GbPlatform(),
     new GbaPlatform(),
+    new NgpPlatform(),
 ];

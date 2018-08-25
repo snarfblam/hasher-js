@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * Object containing Neo-Geo-Pocket-specific data and functions
  */
@@ -6,6 +8,8 @@ import RomRegion from '../RomRegion';
 import util from '../romUtils/util'
 import common from './common';
 const category = common.romDataCategory;
+import Platform from './Platform';
+import Rom from '../Rom';
 
 /** Value that identifies first-party ROMs */
 var NgpCopyright = [0x43, 0x4F, 0x50, 0x59, 0x52, 0x49, 0x47, 0x48, 0x54, 0x20, 0x42, 0x59, 0x20, 0x53, 0x4E, 0x4B];
@@ -16,9 +20,9 @@ function yesNo(bool) {
 }
 
 /** Compares two sets of bytes for equality
- * @param {number[]} bytesA 
+ * @param {number[] | ArrayBufferView} bytesA 
  * @param {number} offsetA 
- * @param {number[]} bytesB 
+ * @param {number[] | ArrayBufferView} bytesB 
  * @param {number} offsetB 
  * @param {number} length 
  */
@@ -30,63 +34,43 @@ function compareBytes(bytesA, offsetA, bytesB, offsetB, length) {
     return true;
 }
 
-var ngpPlatform = {
-    name: 'NGP',
-    longName: "Neo Geo Pocket",
-    knownExtensions: ['ngp', 'ngc'],
+class NgpPlatform extends Platform{
+    constructor() {
+        super('NGP', "Neo Geo Pocket", ['ngp', 'ngc']);
+    }
 
-    /**
-     * Determines whether the specified ROM is for this platform, based on a platform-specific heuristic.
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
-     */
-    isPlatformMatch: function (romImage) {
-        if (romImage.length < 0x10) return false;
+    /** @param {Rom} rom */
+    isPlatformMatch(rom) {
+        if (rom.size < 0x10) return false;
 
         return (
-            compareBytes(romImage, 0, NgpCopyright, 0, NgpCopyright.length) ||
-            compareBytes(romImage, 0, NgpLicense, 0, NgpLicense.length)
+            compareBytes(rom.preview, 0, NgpCopyright, 0, NgpCopyright.length) ||
+            compareBytes(rom.preview, 0, NgpLicense, 0, NgpLicense.length)
         );
-    },
+    }
 
-    /**
-     * Determines whether the specified ROM contains an external (non-embedded) header using platform-specific logic
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {boolean} Boolean indicating whether the ROM contains an external header
-     */
-    hasExternalHeader: function (romImage) {
+    /** @param {Rom} rom */
+    hasExternalHeader(rom) {
         return false;
-    },
+    }
 
-    /**
-     * Returns an array of region descriptors for sections of the ROM to be hashed
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {RomRegion[]}
-     */
-    getHashRegions: function (romImage) {
-        var fileRegion = new RomRegion('file', romImage, 0,romImage.length );
-        var romRegion = new RomRegion('file', romImage, 0,romImage.length );
+    /** @param {Rom} rom */
+    getHashRegions(rom) {
+        var fileRegion = new RomRegion('file', rom, 0,rom.size);
+        var romRegion = new RomRegion('rom', rom, 0,rom.size);
 
-        return [fileRegion, romRegion];
-    },
+        return Promise.resolve([fileRegion, romRegion]);
+    }
 
-    /**
-     * Returns an array of extended information for the ROM image.
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{label: string, category: string, value: any}[]} Array of details
-     */
-    getExtendedData: function (romImage) {
-        var result = [];
-        
-        // var addHeader = (label, value) => result.push({category: category.Header, label: label, value: value });
-        
-        // nada
-        return result;
-    },
+    /** @param {Rom} rom */
+    getExtendedData(rom) {
+        return Promise.resolve([]);
+    }
 
-    getFormatName: function (romImage) {
+    /** @param {Rom} rom */
+    getFormatName(rom) {
         return "Neo Geo Pocket ROM";
     }
 }
 
-export default ngpPlatform;
+export {NgpPlatform};
