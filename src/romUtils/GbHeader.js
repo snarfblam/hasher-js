@@ -14,7 +14,7 @@ import util from '../romUtils/util';
  * Decodes a GameBoy ROM internal header
  * @constructor
  * @param {Uint8Array} romImage 
- * @param {number} headerOffset optional, must be null or 0x100 to validate ROM checksum.
+ * @param {number} [headerOffset] must be null or 0x100 to validate ROM checksum.
  */
 function GbHeader(romImage, headerOffset) {
     if (headerOffset == null) headerOffset = gbHeaderOffset;

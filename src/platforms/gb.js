@@ -94,6 +94,10 @@ class GbPlatform extends Platform {
     getFormatName (rom) {
         return "Gameboy ROM image";
     }
+
+    _decodeHeader(rom) {
+        return Promise.resolve(new GbHeader(rom.preview));
+    }
 }
 
 export {GbPlatform};

@@ -41,39 +41,47 @@ class GenPlatform extends Platform {
     }
 
     /** @param {Rom} rom */
-    getExtendedData (rom) {
-        try {
-            var header = new GenHeader(rom.preview);
-        }
-        catch (err) {
-            console.warn(err);
-            return Promise.resolve([]);
-        }
+    getExtendedData(rom) {
+        // try {
+        //     var header = new GenHeader(rom.preview);
+        // }
+        // catch (err) {
+        //     console.warn(err);
+        //     return Promise.resolve([]);
+        // }
 
-        var result = [];
-        var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
-        var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
-
-        addHeader("Title", header.gameName);
-        addHeader("Alt Title", header.altName);
-        addHeader("Platform", header.platform);
-        addHeader("Region", header.region);
-        addHeader("Copyright", header.copyrightFormatted);
-        addHeader("Product ID", header.productID);
-        addHeader("Checksum", util.toHex(header.checksum, 4));
-        addHeader("IO Devices", header.ioSupportFormatted);
-        addHeader("Memo", header.memo);
-        addHeader("Modem", header.modem);
-
-        var romStart = util.toHex(header.romStart, 8);
-        var romEnd = util.toHex(header.romEnd, 8);
-        var ramStart = util.toHex(header.ramStart, 8);
-        var ramEnd = util.toHex(header.ramEnd, 8);
-
-        addHeader("ROM range", romStart + "-" + romEnd);
-        addHeader("RAM range", ramStart + "-" + ramEnd);
-
-        return Promise.resolve(result);
+        return this.getHeader(rom)
+            .catch(err => {
+                console.warn(err);
+                return null;
+            }).then(header => {
+                var result = [];
+                if (header) {
+                    var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
+                    var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
+            
+                    addHeader("Title", header.gameName);
+                    addHeader("Alt Title", header.altName);
+                    addHeader("Platform", header.platform);
+                    addHeader("Region", header.region);
+                    addHeader("Copyright", header.copyrightFormatted);
+                    addHeader("Product ID", header.productID);
+                    addHeader("Checksum", util.toHex(header.checksum, 4));
+                    addHeader("IO Devices", header.ioSupportFormatted);
+                    addHeader("Memo", header.memo);
+                    addHeader("Modem", header.modem);
+            
+                    var romStart = util.toHex(header.romStart, 8);
+                    var romEnd = util.toHex(header.romEnd, 8);
+                    var ramStart = util.toHex(header.ramStart, 8);
+                    var ramEnd = util.toHex(header.ramEnd, 8);
+            
+                    addHeader("ROM range", romStart + "-" + romEnd);
+                    addHeader("RAM range", ramStart + "-" + ramEnd);
+                }
+                return result;
+            });
+        
     }
 
     /** @param {Rom} rom */
@@ -96,6 +104,10 @@ class GenPlatform extends Platform {
                 console.log('size: ', result.size);
                 return result;
             });
+    }
+
+    _decodeHeader(rom) {
+        return new GenHeader(rom.preview);
     }
 }
 
