@@ -11,7 +11,7 @@ var gbaUtil = {
     /**
      * Validates the logo bitmap in a GBA ROM
      * @param {Uint8Array} romImage 
-     * @param {number?} headerOffset optional
+     * @param {number} [headerOffset] 
      * @returns {boolean}
      */
     verifyLogo: function verifyLogo(romImage, headerOffset) {

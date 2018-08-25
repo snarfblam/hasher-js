@@ -4,7 +4,7 @@ import util from './util';
 /**
  * Parses a GBA header
  * @param {Uint8Array} romImage 
- * @param {number?} headerOffset optional
+ * @param {number} [headerOffset] 
  * @constructor
  */
 function GbaHeader(romImage, headerOffset) {
