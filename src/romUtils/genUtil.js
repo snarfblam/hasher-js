@@ -1,5 +1,5 @@
 import util from './util';
-
+import Rom from '../Rom';
 
 const externalHeaderSize = 0x200;
 const interleaveChunkSize = 0x4000;
@@ -113,6 +113,55 @@ function getBinFormat(romImage) {
     return binRom;
 }
 
+/**
+ * 
+ * @param {Rom} rom
+ */
+function convertRomToBin(rom) {
+    var { externalHeader, interleaved } = getRomInfo(rom.preview);
+    if (!externalHeader && !interleaved) return Promise.resolve(rom);
+    if (!interleaved) {
+        return Promise.resolve(rom.file.slice(
+            externalHeaderSize,
+            rom.file.size - externalHeaderSize
+        ));
+    }
+
+    return new Promise(resolve => {
+        var startOffset = externalHeader ? externalHeaderSize : 0;
+        var blobParts = [];
+        window.blobParts = blobParts;
+        var deinterleaveBuffer = new Uint8Array(interleaveChunkSize);
+
+        var chunkReady = (/**@type {Uint8Array} */ bytes) => {
+            console.log(bytes.length, interleaveChunkSize, bytes.length == interleaveChunkSize, bytes.length === interleaveChunkSize);
+            if (bytes.length === interleaveChunkSize) {
+                // De-interleave into a separate buffer
+                deinterleaveChunk(bytes, 0, deinterleaveBuffer, 0);
+                
+                // SOMEHOW THESE TWO ASSHOLES ARE GIVING ME DIFFERENT INCORRECT RESEULTS
+                blobParts.push(new Blob([deinterleaveBuffer]));
+                // blobParts.push(deinterleaveBuffer);
+
+            } else {
+                blobParts.push(new Blob([bytes]));
+            }
+        }; 
+
+        var onDone = () => {
+            resolve(new Blob(blobParts));
+        };
+        rom.streamData(chunkReady, startOffset, interleaveChunkSize, null, true, onDone);
+    });
+}
+
+/**
+ * 
+ * @param {Uint8Array} sourceRom 
+ * @param {number} sourceOffset 
+ * @param {Uint8Array} destRom 
+ * @param {number} destOffset 
+ */
 function deinterleaveChunk(sourceRom, sourceOffset, destRom, destOffset) {
     var writeOffset = destOffset;
     for (var readOffset = 0; readOffset < interleaveHalfChunkSize; readOffset++) {
@@ -136,6 +185,8 @@ var genUtil = {
     hasValidSmdHeader: function(romImage) {
         // todo: remove?
     },
+
+    convertRomToBin: convertRomToBin,
 
     externalHeaderSize: externalHeaderSize,
 };

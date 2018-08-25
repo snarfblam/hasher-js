@@ -1,7 +1,11 @@
+// @ts-check
+
 /**
  * Object containing Genesis-specific data and functions
  */
 
+import Rom from '../Rom';
+import Platform from './Platform';
 import RomRegion from '../RomRegion';
 import common from './common';
 import genUtil from '../romUtils/genUtil';
@@ -9,55 +13,41 @@ import util from '../romUtils/util';
 import GenHeader from '../romUtils/GenHeader';
 const category = common.romDataCategory;
 
-var genPlatform = {
-    name: 'GEN',
-    longName: 'Genesis',
-    knownExtensions: ['bin', 'gen', 'smd', 'md'],
+class GenPlatform extends Platform {
+    constructor() {
+        super('GEN', 'Genesis', ['bin', 'gen', 'smd', 'md']);
+    }
 
-    /**
-     * Determines whether the specified ROM is for this platform, based on a platform-specific heuristic.
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
-     */
-    isPlatformMatch: function (romImage) {
-        return genUtil.getRomInfo(romImage).internalHeader;
-    },
+    /** @param {Rom} rom */
+    isPlatformMatch (rom) {
+        return genUtil.getRomInfo(rom.preview).internalHeader;
+    }
 
-    /**
-     * Determines whether the specified ROM contains an external (non-embedded) header using platform-specific logic
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {boolean} Boolean indicating whether the ROM contains an external header
-     */
-    hasExternalHeader: function (romImage) {
-        return genUtil.getRomInfo(romImage).externalHeader;
-    },
+    /** @param {Rom} rom */
+    hasExternalHeader (rom) {
+        return genUtil.getRomInfo(rom.preview).externalHeader;
+    }
 
-    /**
-     * Returns an array of region descriptors for sections of the ROM to be hashed
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {RomRegion[]} Array of region descriptors
-     */
-    getHashRegions: function (romImage) {
-        var binRom = genUtil.getBinFormat(romImage);
+    /** @param {Rom} rom */
+    getHashRegions(rom) {
+        // var binRom = genUtil.getBinFormat(romImage);
+        return this.getBinFormat(rom)
+            .then(binRom => {
+                var fileRegion = new RomRegion('file', rom, 0,rom.size );
+                var romRegion = new RomRegion('rom', binRom, 0, binRom.size);
+        
+                return [fileRegion, romRegion];
+            });
+    }
 
-        var fileRegion = new RomRegion('file', romImage, 0,romImage.length );
-        var romRegion = new RomRegion('rom', binRom, 0, binRom.length);
-
-        return [fileRegion, romRegion];
-    },
-
-    /**
-     * Returns an array of extended information for the ROM image.
-     * @param {Uint8Array} romImage ROM image to examine
-     * @returns {{label: string, category: string, value: any}[]} Array of details
-     */
-    getExtendedData: function (romImage) {
+    /** @param {Rom} rom */
+    getExtendedData (rom) {
         try {
-            var header = new GenHeader(romImage);
+            var header = new GenHeader(rom.preview);
         }
         catch (err) {
             console.warn(err);
-            return [];
+            return Promise.resolve([]);
         }
 
         var result = [];
@@ -83,11 +73,12 @@ var genPlatform = {
         addHeader("ROM range", romStart + "-" + romEnd);
         addHeader("RAM range", ramStart + "-" + ramEnd);
 
-        return result;
-    },
+        return Promise.resolve(result);
+    }
 
-    getFormatName: function (romImage) {
-        var { externalHeader, interleaved } = genUtil.getRomInfo(romImage);
+    /** @param {Rom} rom */
+    getFormatName(rom) {
+        var { externalHeader, interleaved } = genUtil.getRomInfo(rom.preview);
 
         if (interleaved) {
             return externalHeader ? "SMD (headered)" : "SMD (no header)";
@@ -95,7 +86,19 @@ var genPlatform = {
             return externalHeader ? "BIN (headered)" : "BIN";
         }
     }
+
+    /** @param {Rom} rom */
+    _convertToBin(rom) {
+        // genUtil.getBinFormat
+        console.log(genUtil.getBinFormat(rom.preview));
+        return genUtil.convertRomToBin(rom)
+            .then(result => {
+                console.log('size: ', result.size);
+                return result;
+            });
+    }
 }
 
 // module.exports = nesPlatform;
-export default genPlatform;
+// export default genPlatform;
+export { GenPlatform };
