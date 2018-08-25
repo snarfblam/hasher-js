@@ -69,7 +69,6 @@ class RomHasher {
             // return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
             var rom = task.region.rom;
             if (rom instanceof Rom) rom = rom.file;
-            console.log(rom);
             return algoFunc(rom, task.region.offset, task.region.length)
                 .then(hash => {
                     var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region));
