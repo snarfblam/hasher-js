@@ -22,7 +22,7 @@ var gbUtil = {
     /**
      * Returns a boolean indicating whether or not the specified ROM or header contains a valid logo bitmap
      * @param {Uint8Array} romImage
-     * @param {number} headerOffset optional
+     * @param {number} [headerOffset] 
      * @returns {boolean}
      */
     verifyLogo: function (romImage, headerOffset) {

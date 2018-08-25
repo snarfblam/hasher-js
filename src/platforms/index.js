@@ -1,7 +1,7 @@
 import NES, { NesPlatform } from './nes';
 import { FdsPlatform} from './fds';
 import SNES, {SnesPlatform} from './snes';
-import GB from './gb';
+import {GbPlatform} from './gb';
 import GBA from './gba';
 import SMS from './sms';
 import GG from './gg';
@@ -17,4 +17,5 @@ export default [
     new SnesPlatform(),
     new GenPlatform(),
     new FdsPlatform(),
+    new GbPlatform()
 ];
