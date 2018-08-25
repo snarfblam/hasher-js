@@ -61,7 +61,7 @@ class Rom {
     /**
      * Async. Streams data from the ROM. Recommended for handling large files.
      * 
-     * @param {function(Uint8Array)} callback
+     * @param {function(Uint8Array, number)} callback
      * @param {number} offset 
      * @param {number} chunkSize 
      * @param {number} [chunkCount] The maximum number of chunks to read. Omit to read to end of file.
@@ -81,7 +81,7 @@ class Rom {
             var getChunk = () => {
                 var partial = currentSliceSize != chunkSize;
                 if (currentOffset < this.size && remainingChunkCount > 0 && (allowPartials || !partial)) {
-                    var blob = this.file.slice(offset, offset + currentSliceSize);
+                    var blob = this.file.slice(currentOffset, currentOffset + currentSliceSize);
                     reader.readAsArrayBuffer(blob);
                 } else {
                     // all done
@@ -91,7 +91,7 @@ class Rom {
             }
 
             var serveChunk = () => {
-                callback(new Uint8Array(reader.result)); // result is ArrayBuffer
+                callback(new Uint8Array(reader.result), currentOffset); // result is ArrayBuffer
 
                 currentOffset += chunkSize;
                 remainingChunkCount--;
@@ -102,6 +102,8 @@ class Rom {
             
             reader.onload = serveChunk;
             reader.onerror = () => { reject(reader.error) };
+
+            getChunk();
         });
     }
 
