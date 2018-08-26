@@ -1,3 +1,5 @@
+// @ts-check
+
 var snesUtil = {
     /**
      * Calculates the 16-bit checksum of the ROM
@@ -150,7 +152,7 @@ var snesUtil = {
         var smcSize = smcSizeValue * 8 * 1024; // Size is specified in units of 8kB
 
         // Apparently, this is some sort of magic number
-        if (romImage[8] != 0xAA | romImage[9] != 0xBB | romImage[10] != 0x04) return false;
+        if (romImage[8] != 0xAA || romImage[9] != 0xBB || romImage[10] != 0x04) return false;
 
         // Verify zero padding
         if (romImage.byteLength != smcSize + snesUtil.externalHeaderSize) return false;
@@ -182,10 +184,10 @@ var snesUtil = {
         var hiromComplement = getWord(romImage, romImageOffset + snesUtil.hiromChecksumCompOffset);
 
         result.lorom =
-            ((loromCheckum.lo ^ loromComplement.lo) == 0xFF) &
+            ((loromCheckum.lo ^ loromComplement.lo) == 0xFF) &&
             ((loromCheckum.hi ^ loromComplement.hi) == 0xFF);
         result.hirom =
-            ((hiromCheckum.lo ^ hiromComplement.lo) == 0xFF) &
+            ((hiromCheckum.lo ^ hiromComplement.lo) == 0xFF) &&
             ((hiromCheckum.hi ^ hiromComplement.hi) == 0xFF);
 
         return result;

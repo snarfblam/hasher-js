@@ -1,3 +1,5 @@
+// @ts-check
+
 var headerFlags = {
     // byte 6
     verticalMirroring: 1,

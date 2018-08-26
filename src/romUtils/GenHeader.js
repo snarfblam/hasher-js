@@ -1,3 +1,5 @@
+// @ts-check
+
 import genUtil from './genUtil';
 import { parseAscii } from '../util';
 
@@ -217,7 +219,7 @@ function parseIoString(ioCodeString) {
  * @param {string} copyrightString
 */
 function parseCopyright(copyrightString) {
-    if (copyrightString.startsWith("(C)T") & copyrightString.length >= 7) {
+    if (copyrightString.startsWith("(C)T") && copyrightString.length >= 7) {
         var code = copyrightString.substr(4, 3);
         if(code[0] == '-') code = code.substr(1);
 
@@ -230,9 +232,9 @@ function parseCopyright(copyrightString) {
         }
 
         var textualCode = copyrightString.substr(3, 4).toUpperCase();
-        var companyName = companyAltCodes[textualCode];
+        companyName = companyAltCodes[textualCode];
 
-        switch (copyrightString.Substring(3, 4).ToUpper()) {
+        switch (copyrightString.substring(3, 4).toUpperCase()) {
             case "ACLD": return copyrightString + " (Ballistic)";
             case "ASCI": return copyrightString + " (Asciiware)";
             case "RSI": return copyrightString + " (Razorsoft)";

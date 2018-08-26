@@ -1,3 +1,5 @@
+// @ts-check
+
 import { parseAscii } from '../util';
 import Rom from '../Rom';
 
@@ -79,39 +81,39 @@ function getRomInfo(romImage) {
     };
 }
 
-/**
- * Gets the ROM in BIN format (not interleaved or headered) if it is not already.
- * @param {Uint8Array} romImage 
- * @returns {Uint8Array}
- */
-function getBinFormat(romImage) {
-    // If ROM is already in BIN format, or has already been converted, we don't need to convert
-    if (romImage.binFormatted) return romImage.binFormatted;
-    var {externalHeader, interleaved} = getRomInfo(romImage);
-    if (!externalHeader && !interleaved) return romImage;
+// /**
+//  * Gets the ROM in BIN format (not interleaved or headered) if it is not already.
+//  * @param {Uint8Array} romImage 
+//  * @returns {Uint8Array}
+//  */
+// function getBinFormat(romImage) {
+//     // If ROM is already in BIN format, or has already been converted, we don't need to convert
+//     if (romImage.binFormatted) return romImage.binFormatted;
+//     var {externalHeader, interleaved} = getRomInfo(romImage);
+//     if (!externalHeader && !interleaved) return romImage;
 
-    var binRom;
-    var readOffset = 0;
-    var writeOffset = 0;
+//     var binRom;
+//     var readOffset = 0;
+//     var writeOffset = 0;
 
-    // Create a buffer. Exclude header if necessary.
-    if (externalHeader) {
-        binRom = new Uint8Array(romImage.length - externalHeaderSize);
-        readOffset = externalHeaderSize;
-    } else {
-        binRom = new Uint8Array(romImage.length);
-    }
+//     // Create a buffer. Exclude header if necessary.
+//     if (externalHeader) {
+//         binRom = new Uint8Array(romImage.length - externalHeaderSize);
+//         readOffset = externalHeaderSize;
+//     } else {
+//         binRom = new Uint8Array(romImage.length);
+//     }
 
-    while (readOffset + interleaveChunkSize <= romImage.length) {
-        deinterleaveChunk(romImage, readOffset, binRom, writeOffset);
-        readOffset += interleaveChunkSize;
-        writeOffset += interleaveChunkSize;
-    }
+//     while (readOffset + interleaveChunkSize <= romImage.length) {
+//         deinterleaveChunk(romImage, readOffset, binRom, writeOffset);
+//         readOffset += interleaveChunkSize;
+//         writeOffset += interleaveChunkSize;
+//     }
 
-    // Cache the converted ROM
-    romImage.binFormatted = binRom;
-    return binRom;
-}
+//     // Cache the converted ROM
+//     romImage.binFormatted = binRom;
+//     return binRom;
+// }
 
 /**
  * 
@@ -130,7 +132,6 @@ function convertRomToBin(rom) {
     return new Promise(resolve => {
         var startOffset = externalHeader ? externalHeaderSize : 0;
         var blobParts = [];
-        window.blobParts = blobParts;
         var deinterleaveBuffer = new Uint8Array(interleaveChunkSize);
 
         var chunkReady = (/**@type {Uint8Array} */ bytes) => {
@@ -179,8 +180,8 @@ var genUtil = {
     /** Gets ROM layout and platform (gen vs. 32x) information based on internal header. */
     getRomInfo: getRomInfo,
 
-    /** Gets the ROM in a raw ROM image (not interleaved or headered) if it is not already. */
-    getBinFormat: getBinFormat,
+    // /** Gets the ROM in a raw ROM image (not interleaved or headered) if it is not already. */
+    // getBinFormat: getBinFormat,
 
     hasValidSmdHeader: function(romImage) {
         // todo: remove?

@@ -1,3 +1,5 @@
+// @ts-check
+
 /** The sum of all the bytes making up the standard gameboy logo image in the GB header  */
 const gbaLogoChecksum = 0x4927;
 /** Location of the GB logo within the ROM  */

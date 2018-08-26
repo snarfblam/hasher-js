@@ -1,3 +1,5 @@
+// @ts-check
+
 /** Checksum of logo bitmap */
 const gbLogoChecksum = 0x1546;
 /** Location of logo bitmap */

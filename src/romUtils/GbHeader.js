@@ -1,3 +1,5 @@
+// @ts-check
+
 const gbHeaderOffset = 0x100;
 const gbHeaderSize = 0x50;
 const cgbFlagNames = {

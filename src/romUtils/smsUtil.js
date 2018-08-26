@@ -1,3 +1,5 @@
+// @ts-check
+
 var headerOffsets = [0x7FF0, 0x3FF0, 0x1FF0];
 var defaultHeaderOffset = 0x7FF0;
 
@@ -63,7 +65,7 @@ var smsUtil = {
     * Gets the product code for the given ROM.
     * @param {Uint8Array} rom 
     * @param {number} headerOffset optional
-    * @returns {number}
+    * @returns {string}
     */
     getProductCode: function (romImage, headerOffset) {
         if (headerOffset == null) headerOffset = defaultHeaderOffset;
