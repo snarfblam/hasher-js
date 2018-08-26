@@ -21,3 +21,4 @@
 - there should be something built into Platform to parse and persist internal header
 - convert platform classes from export {class} to export default class
 - make platform names consistent (i.e. getFormatName)
+- progress and cancellability of hashing (use timeouts as a shittier version of doevents?)
