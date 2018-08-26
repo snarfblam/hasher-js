@@ -1,4 +1,3 @@
-//@ts-check
 /*
     Provides a base class for common functionality 
 */
@@ -30,8 +29,7 @@ class Platform {
      * @returns {boolean} Boolean indicating whether the ROM appears to belong to this platform based on ROM contents
      */
     isPlatformMatch(rom) {
-        // @ts-ignore
-        return notImplemented();
+        throw Error("Function is not implemented.")
     }
 
     /**
@@ -40,42 +38,38 @@ class Platform {
      * @returns {boolean} Boolean indicating whether the ROM contains an external header
      */
     hasExternalHeader(rom) {
-        // @ts-ignore
-        return notImplemented();
+        return false
     }
 
     /**
-         * Promise. Returns an array of region descriptors for sections of the ROM to be hashed
+         * (Abstract) Promise. Returns an array of region descriptors for sections of the ROM to be hashed
          * @param {Rom} rom ROM image to examine
          * @returns {Promise<RomRegion[]>} Array of region descriptors
          */
     getHashRegions(rom) {
-        // @ts-ignore
-        return notImplemented();
+        throw Error("Function is not implemented.")
     }
 
     /**
-     * Promise. Returns an array of extended information for the ROM image.
+     * (Abstract) Promise. Returns an array of extended information for the ROM image.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<{label: string, category: string, value: any}[]>} Array of details
      */
     getExtendedData(rom) {
-        // @ts-ignore
-        return notImplemented();
+        throw Error("Function is not implemented.")
     }
 
     /**
-     * Gets a display name for the ROM file format.
+     * (Abstract) Gets a display name for the ROM file format.
      * @param {Rom} rom ROM image to examine
      * @returns {string}
      */
     getFormatName(rom) {
-        // @ts-ignore
-        return notImplemented();
+        throw Error("Function is not implemented.")
     }
 
     /**
-     * Promise. Returns a BIN-formatted version of the ROM.
+     * (Final) Promise. Returns a BIN-formatted version of the ROM.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<Rom>}
      */
@@ -98,7 +92,7 @@ class Platform {
     }
 
     /**
-     * Private. Promise. Converts a ROM to BIN format. Default implementation
+     * (Virtual/Private) Promise. Converts a ROM to BIN format. Default implementation
      * returns the original ROM. Should return a Blob.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<Blob | Rom>}
@@ -108,7 +102,7 @@ class Platform {
     }
 
     /**
-     * Promise. Returns decoded header, if applicable.
+     * (Virtual) Returns decoded header, if applicable.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<any>}
      */
@@ -119,7 +113,7 @@ class Platform {
     }
 
     /**
-     * Private. Promise. Override to add header decoding logic. Return either
+     * (Virtual/Private) Promise. Override to add header decoding logic. Return either
      * a header or a promise that resolves to a header.
      * @param {Rom} rom ROM image to examine
      * @returns {Promise<any> | any}
@@ -129,7 +123,5 @@ class Platform {
     }
 }
 
-
-function notImplemented() { throw Error("Function is not implemented.") };
 
 export default Platform;
