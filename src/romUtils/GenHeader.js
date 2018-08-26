@@ -1,5 +1,5 @@
 import genUtil from './genUtil';
-import util from './util';
+import { parseAscii } from '../util';
 
 var ioCodes = {
     "J": "Joypad",
@@ -109,7 +109,7 @@ var companyAltCodes = {
  * @returns {string}
  */
 function readString(rom, offset, length) {
-    var str = util.parseAscii(rom, offset, length, true);
+    var str = parseAscii(rom, offset, length, true);
     return str.replace('\0', ' ').trim();
 }
 

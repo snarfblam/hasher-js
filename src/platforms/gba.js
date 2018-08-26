@@ -4,7 +4,7 @@
  * Object containing NES-specific data and functions
  */
 
-import util from '../romUtils/util';
+import { toHex } from '../util';
 import RomRegion from '../RomRegion';
 import gbaUtil from '../romUtils/gbaUtil';
 import GbaHeader from '../romUtils/GbaHeader';
@@ -62,7 +62,7 @@ class GbaPlatform extends Platform {
             .then(header => {
                 if (header) {
                     addHeader("Logo present", yesNo(header.validGbaLogo));
-                    addHeader("Header checksum", util.toHex(header.headerChecksum, 2));
+                    addHeader("Header checksum", toHex(header.headerChecksum, 2));
                     addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
                     addHeader("Title", header.title);
                     addHeader("Game Maker", header.makerCode);

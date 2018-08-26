@@ -1,4 +1,4 @@
-import util from './util';
+import { parseAscii } from '../util';
 import Rom from '../Rom';
 
 const externalHeaderSize = 0x200;
@@ -50,8 +50,8 @@ function getRomInfo(romImage) {
             var identifier = romIdentifiers[i];
 
             // Check at locations for both with and without external header
-            var unheaderedText = util.parseAscii(romImage, identifier.offset, 0x10).replace('_', ' ').trim();
-            var headeredText = util.parseAscii(romImage, identifier.headeredOffset, 0x10).replace('_', ' ').trim();
+            var unheaderedText = parseAscii(romImage, identifier.offset, 0x10).replace('_', ' ').trim();
+            var headeredText = parseAscii(romImage, identifier.headeredOffset, 0x10).replace('_', ' ').trim();
 
             for (var iKnownName = 0; iKnownName < identifier.knownNames.length; iKnownName++) {
                 var knownName = identifier.knownNames[iKnownName];

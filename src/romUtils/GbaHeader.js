@@ -1,5 +1,7 @@
+// @ts-check
+
 import gbaUtil from './gbaUtil';
-import util from './util';
+import { parseAscii } from '../util';
 
 /**
  * Parses a GBA header
@@ -15,11 +17,11 @@ function GbaHeader(romImage, headerOffset) {
     /** Indicates whether the logo cartidge bitmap is valid */
     this.validGbaLogo = gbaUtil.verifyLogo(romImage, headerOffset);
     /** Game title */
-    this.title = util.parseAscii(romImage, headerOffset + 0xa0, 12);
+    this.title = parseAscii(romImage, headerOffset + 0xa0, 12);
     /** Product code */
-    this.gameCode = util.parseAscii(romImage, headerOffset + 0xac, 4);
+    this.gameCode = parseAscii(romImage, headerOffset + 0xac, 4);
     /** Game maker code */
-    this.makerCode = util.parseAscii(romImage, headerOffset + 0xb0, 2);
+    this.makerCode = parseAscii(romImage, headerOffset + 0xb0, 2);
     /** ROM version */
     this.romVersion = romImage[headerOffset + 0xbc];
     /** Header checksum, as it appears in the header */

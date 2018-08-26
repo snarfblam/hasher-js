@@ -9,7 +9,7 @@ import Platform from './Platform';
 import RomRegion from '../RomRegion';
 import common from './common';
 import genUtil from '../romUtils/genUtil';
-import util from '../romUtils/util';
+import {toHex} from '../util'
 import GenHeader from '../romUtils/GenHeader';
 const category = common.romDataCategory;
 
@@ -66,15 +66,15 @@ class GenPlatform extends Platform {
                     addHeader("Region", header.region);
                     addHeader("Copyright", header.copyrightFormatted);
                     addHeader("Product ID", header.productID);
-                    addHeader("Checksum", util.toHex(header.checksum, 4));
+                    addHeader("Checksum", toHex(header.checksum, 4));
                     addHeader("IO Devices", header.ioSupportFormatted);
                     addHeader("Memo", header.memo);
                     addHeader("Modem", header.modem);
             
-                    var romStart = util.toHex(header.romStart, 8);
-                    var romEnd = util.toHex(header.romEnd, 8);
-                    var ramStart = util.toHex(header.ramStart, 8);
-                    var ramEnd = util.toHex(header.ramEnd, 8);
+                    var romStart = toHex(header.romStart, 8);
+                    var romEnd = toHex(header.romEnd, 8);
+                    var ramStart = toHex(header.ramStart, 8);
+                    var ramEnd = toHex(header.ramEnd, 8);
             
                     addHeader("ROM range", romStart + "-" + romEnd);
                     addHeader("RAM range", ramStart + "-" + ramEnd);

@@ -3,7 +3,7 @@
  */
 
 import smsUtil from '../romUtils/smsUtil';
-import util from '../romUtils/util';
+import { toHex } from '../util';
 import RomRegion from '../RomRegion';
 import common from './common';
 const category = common.romDataCategory;
@@ -86,7 +86,7 @@ var smsPlatform = {
         addHeader("Header found", yesNo(headerValid));
 
         if (headerValid) {
-            addHeader("Checksum", util.toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
+            addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
             addHeader("Region", smsUtil.regionCodes[smsUtil.getRegionCode(romImage, headerOffset)]);
             addHeader("Version", smsUtil.getVersion(romImage, headerOffset));
             addHeader("Product code", smsUtil.getProductCode(romImage, headerOffset));

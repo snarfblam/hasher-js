@@ -8,7 +8,7 @@ const cgbFlagNames = {
 
 
 import gbUtil from '../romUtils/gbUtil';
-import util from '../romUtils/util';
+import { parseAscii } from '../util';
 
 /**
  * Decodes a GameBoy ROM internal header
@@ -24,9 +24,9 @@ function GbHeader(romImage, headerOffset) {
     this.validGbLogo = gbUtil.verifyLogo(romImage);
 
     /** Game title */
-    this.title = util.parseAscii(romImage, headerOffset + 0x34, 16);
+    this.title = parseAscii(romImage, headerOffset + 0x34, 16);
     /** Cart manufacturer */
-    this.manufacturer = util.parseAscii(romImage, headerOffset + 0x3F, 4);
+    this.manufacturer = parseAscii(romImage, headerOffset + 0x3F, 4);
     /** Color gameboy support flag
      * @type {number}
      */
@@ -36,7 +36,7 @@ function GbHeader(romImage, headerOffset) {
      */
     this.cgbSupport = cgbFlagNames[this.cgbFlagValue] || 'unknown';
     /** Extended licensee data, not present in all carts. */
-    this.lincenseeEx = util.parseAscii(romImage, headerOffset + 0x44, 2);
+    this.lincenseeEx = parseAscii(romImage, headerOffset + 0x44, 2);
     /** Super Game Boy support */
     this.supportsSgb = (romImage[headerOffset + 0x46] == 0x03);
     /** Numeric value of cart type */

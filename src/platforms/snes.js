@@ -5,7 +5,7 @@
  */
 
 import snesUtil from '../romUtils/snesUtil';
-import util from '../romUtils/util';
+import { toHex } from '../util';
 import SnesHeader from '../romUtils/SnesHeader';
 import RomRegion from '../RomRegion';
 import common from './common';
@@ -78,13 +78,13 @@ class SnesPlatform extends Platform {
             .then(([header, romImage]) => {
                 var checksum = snesUtil.calculateChecksum(romImage);
         
-                addRom("Actual checksum", util.toHex(checksum, 4));
+                addRom("Actual checksum", toHex(checksum, 4));
                 addRom("Mapping", header.mapping);
                     
                 if (header.valid) {
                     addHeader("Header offset", header.internalHeaderOffset);
-                    addHeader("Checksum", util.toHex(header.checksum, 2));
-                    addHeader("Checksum complement", util.toHex(header.checksumComplement, 2));
+                    addHeader("Checksum", toHex(header.checksum, 2));
+                    addHeader("Checksum complement", toHex(header.checksumComplement, 2));
                 }
                 
                 return result;

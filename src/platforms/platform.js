@@ -108,7 +108,7 @@ class Platform {
      */
     getHeader(rom) {
         if (rom.decodedHeader) return Promise.resolve(rom.decodedHeader);
-         
+
         return Promise.resolve(this._decodeHeader(rom));
     }
 

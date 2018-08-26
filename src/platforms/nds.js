@@ -4,7 +4,6 @@
  * Object containing Neo-Geo-Pocket-specific data and functions
  */
 
-import util from '../romUtils/util'
 import { crc16 } from '../hash';
 import common from './common';
 import RomRegion from '../RomRegion';
@@ -32,8 +31,6 @@ class NdsPlatform extends Platform {
         var bytesToHash = rom.preview.subarray(0, headerCrcRegionSize);
 
         var hash = crc16(bytesToHash);
-        // console.log(util.toHex(hash,4));
-        // console.log(romImage[0x15e], romImage[0x15F])
         return ((hash & 0xFF) === rom.preview[0x15e] && (hash >> 8) === rom.preview[0x15F]);
     }
 

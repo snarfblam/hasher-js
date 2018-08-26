@@ -2,12 +2,10 @@
     - most if not all 'util.js' code should be made accessible via Platform base class
 - provide standard functionality to platform objects to associate data with rom (e.g. header, de-interleved ROM)
     - this will prevent rundantand processessing, e.g. multiple functions which decode the header to get one piece of info
-- update NoIntro DBs... these are from 2012
-
 
 - large file support:
     - may not be able to arbitrarily read bytes from ROMs. 
-        - Currently works up until we hash, but for large files than tested it will almost certainly fail immediately.
+        - Currently works up until hash, but for large files than tested it will almost certainly fail immediately.
         - For file type detection, we can almost certainly grab the first 4KB or so, and the total length
         - For format conversions, might need an api, e.g.
             - convertFile(chunks: {start: number, length: number}[], conversion: function(input: data: Uint8Array, output: Uint8Array, offset: number))
