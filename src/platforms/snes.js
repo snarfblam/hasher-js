@@ -105,6 +105,4 @@ class SnesPlatform extends Platform {
     }
 }
 
-// module.exports = snesPlatform;
 export default SnesPlatform;
-export {SnesPlatform}

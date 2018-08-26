@@ -97,8 +97,6 @@ class GenPlatform extends Platform {
 
     /** @param {Rom} rom */
     _convertToBin(rom) {
-        // genUtil.getBinFormat
-        console.log(genUtil.getBinFormat(rom.preview));
         return genUtil.convertRomToBin(rom)
             .then(result => {
                 console.log('size: ', result.size);
@@ -111,6 +109,4 @@ class GenPlatform extends Platform {
     }
 }
 
-// module.exports = nesPlatform;
-// export default genPlatform;
-export { GenPlatform };
+export default GenPlatform;

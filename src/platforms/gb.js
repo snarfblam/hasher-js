@@ -100,4 +100,4 @@ class GbPlatform extends Platform {
     }
 }
 
-export {GbPlatform};
+export default GbPlatform;

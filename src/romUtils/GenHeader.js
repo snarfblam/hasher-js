@@ -143,39 +143,37 @@ function readUint16(rom, offset) {
  * @constructor 
  */
 function GenHeader(romImage) {
-    var binRom = genUtil.getBinFormat(romImage);
-
-    if (binRom.length < 0x200) throw Error('ROM too small to parse header');
+    if (romImage.length < 0x200) throw Error('ROM too small to parse header');
     /** Game platform */
-    this.platform = readString(binRom, 0x100, 0x10);
+    this.platform = readString(romImage, 0x100, 0x10);
     /** Copyright notice */
-    this.copyright = readString(binRom, 0x110, 0x10);
+    this.copyright = readString(romImage, 0x110, 0x10);
     /** Game title */
-    this.gameName = readString(binRom, 0x120, 0x30);
+    this.gameName = readString(romImage, 0x120, 0x30);
     /** Alternate game title */
-    this.altName = readString(binRom, 0x120, 0x30);
+    this.altName = readString(romImage, 0x120, 0x30);
     /** Product ID */
-    this.productID = readString(binRom, 0x180, 0xE);
+    this.productID = readString(romImage, 0x180, 0xE);
     /** IO Support codes */
-    this.ioSupport = readString(binRom, 0x190, 0x10);
+    this.ioSupport = readString(romImage, 0x190, 0x10);
     /** Modem string */
-    this.modem = readString(binRom, 0x1bc, 0xc);
+    this.modem = readString(romImage, 0x1bc, 0xc);
     /** Memo */
-    this.memo = readString(binRom, 0x1C8, 0x28);
+    this.memo = readString(romImage, 0x1C8, 0x28);
     /** Game region */
-    this.region = readString(binRom, 0x1f0, 0x10);
+    this.region = readString(romImage, 0x1f0, 0x10);
 
     /** ROM start address */
-    this.romStart = readUint32(binRom, 0x1a0);
+    this.romStart = readUint32(romImage, 0x1a0);
     /** ROM end address */
-    this.romEnd = readUint32(binRom, 0x1a4);
+    this.romEnd = readUint32(romImage, 0x1a4);
     /** RAM start address */
-    this.ramStart = readUint32(binRom, 0x1a8);
+    this.ramStart = readUint32(romImage, 0x1a8);
     /** RAM end address */
-    this.ramEnd = readUint32(binRom, 0x1ac);
+    this.ramEnd = readUint32(romImage, 0x1ac);
 
     /** ROM checksum, as specified in the header */
-    this.checksum = readUint16(binRom, 0x18e);
+    this.checksum = readUint16(romImage, 0x18e);
     
     /** Human-readable description of IO support */
     this.ioSupportFormatted = parseIoString(this.ioSupport);

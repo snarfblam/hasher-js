@@ -61,4 +61,4 @@ class FdsPlatform extends Platform {
 }
 
 // module.exports = nesPlatform;
-export {FdsPlatform};
+export default FdsPlatform;

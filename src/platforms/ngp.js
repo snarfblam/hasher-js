@@ -5,7 +5,6 @@
  */
 
 import RomRegion from '../RomRegion';
-import util from '../romUtils/util'
 import common from './common';
 const category = common.romDataCategory;
 import Platform from './Platform';
@@ -73,4 +72,4 @@ class NgpPlatform extends Platform{
     }
 }
 
-export {NgpPlatform};
+export default NgpPlatform;

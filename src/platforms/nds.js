@@ -59,4 +59,4 @@ class NdsPlatform extends Platform {
 }
 
 // export default ndsPlatform;
-export { NdsPlatform };
+export default NdsPlatform;

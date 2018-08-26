@@ -86,4 +86,4 @@ class GbaPlatform extends Platform {
 }
     
 
-export {GbaPlatform};
+export default GbaPlatform;
