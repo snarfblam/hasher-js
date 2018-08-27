@@ -62,11 +62,6 @@ class NgpPlatform extends Platform{
     }
 
     /** @param {Rom} rom */
-    getExtendedData(rom) {
-        return Promise.resolve([]);
-    }
-
-    /** @param {Rom} rom */
     getFormatName(rom) {
         return "Neo Geo Pocket ROM";
     }

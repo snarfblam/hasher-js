@@ -42,44 +42,36 @@ class GenPlatform extends Platform {
 
     /** @param {Rom} rom */
     getExtendedData(rom) {
-        // try {
-        //     var header = new GenHeader(rom.preview);
-        // }
-        // catch (err) {
-        //     console.warn(err);
-        //     return Promise.resolve([]);
-        // }
-
         return this.getHeader(rom)
             .catch(err => {
                 console.warn(err);
                 return null;
-            }).then(header => {
-                var result = [];
+            })
+            .then(header => {
+                return Promise.all([header, super.getExtendedData(rom)])
+            })
+            .then(([header, data]) => {
                 if (header) {
-                    var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
-                    var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
-            
-                    addHeader("Title", header.gameName);
-                    addHeader("Alt Title", header.altName);
-                    addHeader("Platform", header.platform);
-                    addHeader("Region", header.region);
-                    addHeader("Copyright", header.copyrightFormatted);
-                    addHeader("Product ID", header.productID);
-                    addHeader("Checksum", toHex(header.checksum, 4));
-                    addHeader("IO Devices", header.ioSupportFormatted);
-                    addHeader("Memo", header.memo);
-                    addHeader("Modem", header.modem);
+                    data.addHeader("Title", header.gameName);
+                    data.addHeader("Alt Title", header.altName);
+                    data.addHeader("Platform", header.platform);
+                    data.addHeader("Region", header.region);
+                    data.addHeader("Copyright", header.copyrightFormatted);
+                    data.addHeader("Product ID", header.productID);
+                    data.addHeader("Checksum", toHex(header.checksum, 4));
+                    data.addHeader("IO Devices", header.ioSupportFormatted);
+                    data.addHeader("Memo", header.memo);
+                    data.addHeader("Modem", header.modem);
             
                     var romStart = toHex(header.romStart, 8);
                     var romEnd = toHex(header.romEnd, 8);
                     var ramStart = toHex(header.ramStart, 8);
                     var ramEnd = toHex(header.ramEnd, 8);
             
-                    addHeader("ROM range", romStart + "-" + romEnd);
-                    addHeader("RAM range", ramStart + "-" + ramEnd);
+                    data.addHeader("ROM range", romStart + "-" + romEnd);
+                    data.addHeader("RAM range", ramStart + "-" + ramEnd);
                 }
-                return result;
+                return data;
             });
         
     }

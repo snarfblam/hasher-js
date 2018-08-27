@@ -4,6 +4,7 @@
 
 import RomRegion from '../RomRegion';
 import Rom from '../Rom';
+import ExtendedData from '../ExtendedData';
 
 class Platform {
     /**
@@ -51,12 +52,13 @@ class Platform {
     }
 
     /**
-     * (Abstract) Promise. Returns an array of extended information for the ROM image.
+     * (Virtual) Promise. Returns an array of extended information for the ROM image. Inheritors 
+     * should call the base class method and update the returned object.
      * @param {Rom} rom ROM image to examine
-     * @returns {Promise<{label: string, category: string, value: any}[]>} Array of details
+     * @returns {Promise<ExtendedData>} Array of details
      */
     getExtendedData(rom) {
-        throw Error("Function is not implemented.")
+        return new ExtendedData();
     }
 
     /**

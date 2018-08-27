@@ -25,11 +25,11 @@ class N64Platform extends Platform {
         if (byteSwapped === false) byteSwappedText = "no";
         if (byteSwapped === null) byteSwappedText = "unknown";
 
-        return Promise.resolve([{
-            label: "byte swapped",
-            category: category.ROM,
-            value: byteSwappedText,
-        }]);
+        return super.getExtendedData(rom)
+            .then(data => {
+                data.addRom("Byte swapped", byteSwappedText);
+                return data;
+             });
     }
 
     getFormatName(rom) {

@@ -60,13 +60,6 @@ class SnesPlatform extends Platform {
 
     /** @param {Rom} rom */
     getExtendedData(rom) {
-        var result = [];
-        
-        var addHeader = (label, value) => result.push({category: category.Header, label: label, value: value });
-        var addRom = (label, value) => result.push({category: category.ROM, label: label, value: value });
-
-        /** @type {Promise<SnesHeader>} */
-        var headerPromise = this.getHeader(rom);
         var bytesPromise;
         if (rom.size < rom.preview.length || rom.size > maxRomBufferSize) {
             bytesPromise = rom.preview;
@@ -74,20 +67,20 @@ class SnesPlatform extends Platform {
             bytesPromise = rom.getBytes(0, rom.size);
         }
 
-        return Promise.all([headerPromise, bytesPromise])
-            .then(([header, romImage]) => {
+        return Promise.all([this.getHeader(rom), bytesPromise, super.getExtendedData(rom)])
+            .then(([header, romImage, data]) => {
                 var checksum = snesUtil.calculateChecksum(romImage);
         
-                addRom("Actual checksum", toHex(checksum, 4));
-                addRom("Mapping", header.mapping);
+                data.addRom("Actual checksum", toHex(checksum, 4));
+                data.addRom("Mapping", header.mapping);
                     
                 if (header.valid) {
-                    addHeader("Header offset", header.internalHeaderOffset);
-                    addHeader("Checksum", toHex(header.checksum, 2));
-                    addHeader("Checksum complement", toHex(header.checksumComplement, 2));
+                    data.addHeader("Header offset", header.internalHeaderOffset);
+                    data.addHeader("Checksum", toHex(header.checksum, 2));
+                    data.addHeader("Checksum complement", toHex(header.checksumComplement, 2));
                 }
                 
-                return result;
+                return data;
             });
     }
 

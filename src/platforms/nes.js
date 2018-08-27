@@ -45,28 +45,23 @@ class NesPlatform extends Platform {
 
     /** @param {Rom} rom */
     getExtendedData(rom) {
-        var result = [];
-        function addHeader(label, value) {
-            result.push({ category: category.Header, label: label, value: value });
-        }
-
-        return this.getHeader(rom)
-            .then(header => {
+        return Promise.all([this.getHeader(rom), super.getExtendedData(rom)])
+            .then(([header, data]) => {
                 if (header) {
-                    addHeader("CHR banks", header.chrRomCount);
-                    addHeader("PRG banks", header.prgRomCount);
-                    addHeader("Battery backed", header.hasBattery);
-                    addHeader("Mapper #", header.mapper);
-                    addHeader("Mapper name", header.mapperName || 'unknown');
-                    addHeader("Mirroring", header.mirroring);
-                    addHeader("Region", header.palFlagSet ? "PAL" : "NTSC");
-                    addHeader("Trainer present", header.hasTrainer);
-                    addHeader("VS Unisystem", header.vsUnisystem);
-                    addHeader("Placechoice 10", header.playchoice10);
-                    addHeader("NES 2.0", header.nes2);
+                    data.addHeader("CHR banks", header.chrRomCount);
+                    data.addHeader("PRG banks", header.prgRomCount);
+                    data.addHeader("Battery backed", header.hasBattery);
+                    data.addHeader("Mapper #", header.mapper);
+                    data.addHeader("Mapper name", header.mapperName || 'unknown');
+                    data.addHeader("Mirroring", header.mirroring);
+                    data.addHeader("Region", header.palFlagSet ? "PAL" : "NTSC");
+                    data.addHeader("Trainer present", header.hasTrainer);
+                    data.addHeader("VS Unisystem", header.vsUnisystem);
+                    data.addHeader("Placechoice 10", header.playchoice10);
+                    data.addHeader("NES 2.0", header.nes2);
                 }
                 
-                return result;
+                return data;
             });
     }
 

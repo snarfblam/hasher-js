@@ -50,6 +50,8 @@ Using the hasher-js library, you'll be given the following output, as a javascri
     } [],
 }
 ```
+
+Note that although the items in the `hashes` array contain `offset` and `length` properties, these values may not refer to the file itself. They may (or may not) refer to a location withing an extracted and/or converted ROM image, e.g. unheadered and/or de-interleaved ROM.
 ## Notes
 
 ### Databases

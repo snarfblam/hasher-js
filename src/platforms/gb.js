@@ -43,50 +43,41 @@ class GbPlatform extends Platform {
 
     /** @param {Rom} rom */
     getExtendedData(rom) {
-        var result = [];
-        
-        var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
-        var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
-        
-        // try {
-        //     var gbHeader = new GbHeader(rom);
-        // } catch (err) {
-        //     console.warn(err);
-        //     return result;
-        // }
-
         return this.getHeader(rom)
             .catch(err => {
                 console.warn(err);
                 return null;
             })
             .then(header => {
+                return Promise.all([header, super.getExtendedData(rom)])
+            })
+            .then(([header, data]) => {
                 if (header) {
-                    addRom("ROM checksum", toHex(header.romChecksum, 4));
-                    addRom("Checksum valid", yesNo(header.romChecksumValid));
+                    data.addRom("ROM checksum", toHex(header.romChecksum, 4));
+                    data.addRom("Checksum valid", yesNo(header.romChecksumValid));
             
-                    addHeader("Logo present", yesNo(header.validGbLogo));
-                    addHeader("Header checksum", toHex(header.headerChecksum, 2));
-                    addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
-                    addHeader("ROM checksum", toHex(header.romChecksum,4));
-                    addHeader("ROM checksum valid", yesNo(header.romChecksumValid));
-                    addHeader("Title", header.title);
-                    addHeader("Manufacturer", header.manufacturer);
-                    addHeader("Gameboy Color support", header.cgbSupport);
-                    addHeader("Super Gameboy support", yesNo(header.supportsSgb));
-                    addHeader("Cart type", header.cartType);
+                    data.addHeader("Logo present", yesNo(header.validGbLogo));
+                    data.addHeader("Header checksum", toHex(header.headerChecksum, 2));
+                    data.addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
+                    data.addHeader("ROM checksum", toHex(header.romChecksum,4));
+                    data.addHeader("ROM checksum valid", yesNo(header.romChecksumValid));
+                    data.addHeader("Title", header.title);
+                    data.addHeader("Manufacturer", header.manufacturer);
+                    data.addHeader("Gameboy Color support", header.cgbSupport);
+                    data.addHeader("Super Gameboy support", yesNo(header.supportsSgb));
+                    data.addHeader("Cart type", header.cartType);
             
-                    addHeader("ROM size", header.romSize);
-                    addHeader("RAM size", header.ramSize);
+                    data.addHeader("ROM size", header.romSize);
+                    data.addHeader("RAM size", header.ramSize);
             
-                    addHeader("Mask ROM version", header.romVersion);
+                    data.addHeader("Mask ROM version", header.romVersion);
             
             
-                    addHeader("Licensee code", "$" + toHex(header.licensee, 2));
-                    addHeader("Licensee code (extended)", header.lincenseeEx);  
+                    data.addHeader("Licensee code", "$" + toHex(header.licensee, 2));
+                    data.addHeader("Licensee code (extended)", header.lincenseeEx);  
                 }
 
-                return result;
+                return data;
             });
     }
 

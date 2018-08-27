@@ -50,11 +50,6 @@ class FdsPlatform extends Platform {
     }
 
     /** @param {Rom} rom */
-    getExtendedData(rom) {
-        return Promise.resolve([]);
-    }
-
-    /** @param {Rom} rom */
     getFormatName(rom) {
         return this.hasExternalHeader(rom) ? 'FDS file' : 'rom image';
     }

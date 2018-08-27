@@ -43,34 +43,26 @@ class GbaPlatform extends Platform {
 
     /** @param {Rom} rom */
     getExtendedData(rom) {
-        var result = [];
-        
-        var addHeader = (label, value) => result.push({ category: category.Header, label: label, value: value })
-        var addRom = (label, value) => result.push({ category: category.ROM, label: label, value: value })
-        
-        // try {
-        //     var gbaHeader = new GbaHeader(romImage);
-        // } catch (err) {
-        //     console.warn(err);
-        //     return result;
-        // }
         return this.getHeader(rom)
             .catch(err => {
                 console.warn(err);
                 return null;
             })
             .then(header => {
+                return Promise.all([header, super.getExtendedData(rom)]);
+            })
+            .then(([header, data]) => {
                 if (header) {
-                    addHeader("Logo present", yesNo(header.validGbaLogo));
-                    addHeader("Header checksum", toHex(header.headerChecksum, 2));
-                    addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
-                    addHeader("Title", header.title);
-                    addHeader("Game Maker", header.makerCode);
-                    addHeader("Game Code", header.gameCode);
+                    data.addHeader("Logo present", yesNo(header.validGbaLogo));
+                    data.addHeader("Header checksum", toHex(header.headerChecksum, 2));
+                    data.addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
+                    data.addHeader("Title", header.title);
+                    data.addHeader("Game Maker", header.makerCode);
+                    data.addHeader("Game Code", header.gameCode);
         
-                    addHeader("Mask ROM version", header.romVersion);
+                    data.addHeader("Mask ROM version", header.romVersion);
                 }
-                return result;
+                return data;
             });
     }
 

@@ -34,7 +34,7 @@ function RomData(rom, hashAlgos) {
 
     var extendedDataPromise = plat.platform.getExtendedData(rom)
         .then(extendedData => {
-            this.extendedData = extendedData;
+            this.extendedData = extendedData.getData();
         });
     
     var hashPromise = plat.platform.getHashRegions(rom)

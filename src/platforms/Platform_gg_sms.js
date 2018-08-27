@@ -60,24 +60,24 @@ class Platform_gg_sms extends Platform {
     /** @param {Rom} rom */
     getExtendedData(rom) {
         var result = [];
-        
-        var addHeader = (label, value) => result.push({category: category.Header, label: label, value: value });
-        var addRom = (label, value) => result.push({category: category.ROM, label: label, value: value });
 
         var romImage = rom.preview;
         var headerOffset = smsUtil.getHeaderOffset(rom.size);
         var headerValid = smsUtil.verifyMagicNumber(romImage, headerOffset);
 
-        addHeader("Header found", yesNo(headerValid));
+        return super.getExtendedData(rom)
+            .then(data => {
+                data.addHeader("Header found", yesNo(headerValid));
 
-        if (headerValid) {
-            addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
-            addHeader("Region", smsUtil.regionCodes[smsUtil.getRegionCode(romImage, headerOffset)]);
-            addHeader("Version", smsUtil.getVersion(romImage, headerOffset));
-            addHeader("Product code", smsUtil.getProductCode(romImage, headerOffset));
-        }
-        
-        return Promise.resolve(result);
+                if (headerValid) {
+                    data.addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
+                    data.addHeader("Region", smsUtil.regionCodes[smsUtil.getRegionCode(romImage, headerOffset)]);
+                    data.addHeader("Version", smsUtil.getVersion(romImage, headerOffset).toString());
+                    data.addHeader("Product code", smsUtil.getProductCode(romImage, headerOffset));
+                }
+                
+                return data; 
+        })
     }
 
     /** @param {Rom} rom */

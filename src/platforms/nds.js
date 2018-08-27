@@ -48,11 +48,6 @@ class NdsPlatform extends Platform {
     }
 
     /** @param {Rom} rom */
-    getExtendedData(rom) {
-        return Promise.resolve([]);
-    }
-
-    /** @param {Rom} rom */
     getFormatName(rom) {
         return "Nintendo DS ROM";
     }
