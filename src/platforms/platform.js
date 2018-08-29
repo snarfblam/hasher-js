@@ -58,7 +58,7 @@ class Platform {
      * @returns {Promise<ExtendedData>} Array of details
      */
     getExtendedData(rom) {
-        return new ExtendedData();
+        return Promise.resolve(new ExtendedData());
     }
 
     /**
