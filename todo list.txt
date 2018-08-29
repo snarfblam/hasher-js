@@ -6,8 +6,10 @@
   internal header checksum via Rom.preview
     - Alternatively, it would be nice if the ROM could be deserialized only after a presumtive (checksum vs. complement) match
 - there should be something built into Platform to parse and persist internal header
-- convert platform classes from export {class} to export default class
 - make platform names consistent (i.e. getFormatName)
 - progress and cancellability of hashing (use timeouts as a shittier version of doevents?)
 - consider merging util modules with platform modules
-- Interface/class for accumulating extended data 
+- unknown platform
+
+- need error handling code on ROM streaming
+    - 

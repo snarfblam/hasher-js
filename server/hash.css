@@ -1,0 +1,306 @@
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+* {
+    box-sizing: border-box;
+
+}
+html {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: #eee;
+}
+
+body {
+    margin-left: 8px;
+    margin-right: 8px;
+    line-height: 1.3;
+}
+
+p {
+    margin-top: .5em;
+    margin-bottom: .7em;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: -8px -8px 0 -8px;
+    padding: 1rem 16px;
+    background: #666;
+    color: white;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+#file-input-outer {
+    display: inline-block;    
+    width: 202px;
+    height: 202px;
+    vertical-align: top;
+
+    text-align: center;
+
+    border: 1px #666 dashed;
+    outline: 3px rgba(255, 255, 255, 0.35) solid;
+    outline-offset:  -3px;
+    background: #b1c2d8;
+    background: -moz-linear-gradient(-45deg, #b1c2d8 0%, #a1b0c4 13%, #c9d5e5 39%, #dce1e8 49%, #eaf0ff 64%, #d0d8e2 75%, #a6c0e3 88%, #d2dfed 99%);
+    background: -webkit-linear-gradient(-45deg, #b1c2d8 0%,#a1b0c4 13%,#c9d5e5 39%,#dce1e8 49%,#eaf0ff 64%,#d0d8e2 75%,#a6c0e3 88%,#d2dfed 99%);
+    background: linear-gradient(135deg, #b1c2d8 0%,#a1b0c4 13%,#c9d5e5 39%,#dce1e8 49%,#eaf0ff 64%,#d0d8e2 75%,#a6c0e3 88%,#d2dfed 99%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b1c2d8', endColorstr='#d2dfed',GradientType=1 );
+}
+
+
+#file-input-box {
+    display: inline-block;
+    /* line-height: normal; */
+    /* vertical-align: middle; */
+    width: 184px;
+    height: 184px;
+    margin: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    /* outline: 2px solid rgba(255, 255, 255, 0.25); */
+    box-shadow: 0px 0px 3px white;
+    padding-top: 3em;
+}
+
+#file-input-box.file-input-filedrag {
+    background: white;
+    outline: 2px dashed #888;
+}
+
+#file-input {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+    z-index: -1;   
+}
+#file-input-text {
+    /* margin-top: 3.5em; */
+}
+
+.fake-link {
+    color: #0000CC;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.fake-link-3 {
+    color: white;
+    background: rgba(29, 42, 70, 0.445);
+    border: 1px solid  rgb(100, 112, 136);
+    cursor: pointer;
+    padding: .5em 1.5em;
+    display: inline-block;
+    margin-bottom: 1em;
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, .25);
+}
+
+.fake-link-3:focus,
+input:focus+* .fake-link-3 { /* include fake link inside label associated with input */
+    outline: 1px dashed #555;
+    outline-offset: -4px;
+}
+
+
+
+
+#result-box {
+    display: inline-block;
+    position: relative;
+    height: 202px;
+    width: calc(100% - 220px);
+
+    margin-left: 10px;
+    padding: .5em;
+
+    background: white;
+    border: 1px solid #c2c2c2;
+}
+
+.result-toolbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 6px 6px;
+}
+
+.tb-icon {
+    background: inherit;
+    font-size: 1.5em;
+    color: #888;
+    padding: 4px;
+    border: 1px solid transparent;
+}
+
+
+.tb-icon:hover,
+.tb-icon:focus {
+    background: rgb(255, 238, 206);
+    outline: none;
+}
+
+.tb-icon:active {
+    background: rgb(255, 216, 143);
+    border: 1px solid orange;
+    outline: none;
+}
+
+.tb-icon+.tb-tooltip {
+    display: none;
+    /* font-size: .75em; */
+    /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+    background: white;
+    border: 1px solid #888;
+    padding: .5em;
+    position: absolute;
+    bottom: -1em;
+    left: 2.5em;
+}
+
+.tb-icon:hover+.tb-tooltip,
+.tb-icon:focus+.tb-tooltip
+ {
+    display: inline;
+}
+
+.detail-box {
+    position: relative;
+    z-index: 1;
+
+    height: 202px;
+    width: calc(100% - 4px);
+
+    padding: 0;
+
+    background: white;
+    border: 1px solid #c2c2c2;
+}
+
+.detail-box-content {
+    margin: .5em;
+    display: none;
+}
+.detail-box-content-selected {
+    display:block;
+}
+
+.detail-tabs {
+    position: relative;
+    z-index: 2;
+
+    height: 30px;
+    width: calc(100% - 4px);
+    /* background: white; */
+    /* margin: -1px -1px 0 -1px; */
+    background: #eee;
+    /* border-bottom: */
+    margin-top: 1em;
+    margin-bottom: -1px;
+    border-bottom: 1px solid #c2c2c2;
+
+    
+}
+
+.tab-item {
+    position: relative;
+    background: #f4f4f4;
+    color: #888;
+    border: 1px solid #c2c2c2;
+    border-bottom: none;
+    padding: 4px 1em 0 1em;
+    height: 26px;
+    top: 3px;
+    vertical-align: top;
+    margin-right: 0;
+    box-shadow: inset 0px 4px 0px #ddddff ;
+}
+
+.tab-item:focus {
+    /* outline: 2px dotted rgba(255, 183, 28, .5); */
+    /* outline-offset: -3px; */
+    outline: none;
+    /* text-decoration: underline; */
+}
+
+.tab-item:hover {
+    box-shadow: inset 0px 4px 0px #ffb71c ;
+}
+
+.tab-item.tab-item-select {
+    height: 30px;
+    margin-top: 0;
+    top: 0;
+    box-shadow: inset 0px 4px 0px #ffb71c ;
+    background: white;
+    color: black;
+}
+
+.tab-item-label {
+    width: 100%;
+    /* color: #ccccff; */
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0;
+    border-top: 3px solid #ccccff;
+    vertical-align: top;
+}
+
+.bottom-align {
+    vertical-align: bottom;
+}
+
+.hasher-logo {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    /* font-weight: bold; */
+    color: #1f3b5f;
+    text-shadow: 1px 1px 1px #96a5b9;
+}

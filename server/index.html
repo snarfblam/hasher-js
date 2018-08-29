@@ -1,39 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="hash.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
 </head>
+
 <body>
 
-    <h2>Hasher-js Test Page</h2>
-    <p>See <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p>
-    <input type='file' id='file'><br>
+    <h1>Hasher-js</h1>
+    <p>
+        Patching a ROM?
+        <span class='hasher-logo'>Hasher-js</span> will compute file hashes to help you verify you're patching exactly the right file. Creating a patch?
+        <span class='hasher-logo'>Hasher-js</span> will give hashes you can share with others to help them verify their ROM.
+    </p>
+    <p>See
+        <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p>
+    <!-- <input type='file' id='file'>
+    <br>
     <button id='btn-hash' style="margin-top: 10px">Hash</button>
+    <br> -->
+    <div class='bottom-align'>
+        <div id='file-input-outer'>
+            <div id='file-input-box'>
+                <span id='file-input-text'>
+                    <input type="file" id='file-input'>
+                    <label for='file-input'>
+                        <!-- <a href='#'>Load a ROM</a> -->
+                        <span class='fake-link-3'>Load a ROM</span>
+                    </label>
+                    <br> Or drag and
+                    <br> drop a file.
+                </span>
+            </div>
+        </div>
+        <div id='result-box'>
+            <div>
+                <p>
+                    Something will go here. Put a fancy monochrome web 3.0-style copy button in the lower-left.
+                </p>
+                <p>
+                    We need to handle the change event of the file input to process the ROM.
+                </p>
+                <p>
+                    A tabbed details pane below would be cool, but maybe less usable...
+                </p>
+            </div>
+            <div class='result-toolbar'>
+                <button class="far fa-copy tb-icon" tabindex="0"></button>
+                <span class="tb-tooltip">Copy</span>
+            </div>
+        </div>
+    </div>
+    <div class='detail-tabs'>
+        <button class='tab-item tab-item-select' id='btn-hashes'>
+            All Hashes
+        </button>
+        <button class='tab-item' id='btn-rom'>
+            ROM
+        </button>
+        <button class='tab-item' id='btn-header'>
+            Header
+        </button>
+    </div>
+    <div class='detail-box'>
+        <div class='detail-box-content detail-box-content-selected' id='detail-hashes'>
+            hashes
+        </div>
+        <div class='detail-box-content' id='detail-rom'>
+            rom
+        </div>
+        <div class='detail-box-content' id='detail-header'>
+            header
+        </div>
+    </div>
     <div id="hasher-output" style="font-family: monospace; margin-top: 1em; white-space: pre;"></div>
 
     <script src='main.js'></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script>
         var output = document.getElementById('hasher-output');
         output.innerText += 'Output:\n\n'
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('btn-hash').addEventListener('click', function() {
-                var romFile = document.getElementById('file').files[0];
-                console.log(romFile);
-                // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
-                processRom(romFile);
-            })
-        }, false);
+        var btnRom, btnHashes, btnHeader;
+        var detailRom, detailHashes, detailGeader;
 
+
+        $(document).ready(function() {
+            // $('#btn-hash').on('click', function(e) {
+            //     var romFile = document.getElementById('file').files[0];
+            //     console.log(romFile);
+            //     // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
+            //     processRom(romFile);
+            // });
+            btnRom = $('#btn-rom');
+            btnHeader = $('#btn-header');
+            btnHashes = $('#btn-hashes');
+            detailRom = $('#detail-rom');
+            detailHeader = $('#detail-header');
+            detailHashes = $('#detail-hashes');
+
+            // tab selection
+            btnRom.on('click', function() { selectDetailTab(btnRom, detailRom); });
+            btnHashes.on('click', function() { selectDetailTab(btnHashes, detailHashes); });
+            btnHeader.on('click', function() { selectDetailTab(btnHeader, detailHeader); });
+
+            var fileInputBox = $('#file-input-box');
+            fileInputBox.on('drop', onFileDrop);
+            fileInputBox.on('dragdrop', onFileDrop);
+            fileInputBox.on('dragover', onDragOver);
+            fileInputBox.on('dragenter', onDragOver);
+            fileInputBox.on('dragend', onDragEnd);
+            fileInputBox.on('dragleave', onDragEnd);
+
+            $('#file-input').on('change', onFileSelected)
+        });
+
+        function selectDetailTab(tab, content) {
+             setClass(btnRom, btnRom == tab, 'tab-item-select');
+             setClass(btnHeader, btnHeader == tab, 'tab-item-select');
+             setClass(btnHashes, btnHashes == tab, 'tab-item-select');
+
+             setClass(detailRom, detailRom == content, 'detail-box-content-selected');
+             setClass(detailHashes, detailHashes == content, 'detail-box-content-selected');
+             setClass(detailHeader, detailHeader == content, 'detail-box-content-selected');
+        }
+        function setClass(obj, state, className){
+            if(state){
+                obj.addClass(className);
+            }else {
+                obj.removeClass(className);
+            }
+        }
         function processRom(file) { // fileContents, fileName) {
             hasher.getRomData(file)
-                .then(function(result) {
+                .then(function (result) {
                     output.innerText += JSON.stringify(result, null, 4);
                 })
                 .catch(console.error);
         }
+
+        function onFileSelected(e) {
+            var fileInput = $('#file-input')[0]
+            if(fileInput.files && fileInput.files.length > 0) {
+                processRom(fileInput.files[0]);
+            }
+        }
+
+        function onFileDrop(e) {
+            var dragEvent = e.originalEvent;
+            console.log('drop');
+            $('#file-input-box').removeClass('file-input-filedrag');
+            dragEvent.preventDefault();
+            if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
+                // for (var i = 0; i < dragEvent.dataTransfer.items.length; i++) {
+                //     // If dropped items aren't files, reject them
+                //     if (dragEvent.dataTransfer.items[i].kind === 'file') {
+                //         var file = dragEvent.dataTransfer.items[i].getAsFile();
+                //         console.log('... file[' + i + '].name = ' + file.name);
+                //     }
+                // }
+                var file = dragEvent.dataTransfer.items[0].getAsFile();
+                console.log(file);
+                processRom(file);
+            }
+
+            // removeDragData(dragEvent);
+
+        }
+
+        function onDragOver(ev) {
+            console.log('File(s) in drop zone');
+            $('#file-input-box').addClass('file-input-filedrag');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+        
+        function onDragEnd(ev) {
+            console.log('File(s) left drop zone');
+            $('#file-input-box').removeClass('file-input-filedrag');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+        function removeDragData(ev) {
+            console.log('Removing drag data')
+
+            if (ev.dataTransfer.items) {
+                // Use DataTransferItemList interface to remove the drag data
+                ev.dataTransfer.items.clear();
+            } else {
+                // Use DataTransfer interface to remove the drag data
+                ev.dataTransfer.clearData();
+            }
+        }
+
+        // document.getElementById('file-input-box').addEventListener('dragstart', onDragOver );
+        // document.getElementById('file-input-box').ondragover = ondragover;
+        // document.getElementById('file-input-box').ondragenter = ondragover;
+        // document.getElementById('file-input-box').ondragstart = ondragover;
     </script>
 </body>
+
 </html>
