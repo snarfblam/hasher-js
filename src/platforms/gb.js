@@ -8,9 +8,8 @@ import { toHex } from '../util';
 import RomRegion from '../RomRegion';
 import gbUtil from '../romUtils/gbUtil';
 import GbHeader from '../romUtils/GbHeader';
-import common from './common';
-const category = common.romDataCategory;
 import Platform from './Platform';
+const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
 function yesNo(bool) {

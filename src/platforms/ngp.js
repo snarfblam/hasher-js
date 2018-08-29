@@ -5,9 +5,8 @@
  */
 
 import RomRegion from '../RomRegion';
-import common from './common';
-const category = common.romDataCategory;
 import Platform from './Platform';
+const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
 /** Value that identifies first-party ROMs */

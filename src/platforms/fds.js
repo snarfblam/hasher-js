@@ -4,11 +4,10 @@
  * Object containing NES-specific data and functions
  */
 
-import common from './common';
 import RomRegion from '../RomRegion';
-const category = common.romDataCategory;
 import Rom from '../Rom';
 import Platform from './Platform';
+const category = Platform.exDataCategories;
 
 /**
  * Checks whether the rom image has the 'FDS' external header identifier

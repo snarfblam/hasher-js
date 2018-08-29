@@ -6,10 +6,9 @@
 
 import RomRegion from '../RomRegion';
 import iNESHeader from '../romUtils/iNESHeader';
-import common from './common';
 import Platform from './Platform';
 import Rom from '../Rom';
-const category = common.romDataCategory;
+const category = Platform.exDataCategories;
 
 
 class NesPlatform extends Platform {

@@ -7,11 +7,10 @@
 import Rom from '../Rom';
 import Platform from './Platform';
 import RomRegion from '../RomRegion';
-import common from './common';
 import genUtil from '../romUtils/genUtil';
 import {toHex} from '../util'
 import GenHeader from '../romUtils/GenHeader';
-const category = common.romDataCategory;
+const category = Platform.exDataCategories;
 
 class GenPlatform extends Platform {
     constructor() {

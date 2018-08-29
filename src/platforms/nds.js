@@ -5,11 +5,10 @@
  */
 
 import { crc16 } from '../hash';
-import common from './common';
 import RomRegion from '../RomRegion';
-const category = common.romDataCategory;
 import Platform from './Platform';
 import Rom from '../Rom';
+const category = Platform.exDataCategories;
 
 function yesNo(bool) {
     return bool ? "yes" : "no";

@@ -9,8 +9,7 @@ import { toHex } from '../util';
 import RomRegion from '../RomRegion';
 import Platform from './Platform';
 import Rom from '../Rom';
-import common from './common';
-const category = common.romDataCategory;
+const category = Platform.exDataCategories;
 
 function yesNo(bool) {
     return bool ? "yes" : "no";

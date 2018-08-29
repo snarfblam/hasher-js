@@ -125,5 +125,11 @@ class Platform {
     }
 }
 
+Platform.exDataCategories = {
+    "Header": "Header",
+    "Hashes": "Hashes",
+    "ROM": "ROM",
+};
+
 
 export default Platform;

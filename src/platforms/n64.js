@@ -2,9 +2,8 @@
 
 import Platform from './Platform';
 import Rom from '../Rom';
-import common from './common';
 import RomRegion from '../RomRegion';
-const category = common.romDataCategory;
+const category = Platform.exDataCategories;
 
 class N64Platform extends Platform {
     constructor() {

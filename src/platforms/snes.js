@@ -8,9 +8,8 @@ import snesUtil from '../romUtils/snesUtil';
 import { toHex } from '../util';
 import SnesHeader from '../romUtils/SnesHeader';
 import RomRegion from '../RomRegion';
-import common from './common';
-const category = common.romDataCategory;
 import Platform from './Platform';
+const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
 const maxRomBufferSize = 4200000; // bytes

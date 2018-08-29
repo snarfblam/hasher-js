@@ -5,8 +5,8 @@
 import smsUtil from '../romUtils/smsUtil';
 import { toHex } from '../util';
 import RomRegion from '../RomRegion';
-import common from './common';
-const category = common.romDataCategory;
+import Platform from './Platform';
+const category = Platform.exDataCategories;
 
 import Platform_gg_sms from './Platform_gg_sms';
 
