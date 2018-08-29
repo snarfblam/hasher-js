@@ -151,7 +151,10 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
 }
 
 
-
+.clipboard-container {
+    position: absolute;
+    left: -9999;
+}
 
 #result-box {
     display: inline-block;
@@ -164,6 +167,44 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
 
     background: white;
     border: 1px solid #c2c2c2;
+}
+
+#result-box-content {
+    white-space: pre-wrap;
+    overflow: auto;
+    max-height: 150px;
+}
+
+.detail-box {
+    overflow: hidden;
+}
+.detail-box-content {
+    overflow: auto;
+    max-height: calc(100% - 18px);
+}
+.detail-box-content table {
+    width: 100%;
+}
+.detail-box-content table>tr {
+    width: 100%;
+}
+.detail-box-content table>tr>td {
+    padding: .2em 1em;
+    width: calc(100% - 150px);
+}
+
+.detail-box-content table>tr>td:first-child {
+    width: 150px;
+}
+.detail-box-content table>tr {
+    width: 100%;
+}
+
+.detail-box-content table>tr:nth-child(even) {
+    background: #EEE;
+}
+.detail-box-content table>tr:nth-child(odd) {
+    background: #FFF;
 }
 
 .result-toolbar {
@@ -268,6 +309,7 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
     /* outline: 2px dotted rgba(255, 183, 28, .5); */
     /* outline-offset: -3px; */
     outline: none;
+    box-shadow: inset 0px 4px 0px #ffb71c ;
     /* text-decoration: underline; */
 }
 

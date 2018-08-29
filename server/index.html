@@ -39,19 +39,9 @@
             </div>
         </div>
         <div id='result-box'>
-            <div>
-                <p>
-                    Something will go here. Put a fancy monochrome web 3.0-style copy button in the lower-left.
-                </p>
-                <p>
-                    We need to handle the change event of the file input to process the ROM.
-                </p>
-                <p>
-                    A tabbed details pane below would be cool, but maybe less usable...
-                </p>
-            </div>
+            <div id='result-box-content'></div>
             <div class='result-toolbar'>
-                <button class="far fa-copy tb-icon" tabindex="0"></button>
+                <button class="far fa-copy tb-icon" tabindex="0" id='btn-copy'></button>
                 <span class="tb-tooltip">Copy</span>
             </div>
         </div>
@@ -103,11 +93,19 @@
             detailRom = $('#detail-rom');
             detailHeader = $('#detail-header');
             detailHashes = $('#detail-hashes');
+            btnCopy = $('#btn-copy');
 
             // tab selection
             btnRom.on('click', function() { selectDetailTab(btnRom, detailRom); });
             btnHashes.on('click', function() { selectDetailTab(btnHashes, detailHashes); });
             btnHeader.on('click', function() { selectDetailTab(btnHeader, detailHeader); });
+
+            btnCopy.on('click', function(){
+                copyText($('#result-box-content').text());
+                btnCopy.blur();
+            });
+
+
 
             var fileInputBox = $('#file-input-box');
             fileInputBox.on('drop', onFileDrop);
@@ -129,6 +127,15 @@
              setClass(detailHashes, detailHashes == content, 'detail-box-content-selected');
              setClass(detailHeader, detailHeader == content, 'detail-box-content-selected');
         }
+
+        function copyText(text) {
+            var textContainer = $('<textarea>').addClass('clipboard-container');
+            $(document.body).append(textContainer);
+            textContainer.val(text);
+            textContainer.select();
+            document.execCommand('copy');
+            textContainer.remove();
+        }
         function setClass(obj, state, className){
             if(state){
                 obj.addClass(className);
@@ -136,12 +143,79 @@
                 obj.removeClass(className);
             }
         }
+
+        var regNameLookup = {
+            file: "File",
+            rom: "ROM",
+        }
+
         function processRom(file) { // fileContents, fileName) {
             hasher.getRomData(file)
                 .then(function (result) {
                     output.innerText += JSON.stringify(result, null, 4);
+                    
+                    var fileHash = result.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
+                    var romHash = result.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
+                    var dbString = "No database match.";
+                    if(result.dbInfo.name) {
+                        dbString = "Database: " + result.dbInfo.name + "\nDatabase Version: " + result.dbInfo.version;
+                    }
+                    var dbMatch = result.dbMatch;
+
+                    var outputString = "Database match: " + result.dbMatch + "\n";
+                    outputString += dbString + "\n";
+                    if(fileHash === romHash) {
+                        outputString += "File/ROM SHA-1: " + fileHash + "\n";
+                    } else {
+                        outputString += "File SHA-1: " + fileHash + "\n";
+                        outputString += "ROM SHA-1: " + romHash + "\n";
+                    }
+                    $('#result-box-content').text(outputString);
+
+
+                    var table = $('<table>');
+                    var hashData = result.hashes.map(function(hashItem) {
+                        return {
+                            label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
+                            value: hashItem.value
+                        };
+                    })
+
+                    var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
+                    var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
+                    var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
+                    
+                    hashDataExt.forEach(function(item) {hashData.push(item)});
+
+                    detailHashes.empty().append(extDataToTable(hashData));
+                    detailHeader.empty().append(extDataToTable(headerDataExt));
+                    detailRom.empty().append(extDataToTable(romDataExt));
+                    
+                    
                 })
                 .catch(console.error);
+        }
+
+        function extDataToTable(extData) {
+            var table = $('<table>');
+                extData.forEach(function(entry) {
+                var row = $('<tr>');
+                row.append($('<td>').text(entry.label));
+                row.append($('<td>').text(entry.value));
+                table.append(row);
+            });
+
+            return table;
+        }
+
+        /** 
+         * Returns a predicate function that matches objects with a category property that
+         * matches the specified value.
+         */
+        function whereCategoryEquals(category) {
+            return function(item) {
+                return item.category === category;
+            }
         }
 
         function onFileSelected(e) {
