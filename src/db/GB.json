@@ -1,6 +1,6 @@
 {
 "meta" : {
-    "name" : "Nintendo - Game Boy, Game Boy Color",
+    "name" : "No-Intro: Nintendo - Game Boy, Game Boy Color",
     "version" : "20180815-131105",
     "comment": "no-intro | www.no-intro.org",
     "regex": "game \\(.*\\n\\Wname\\W\"(.*)\\\".*\\n.*\\n?.*\\n.*sha1 ([a-zA-Z0-9]*).*\\n\\W?\\)\\W\\n"
