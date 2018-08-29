@@ -9,6 +9,7 @@ import plats from './platforms';
 import RomRegion from './RomRegion';
 import Platform from './platforms/Platform';
 import Rom from './Rom';
+import UnknownPlatform from './platforms/unknown';
 
 // // Platform interface
 // /**
@@ -27,13 +28,17 @@ var platform = {
     /** @type {Platform[]} */
     platformList: [],
 
+    /** The platform used when  */
+    unknownPlatform: new UnknownPlatform(),
+
     /**
      * @param {Rom} rom ROM to be examined
      * @param {string} ext File extension, not including the dot, or null if not applicable.
      * @returns {{method: string, platform: Platform}} - The associated platform, and the method used 
      * to identify the platform ('contents' = ROM contents alone, 'extension' = file extension,
      * 'contents extension' = by ROM contents first, then by file extension to disambiguate
-     * multiple platform matches, 'none' = platform could not be identified).
+     * multiple platform matches, 'none' = platform could not be identified, 'ambiguous'
+     * means there were multiple platforms matched no single best candidate could be selected).
      */
     getAssociatedPlatform: function (rom, ext) {
         // TODO: return unknown platform object when no match is found
@@ -62,7 +67,12 @@ var platform = {
 
         var matchMethod = noContentMatches ? 'extension' : 'contents extension';
         if (platformMatches.length === 1) return { method: matchMethod, platform: platformMatches[0] };
-        return { method: 'none', platform: null };
+        
+        return {
+            method: platformMatches.length >= 1 ? 'ambiguous' : 'none',
+            platform: this.unknownPlatform
+        };
+        
     }
 };
 
