@@ -12,14 +12,18 @@
 
 <body>
 
+    <div class='app-container'>
     <h1>Hasher-js</h1>
+    <div class='app-container-content'>
     <p>
         Patching a ROM?
-        <span class='hasher-logo'>Hasher-js</span> will compute file hashes to help you verify you're patching exactly the right file. Creating a patch?
-        <span class='hasher-logo'>Hasher-js</span> will give hashes you can share with others to help them verify their ROM.
+        <span class='hasher-logo'>Hasher-js</span> computes ROM hashes to help you verify that 
+        you're patching the correct file. If you're creating a patch, use
+        <span class='hasher-logo'>Hasher-js</span> to get hashes of the original, unmodified file
+        and share the hashes with your patch. 
     </p>
-    <p>See
-        <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p>
+    <!-- <p>See
+        <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p> -->
     <!-- <input type='file' id='file'>
     <br>
     <button id='btn-hash' style="margin-top: 10px">Hash</button>
@@ -28,18 +32,24 @@
         <div id='file-input-outer'>
             <div id='file-input-box'>
                 <span id='file-input-text'>
+                    <div id='game-details'>
+                        <img id='platform-icon'>
+                        <p id='game-name'>Abadox (U) [!].nes</p>
+                    </div>
                     <input type="file" id='file-input'>
-                    <label for='file-input'>
+                    <label for='file-input' id='file-input-label'>
                         <!-- <a href='#'>Load a ROM</a> -->
                         <span class='fake-link-3'>Load a ROM</span>
                     </label>
-                    <br> Or drag and
-                    <br> drop a file.
+                    <p id='lbl-dragndrop'>
+                        Or drag and
+                        <br> drop a file.
+                    </p>
                 </span>
             </div>
         </div>
         <div id='result-box'>
-            <div id='result-box-content'></div>
+            <div id='result-box-content'> </div> <!-- space seems to fix layout in FF -->
             <div class='result-toolbar'>
                 <button class="far fa-copy tb-icon" tabindex="0" id='btn-copy'></button>
                 <span class="tb-tooltip">Copy</span>
@@ -59,226 +69,45 @@
     </div>
     <div class='detail-box'>
         <div class='detail-box-content detail-box-content-selected' id='detail-hashes'>
-            hashes
+            
         </div>
         <div class='detail-box-content' id='detail-rom'>
-            rom
+            
         </div>
         <div class='detail-box-content' id='detail-header'>
-            header
+            
         </div>
     </div>
     <div id="hasher-output" style="font-family: monospace; margin-top: 1em; white-space: pre;"></div>
+    </div></div>
 
+    <div class='app-spacer'></div>
+
+    <div class='app-container'>
+        <h2>More Information</h2>
+        <div class='app-container-content'>
+            <p>
+                - hasher-js does not upload your ROM -- all the work is done in your browser on your machine
+                <br>
+                - hasher-js source is available at (...)
+                <br>
+                - a database match does not necessarily mean you have exactly the right file. hashes are the final word
+                <br>
+                - if you have the right ROM hash but the wrong file hash, you have the right ROM but in the wrong format
+                <br>
+                -- NES: Most likely garbage in the header, which is generally harmless, but certain header issues may manifest on patched ROMs on certain emulators
+                <br>
+                -- SNES: Could either be headered vs. headerless (can be remedied with a separate utility that can add or remove headers), or differences in external header (harmless)
+                <br>
+                -- Genesis: Most likely SMD vs. BIN format, which can be remedied with a separate utility.
+                <br>
+                -- N64: Most likely byte-swapped vs un-swapped, which can be remedied with a separate utility.
+            </p>
+        </div>
+    </div>
     <script src='main.js'></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script>
-        var output = document.getElementById('hasher-output');
-        output.innerText += 'Output:\n\n'
-
-        var btnRom, btnHashes, btnHeader;
-        var detailRom, detailHashes, detailGeader;
-
-
-        $(document).ready(function() {
-            // $('#btn-hash').on('click', function(e) {
-            //     var romFile = document.getElementById('file').files[0];
-            //     console.log(romFile);
-            //     // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
-            //     processRom(romFile);
-            // });
-            btnRom = $('#btn-rom');
-            btnHeader = $('#btn-header');
-            btnHashes = $('#btn-hashes');
-            detailRom = $('#detail-rom');
-            detailHeader = $('#detail-header');
-            detailHashes = $('#detail-hashes');
-            btnCopy = $('#btn-copy');
-
-            // tab selection
-            btnRom.on('click', function() { selectDetailTab(btnRom, detailRom); });
-            btnHashes.on('click', function() { selectDetailTab(btnHashes, detailHashes); });
-            btnHeader.on('click', function() { selectDetailTab(btnHeader, detailHeader); });
-
-            btnCopy.on('click', function(){
-                copyText($('#result-box-content').text());
-                btnCopy.blur();
-            });
-
-
-
-            var fileInputBox = $('#file-input-box');
-            fileInputBox.on('drop', onFileDrop);
-            fileInputBox.on('dragdrop', onFileDrop);
-            fileInputBox.on('dragover', onDragOver);
-            fileInputBox.on('dragenter', onDragOver);
-            fileInputBox.on('dragend', onDragEnd);
-            fileInputBox.on('dragleave', onDragEnd);
-
-            $('#file-input').on('change', onFileSelected)
-        });
-
-        function selectDetailTab(tab, content) {
-             setClass(btnRom, btnRom == tab, 'tab-item-select');
-             setClass(btnHeader, btnHeader == tab, 'tab-item-select');
-             setClass(btnHashes, btnHashes == tab, 'tab-item-select');
-
-             setClass(detailRom, detailRom == content, 'detail-box-content-selected');
-             setClass(detailHashes, detailHashes == content, 'detail-box-content-selected');
-             setClass(detailHeader, detailHeader == content, 'detail-box-content-selected');
-        }
-
-        function copyText(text) {
-            var textContainer = $('<textarea>').addClass('clipboard-container');
-            $(document.body).append(textContainer);
-            textContainer.val(text);
-            textContainer.select();
-            document.execCommand('copy');
-            textContainer.remove();
-        }
-        function setClass(obj, state, className){
-            if(state){
-                obj.addClass(className);
-            }else {
-                obj.removeClass(className);
-            }
-        }
-
-        var regNameLookup = {
-            file: "File",
-            rom: "ROM",
-        }
-
-        function processRom(file) { // fileContents, fileName) {
-            hasher.getRomData(file)
-                .then(function (result) {
-                    output.innerText += JSON.stringify(result, null, 4);
-                    
-                    var fileHash = result.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
-                    var romHash = result.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
-                    var dbString = "No database match.";
-                    if(result.dbInfo.name) {
-                        dbString = "Database: " + result.dbInfo.name + "\nDatabase Version: " + result.dbInfo.version;
-                    }
-                    var dbMatch = result.dbMatch;
-
-                    var outputString = "Database match: " + result.dbMatch + "\n";
-                    outputString += dbString + "\n";
-                    if(fileHash === romHash) {
-                        outputString += "File/ROM SHA-1: " + fileHash + "\n";
-                    } else {
-                        outputString += "File SHA-1: " + fileHash + "\n";
-                        outputString += "ROM SHA-1: " + romHash + "\n";
-                    }
-                    $('#result-box-content').text(outputString);
-
-
-                    var table = $('<table>');
-                    var hashData = result.hashes.map(function(hashItem) {
-                        return {
-                            label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
-                            value: hashItem.value
-                        };
-                    })
-
-                    var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
-                    var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
-                    var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
-                    
-                    hashDataExt.forEach(function(item) {hashData.push(item)});
-
-                    detailHashes.empty().append(extDataToTable(hashData));
-                    detailHeader.empty().append(extDataToTable(headerDataExt));
-                    detailRom.empty().append(extDataToTable(romDataExt));
-                    
-                    
-                })
-                .catch(console.error);
-        }
-
-        function extDataToTable(extData) {
-            var table = $('<table>');
-                extData.forEach(function(entry) {
-                var row = $('<tr>');
-                row.append($('<td>').text(entry.label));
-                row.append($('<td>').text(entry.value));
-                table.append(row);
-            });
-
-            return table;
-        }
-
-        /** 
-         * Returns a predicate function that matches objects with a category property that
-         * matches the specified value.
-         */
-        function whereCategoryEquals(category) {
-            return function(item) {
-                return item.category === category;
-            }
-        }
-
-        function onFileSelected(e) {
-            var fileInput = $('#file-input')[0]
-            if(fileInput.files && fileInput.files.length > 0) {
-                processRom(fileInput.files[0]);
-            }
-        }
-
-        function onFileDrop(e) {
-            var dragEvent = e.originalEvent;
-            console.log('drop');
-            $('#file-input-box').removeClass('file-input-filedrag');
-            dragEvent.preventDefault();
-            if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
-                // for (var i = 0; i < dragEvent.dataTransfer.items.length; i++) {
-                //     // If dropped items aren't files, reject them
-                //     if (dragEvent.dataTransfer.items[i].kind === 'file') {
-                //         var file = dragEvent.dataTransfer.items[i].getAsFile();
-                //         console.log('... file[' + i + '].name = ' + file.name);
-                //     }
-                // }
-                var file = dragEvent.dataTransfer.items[0].getAsFile();
-                console.log(file);
-                processRom(file);
-            }
-
-            // removeDragData(dragEvent);
-
-        }
-
-        function onDragOver(ev) {
-            console.log('File(s) in drop zone');
-            $('#file-input-box').addClass('file-input-filedrag');
-
-            // Prevent default behavior (Prevent file from being opened)
-            ev.preventDefault();
-        }
-        
-        function onDragEnd(ev) {
-            console.log('File(s) left drop zone');
-            $('#file-input-box').removeClass('file-input-filedrag');
-
-            // Prevent default behavior (Prevent file from being opened)
-            ev.preventDefault();
-        }
-        function removeDragData(ev) {
-            console.log('Removing drag data')
-
-            if (ev.dataTransfer.items) {
-                // Use DataTransferItemList interface to remove the drag data
-                ev.dataTransfer.items.clear();
-            } else {
-                // Use DataTransfer interface to remove the drag data
-                ev.dataTransfer.clearData();
-            }
-        }
-
-        // document.getElementById('file-input-box').addEventListener('dragstart', onDragOver );
-        // document.getElementById('file-input-box').ondragover = ondragover;
-        // document.getElementById('file-input-box').ondragenter = ondragover;
-        // document.getElementById('file-input-box').ondragstart = ondragover;
-    </script>
+    <script src='hasherRes/hasher.js'></script>
 </body>
 
 </html>

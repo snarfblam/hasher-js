@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack && cpx \"src\\db\\*.*\" \"dist\\db\" && cpx \"server\\*.*\" \"dist\""
+    "build": "npx webpack && cpx \"src\\db\\*.*\" \"dist\\db\" && cpx \"server\\*.*\" \"dist\" && cpx \"server\\hasherRes\\*.*\" \"dist\\hasherRes\" "
   },
   "repository": {
     "type": "git",
