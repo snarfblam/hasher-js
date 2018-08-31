@@ -1,7 +1,7 @@
 {
 "meta" : {
     "name" : "No-Intro: Nintendo - Game Boy Advance",
-    "version" : "20130720-015858",
+    "version" : "20180816-092117",
     "comment": "no-intro | www.no-intro.org",
     "regex": "game \\(.*\\n\\Wname\\W\"(.*)\\\".*\\n.*\\n?.*\\n.*sha1 ([a-zA-Z0-9]*).*\\n\\W?\\)\\W\\n"
 },
