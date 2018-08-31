@@ -91,6 +91,13 @@ const n64Identifier = [0x80, 0x37, 0x12, 0x40];
 /** First four bytes of a byte-swapped N64 ROM */
 const n64Identifier_Byteswapped = [0x37, 0x80, 0x40, 0x12];
 
+/** First four bytes of a normal N64 ROM */
+const n64Identifier_Wordswapped = [0x12, 0x40, 0x80, 0x37];
+
+/** First four bytes of a normal N64 ROM */
+const n64Identifier_LittleEndian = [0x40, 0x12, 0x37, 0x80];
+
+
 /**
  * Returns a boolean indicating whether the ROM is byteswapped, or null
  * if the ROM can not be determined to be an N64 ROM.

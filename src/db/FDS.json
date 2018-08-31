@@ -1,6 +1,6 @@
 {
     "meta" : {
-        "name" : "No-Intro: Nintendo - Famicom Disk System",
+        "name" : "No-Intro: Famicom Disk System",
         "version" : "20180726-130152",
         "comment": "no-intro | www.no-intro.org",
         "regex": "game \\(.*\\n\\Wname\\W\"(.*)\\\".*\\n.*\\n?.*\\n.*sha1 ([a-zA-Z0-9]*).*\\n\\W?\\)\\W\\n"
