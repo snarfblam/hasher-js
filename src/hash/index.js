@@ -1,8 +1,7 @@
 /*  
     Provides functions that perform both syncronous and asyncronous hashing.
     Currently the async functions do not implement any kind of explicit
-    background worker or CPU-yielding mechanism, and only run asyncronously
-    when operating on a blob.
+    background worker or CPU-yielding mechanism.
  */
 
 // @ts-check
@@ -27,6 +26,8 @@ function hashAsync(algo, buffer, offset, length) {
     var end = offset + length;
     var hasher = algo.create(); // crypto.createHash('sha1');
     return new Promise((resolve, reject) => {
+
+        // Convert byte array to a blob
         if (buffer instanceof Uint8Array) {
             var subBuffer = buffer;
 
@@ -38,23 +39,36 @@ function hashAsync(algo, buffer, offset, length) {
                 }
             }
 
-            hasher.update(subBuffer);
-            resolve(hasher.hex());
-        } else if (buffer instanceof Blob) {
+            buffer = new Blob([subBuffer]);
+        }
 
+        // if (buffer instanceof Uint8Array) {
+        //     var subBuffer = buffer;
+
+        //     if (offset != 0 || length != buffer.length) {
+        //         if (buffer.subarray) {
+        //             subBuffer = buffer.subarray(offset, end);
+        //         } else {
+        //             subBuffer = buffer.slice(offset, end);
+        //         }
+        //     }
+
+        //     hasher.update(subBuffer);
+        //     resolve(hasher.hex());
+        // } else
+        if (buffer instanceof Blob) {
             end = Math.min(end, buffer.size);
 
+            var blob = buffer;
             var reader = new FileReader();
             var currentOffset = offset;
             var readNextChunk = () => {
-
                 if (currentOffset < end) {
                     // don't include anything beyond end of blob in length
                     var currentEnd = Math.min(currentOffset + chunkSize, end);
-
-                    reader.readAsArrayBuffer(buffer.slice(currentOffset, currentEnd));
+                    reader.readAsArrayBuffer(blob.slice(currentOffset, currentEnd));
                     currentOffset += chunkSize;
-            } else {
+                } else {
                     // We've finished processing the file
                     resolve(hasher.hex());
                 }
