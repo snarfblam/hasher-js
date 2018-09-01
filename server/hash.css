@@ -33,7 +33,16 @@ body {
 	line-height: 1;
 }
 ol, ul {
-	list-style: none;
+	list-style: circle;
+}
+li {
+    margin-left: 2em;
+}
+strong {
+    font-weight: bold;
+}
+em {
+    font-style: italic;
 }
 blockquote, q {
 	quotes: none;
@@ -47,7 +56,6 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
 
 * {
     box-sizing: border-box;
@@ -87,12 +95,45 @@ h2 {
     color: white;
 }
 
+h3 {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: .5em;
+}
+
+.list-square,
+.list-arrow {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+.list-square>li,
+.list-arrow>li {
+    margin-left: .5em;
+}
+
+.list-square>li::before {
+    content: '▪  ';
+}
+
+.list-arrow>li::before {
+    content: '▸ ';
+}
+
 /* App container */
 .app-container {
     max-width: 800px;
     margin: 1em auto;
     background: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid #666;
+    box-shadow: 3px 4px 18px #00000085;
 }
+
 
 .app-container-content {
     padding: 1em;
@@ -187,6 +228,9 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
 
 #game-name {
     display: none;
+    margin-top: 0;
+    overflow: hidden;
+    max-height: 75px;
 }
 
 .file-loaded #platform-icon {
@@ -368,6 +412,8 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
     vertical-align: top;
     margin-right: 0;
     box-shadow: inset 0px 4px 0px #ddddff ;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
 .tab-item:focus {

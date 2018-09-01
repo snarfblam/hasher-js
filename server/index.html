@@ -57,21 +57,21 @@
         </div>
     </div>
     <div class='detail-tabs'>
-        <button class='tab-item tab-item-select' id='btn-hashes'>
-            All Hashes
-        </button>
-        <button class='tab-item' id='btn-rom'>
+        <button class='tab-item tab-item-select' id='btn-rom'>
             ROM
+        </button>
+        <button class='tab-item' id='btn-hashes'>
+            All Hashes
         </button>
         <button class='tab-item' id='btn-header'>
             Header
         </button>
     </div>
     <div class='detail-box'>
-        <div class='detail-box-content detail-box-content-selected' id='detail-hashes'>
+        <div class='detail-box-content detail-box-content-selected' id='detail-rom'>
             
         </div>
-        <div class='detail-box-content' id='detail-rom'>
+        <div class='detail-box-content' id='detail-hashes'>
             
         </div>
         <div class='detail-box-content' id='detail-header'>
@@ -86,22 +86,49 @@
     <div class='app-container'>
         <h2>More Information</h2>
         <div class='app-container-content'>
+            <h3>Hasher-js</h3>
+            <ul class='list-square'>
+                <li><span class='hasher-logo'>Hasher-js</span> does not upload your ROM—all the work is done right in your browser.</li>
+                <li>The source for <span class='hasher-logo'>Hasher-js</span> is available for 
+                    <a href="https://github.com/snarfblam/hasher-js/archive/master.zip">download</a>.
+                </li>
+            </ul>
+            <h3>What does it all mean?</h3>
             <p>
-                - hasher-js does not upload your ROM -- all the work is done in your browser on your machine
-                <br>
-                - hasher-js source is available at (...)
-                <br>
-                - a database match does not necessarily mean you have exactly the right file. hashes are the final word
-                <br>
-                - if you have the right ROM hash but the wrong file hash, you have the right ROM but in the wrong format
-                <br>
-                -- NES: Most likely garbage in the header, which is generally harmless, but certain header issues may manifest on patched ROMs on certain emulators
-                <br>
-                -- SNES: Could either be headered vs. headerless (can be remedied with a separate utility that can add or remove headers), or differences in external header (harmless)
-                <br>
-                -- Genesis: Most likely SMD vs. BIN format, which can be remedied with a separate utility.
-                <br>
-                -- N64: Most likely byte-swapped vs un-swapped, which can be remedied with a separate utility.
+                <span class='hasher-logo'>Hasher-js</span> gives you a lot of info. The most important things to look at are the 
+                 file hashes and database matches. Skip ahead if you want to learn what all this "hashing" business is about.
+            </p>
+            <ul class='list-square'>
+                <li>A database match is a step in the right direction but it does not necessarily mean you have exactly the right file. Always check the hashes.</li>
+                <li>
+                    If you have the right ROM hash but the wrong file hash, here's what it might mean:
+                    <ul class='list-arrow'>
+                        <li><strong>NES</strong> - Most likely, there is "garbage" in the header (extra data that shouldn't be there). 
+                            This won't typically cause a problem, but it can be removed using a 
+                            <a href="https://www.romhacking.net/utilities/683/">header cleaner program</a>. However, it's also possible 
+                            that the header contains <em>incorrect</em> data which might cause a problem with certain emulators when using a patched ROM.</li>
+                        <li><strong>SNES</strong> - Generally the result of differences with external headers. There are tools that can add
+                            or remove external headers (such as <a href='https://www.smwcentral.net/?p=section&a=details&id=4613'>SNESStuff</a>).
+                            If your ROM hash matches and the ROM meets the header requirements of the patch, you should be safe, even if the file
+                            hash doesn't match.</li>
+                        <li><strong>Genesis</strong> - Genesis ROMs typically come in two different formats: SMD and BIN. A tool such as 
+                            <a href="https://www.romhacking.net/utilities/383/">SBWin</a> can convert between these formats.</li>
+                        <li><strong>N64</strong> - ROMs may be big-endian, byte-swapped or little-endian. A tool such as
+                            <a href="https://www.thetechgame.com/Downloads/id=25029/tool-64-nintendo-64-tool.html">Tool 64</a> can
+                            convert between these different formats.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>What's all this "hashing" business, now?</h3>
+            <p>
+                The filename doesn't tell you everything you need to know.
+            </p>
+            <p>
+                Hashing is like a form of fingerprinting for data. Checking the hash of a file helps you determing whether you have exactly 
+                what you're looking for. <span class='hasher-logo'>Hasher-js</span> provides a hash for both the file and the ROM image
+                contained inside the file, plus some additional data, to help you figure out whether you have the right thing in the right
+                format.
             </p>
         </div>
     </div>

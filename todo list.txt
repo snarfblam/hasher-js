@@ -14,4 +14,7 @@
 -neaten up boilerplate comments, imports, formatting
 
 - need error handling code on ROM streaming
-    - 
+
+-n64 wordswapped and littleendian recognition and conversion
+
+-need consistency in extended data re: yes/no vs true/false

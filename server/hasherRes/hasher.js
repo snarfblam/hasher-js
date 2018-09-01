@@ -99,6 +99,7 @@ function processRom(file) { // fileContents, fileName) {
 
 
             var table = $('<table>');
+            var romData = getRomData(result);
             var hashData = result.hashes.map(function(hashItem) {
                 return {
                     label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
@@ -106,15 +107,17 @@ function processRom(file) { // fileContents, fileName) {
                 };
             })
 
+
             var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
             var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
             var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
             
-            hashDataExt.forEach(function(item) {hashData.push(item)});
+            hashDataExt.forEach(function (item) { hashData.push(item) });
+            romDataExt.forEach(function (item) { romData.push(item) });
 
             detailHashes.empty().append(extDataToTable(hashData));
             detailHeader.empty().append(extDataToTable(headerDataExt));
-            detailRom.empty().append(extDataToTable(romDataExt));
+            detailRom.empty().append(extDataToTable(romData));
             
             $('#file-input-outer').addClass('file-loaded');
             $('#platform-icon').attr('src', 'hasherRes/' + result.platform.name + '.png')
@@ -124,13 +127,32 @@ function processRom(file) { // fileContents, fileName) {
         .catch(console.error);
 }
 
+/**
+ * Gets an array of {label: string, category: "rom", value: string} objects
+ * @param {RomData} romData 
+ */
+function getRomData(romData) {
+    var result = [];
+
+    var fileSize = romData.hashes.find(function (hash) { return hash.region.name === 'file' }).region.length;
+    var romSize =  romData.hashes.find(function (hash) { return hash.region.name === 'rom' }).region.length;
+
+    result.push({ label: "Platform", value: romData.platform.longName });
+    result.push({ label: "Format", value: romData.format });
+    result.push({ label: "External Header", value: romData.hasExternalHeader });
+    result.push({ label: "File size", value: fileSize + ' ($' + fileSize.toString(16) + ")" });
+    result.push({ label: "Rom size", value: romSize + ' ($' + romSize.toString(16) + ")" });
+
+    return result;
+}
+
 function createSummary(romData) {
     var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
     var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
     
     var dbString = "No database match.";
     if(romData.dbInfo.name) {
-        dbString = "Database: " + romData.dbInfo.name + "\nDatabase Version: " + romData.dbInfo.version;
+        dbString = "Database: " + romData.dbInfo.name + " (v. " + romData.dbInfo.version + ")";
     }
     
     var outputString = "";
