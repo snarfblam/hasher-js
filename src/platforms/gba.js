@@ -67,7 +67,7 @@ class GbaPlatform extends Platform {
 
     /** @param {Rom} rom */
     getFormatName(rom) {
-        return "Gameboy Advance ROM image";
+        return "Game Boy Advance ROM image";
     }
     
     /** @param {Rom} rom */

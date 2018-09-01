@@ -62,7 +62,7 @@ class NgpPlatform extends Platform{
 
     /** @param {Rom} rom */
     getFormatName(rom) {
-        return "Neo Geo Pocket ROM";
+        return "Neo Geo Pocket ROM image";
     }
 }
 

@@ -85,9 +85,9 @@ class SnesPlatform extends Platform {
 
     /** @param {Rom} rom */
     getFormatName (rom) {
-        if (snesUtil.hasGoodSmcHeader(rom.preview)) return "Super Magic Com ROM";
-        if (snesUtil.hasGoodSwcHeader(rom.preview)) return "Super Wild Card ROM";
-        if (snesUtil.hasExternalHeader(rom)) return "SNES ROM image (headered)";
+        if (snesUtil.hasGoodSmcHeader(rom.preview)) return "Super Magic Com";
+        if (snesUtil.hasGoodSwcHeader(rom.preview)) return "Super Wild Card";
+        if (this.hasExternalHeader(rom)) return "SNES ROM image (headered)";
         return "SNES ROM image";
     }
 

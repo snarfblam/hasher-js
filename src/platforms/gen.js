@@ -82,7 +82,7 @@ class GenPlatform extends Platform {
         if (interleaved) {
             return externalHeader ? "SMD (headered)" : "SMD (no header)";
         } else {
-            return externalHeader ? "BIN (headered)" : "BIN";
+            return externalHeader ? "BIN (headered)" : "Genesis ROM image (BIN)";
         }
     }
 

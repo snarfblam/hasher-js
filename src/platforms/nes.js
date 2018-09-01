@@ -66,7 +66,7 @@ class NesPlatform extends Platform {
 
     /** @param {Rom} rom */
     getFormatName(rom) {
-        return this.hasExternalHeader(rom) ? 'INES' : 'NES rom image';
+        return this.hasExternalHeader(rom) ? 'iNES' : 'NES ROM image';
     }
 
     /** @param {Rom} rom */
