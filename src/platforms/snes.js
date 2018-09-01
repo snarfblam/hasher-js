@@ -69,9 +69,10 @@ class SnesPlatform extends Platform {
         return Promise.all([this.getHeader(rom), bytesPromise, super.getExtendedData(rom)])
             .then(([header, romImage, data]) => {
                 var checksum = snesUtil.calculateChecksum(romImage);
+                var mapping = { hirom: "HiROM", lorom: "LoROM" }[header.mapping] || header.mapping;
         
                 data.addRom("Actual checksum", toHex(checksum, 4));
-                data.addRom("Mapping", header.mapping);
+                data.addRom("Mapping", mapping);
                     
                 if (header.valid) {
                     data.addHeader("Header offset", header.internalHeaderOffset);
