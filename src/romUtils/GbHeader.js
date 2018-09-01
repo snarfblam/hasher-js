@@ -149,10 +149,10 @@ function GbHeader(romImage, headerOffset) {
     };
 
     GbHeader.gbRamSizeNames = {
-        0: "00 -  0 KByte",
-        1: "01 -  2 KByte",
-        2: "02 -  8 KByte",
-        3: "03 -  32 KByte",
+        0: "0 KByte",
+        1: "2 KByte",
+        2: "8 KByte",
+        3: "32 KByte",
     }
 }
 
