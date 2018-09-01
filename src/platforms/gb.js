@@ -12,9 +12,9 @@ import Platform from './Platform';
 const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
-function yesNo(bool) {
-    return bool ? "yes" : "no";
-}
+// function yesNo(bool) {
+//     return bool ? "yes" : "no";
+// }
 
 class GbPlatform extends Platform {
     constructor() {
@@ -53,17 +53,17 @@ class GbPlatform extends Platform {
             .then(([header, data]) => {
                 if (header) {
                     data.addRom("ROM checksum", toHex(header.romChecksum, 4));
-                    data.addRom("Checksum valid", yesNo(header.romChecksumValid));
+                    data.addRom("Checksum valid", header.romChecksumValid);
             
-                    data.addHeader("Logo present", yesNo(header.validGbLogo));
+                    data.addHeader("Logo present", header.validGbLogo);
                     data.addHeader("Header checksum", toHex(header.headerChecksum, 2));
-                    data.addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
+                    data.addHeader("Header checksum valid", header.headerChecksumValid);
                     data.addHeader("ROM checksum", toHex(header.romChecksum,4));
-                    data.addHeader("ROM checksum valid", yesNo(header.romChecksumValid));
+                    data.addHeader("ROM checksum valid", header.romChecksumValid);
                     data.addHeader("Title", header.title);
                     data.addHeader("Manufacturer", header.manufacturer);
                     data.addHeader("Gameboy Color support", header.cgbSupport);
-                    data.addHeader("Super Gameboy support", yesNo(header.supportsSgb));
+                    data.addHeader("Super Gameboy support", header.supportsSgb);
                     data.addHeader("Cart type", header.cartType);
             
                     data.addHeader("ROM size", header.romSize);

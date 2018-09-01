@@ -10,10 +10,10 @@ import Platform from './Platform';
 import Rom from '../Rom';
 const category = Platform.exDataCategories;
 
-function yesNo(bool) {
-    return bool ? "yes" : "no";
+// function yesNo(bool) {
+//     return bool ? "yes" : "no";
     
-}
+// }
 
 const headerCrcRegionSize = 0x15E;
 

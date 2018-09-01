@@ -171,10 +171,13 @@ function createSummary(romData) {
 
 function extDataToTable(extData) {
     var table = $('<table>');
-        extData.forEach(function(entry) {
+    extData.forEach(function (entry) {
+        var value = entry.value;
+        if (value === 'true' || value === true) value = "Yes";
+        if (value === 'false' || value === false) value = "No";
         var row = $('<tr>');
         row.append($('<td>').text(entry.label));
-        row.append($('<td>').text(entry.value));
+        row.append($('<td>').text(value));
         table.append(row);
     });
 

@@ -12,9 +12,9 @@ import Platform from './Platform';
 const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
-function yesNo(bool) {
-    return bool ? "yes" : "no";
-}
+// function yesNo(bool) {
+//     return bool ? "yes" : "no";
+// }
 
 class GbaPlatform extends Platform {
     constructor() {
@@ -52,9 +52,9 @@ class GbaPlatform extends Platform {
             })
             .then(([header, data]) => {
                 if (header) {
-                    data.addHeader("Logo present", yesNo(header.validGbaLogo));
+                    data.addHeader("Logo present", header.validGbaLogo);
                     data.addHeader("Header checksum", toHex(header.headerChecksum, 2));
-                    data.addHeader("Header checksum valid", yesNo(header.headerChecksumValid));
+                    data.addHeader("Header checksum valid", header.headerChecksumValid);
                     data.addHeader("Title", header.title);
                     data.addHeader("Game Maker", header.makerCode);
                     data.addHeader("Game Code", header.gameCode);

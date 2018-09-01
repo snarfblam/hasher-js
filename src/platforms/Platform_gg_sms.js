@@ -11,9 +11,9 @@ import Platform from './Platform';
 import Rom from '../Rom';
 const category = Platform.exDataCategories;
 
-function yesNo(bool) {
-    return bool ? "yes" : "no";
-}
+// function yesNo(bool) {
+//     return bool ? "yes" : "no";
+// }
 
 class Platform_gg_sms extends Platform {
     /**
@@ -66,7 +66,7 @@ class Platform_gg_sms extends Platform {
 
         return super.getExtendedData(rom)
             .then(data => {
-                data.addHeader("Header found", yesNo(headerValid));
+                data.addHeader("Header found", headerValid.toString());
 
                 if (headerValid) {
                     data.addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));

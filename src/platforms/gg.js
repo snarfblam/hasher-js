@@ -10,9 +10,9 @@ const category = Platform.exDataCategories;
 
 import Platform_gg_sms from './Platform_gg_sms';
 
-function yesNo(bool) {
-    return bool ? "yes" : "no";
-}
+// function yesNo(bool) {
+//     return bool ? "yes" : "no";
+// }
 
 
 class GgPlatform extends Platform_gg_sms {

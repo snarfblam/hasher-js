@@ -20,9 +20,9 @@ class N64Platform extends Platform {
         var byteSwapped = IsByteswapped(rom.preview);
         
         var byteSwappedText;
-        if (byteSwapped === true) byteSwappedText = "yes";
-        if (byteSwapped === false) byteSwappedText = "no";
-        if (byteSwapped === null) byteSwappedText = "unknown";
+        if (byteSwapped === true) byteSwappedText = "Yes";
+        if (byteSwapped === false) byteSwappedText = "No";
+        if (byteSwapped === null) byteSwappedText = "Unknown";
 
         return super.getExtendedData(rom)
             .then(data => {
