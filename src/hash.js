@@ -8,6 +8,7 @@ import sha1 from 'sha1';
 import { resolve } from 'path';
 
 import jsSha1 from 'js-sha1';
+import jsMd5 from 'js-md5';
 
 
 const chunkSize = 0x1000;
@@ -45,18 +46,16 @@ function crc16(buffer) {
     return ~result & 0xffff;
 }
 
-
 /**
  * 
- * @param {Blob | Uint8Array} buffer 
+ * @param {*} algo An object that implements the appropriate digesting interface (create() method which produces an object with update() and hex() methods)
  * @param {number} offset 
  * @param {number} length 
  * @returns {Promise<string>}
  */
-function sha1Async(buffer, offset, length) {
+function hashAsync(algo, buffer, offset, length) {
     var end = offset + length;
-    var sha1 = jsSha1.create(); // crypto.createHash('sha1');
-
+    var hasher = algo.create(); // crypto.createHash('sha1');
     return new Promise((resolve, reject) => {
         if (buffer instanceof Uint8Array) {
             var subBuffer = buffer;
@@ -69,8 +68,8 @@ function sha1Async(buffer, offset, length) {
                 }
             }
 
-            sha1.update(subBuffer);
-            resolve(sha1.hex());
+            hasher.update(subBuffer);
+            resolve(hasher.hex());
         } else if (buffer instanceof Blob) {
 
             end = Math.min(end, buffer.size);
@@ -87,12 +86,12 @@ function sha1Async(buffer, offset, length) {
                     currentOffset += chunkSize;
             } else {
                     // We've finished processing the file
-                    resolve(sha1.hex());
+                    resolve(hasher.hex());
                 }
             };
             var dataReady = () => {
                 var data = new Uint8Array(reader.result);
-                sha1.update(data);
+                hasher.update(data);
 
                 readNextChunk();
             };
@@ -108,9 +107,82 @@ function sha1Async(buffer, offset, length) {
     });
 }
 
+/**
+ * 
+ * @param {Blob | Uint8Array} buffer 
+ * @param {number} offset 
+ * @param {number} length 
+ * @returns {Promise<string>}
+ */
+function md5Async(buffer, offset, length) {
+    return hashAsync(jsMd5, buffer, offset, length);
+}
+
+/**
+ * 
+ * @param {Blob | Uint8Array} buffer 
+ * @param {number} offset 
+ * @param {number} length 
+ * @returns {Promise<string>}
+ */
+function sha1Async(buffer, offset, length) {
+    return hashAsync(jsSha1, buffer, offset, length);
+    // var end = offset + length;
+    // var sha1 = jsSha1.create(); // crypto.createHash('sha1');
+    // return new Promise((resolve, reject) => {
+    //     if (buffer instanceof Uint8Array) {
+    //         var subBuffer = buffer;
+
+    //         if (offset != 0 || length != buffer.length) {
+    //             if (buffer.subarray) {
+    //                 subBuffer = buffer.subarray(offset, end);
+    //             } else {
+    //                 subBuffer = buffer.slice(offset, end);
+    //             }
+    //         }
+
+    //         sha1.update(subBuffer);
+    //         resolve(sha1.hex());
+    //     } else if (buffer instanceof Blob) {
+
+    //         end = Math.min(end, buffer.size);
+
+    //         var reader = new FileReader();
+    //         var currentOffset = offset;
+    //         var readNextChunk = () => {
+
+    //             if (currentOffset < end) {
+    //                 // don't include anything beyond end of blob in length
+    //                 var currentEnd = Math.min(currentOffset + chunkSize, end);
+
+    //                 reader.readAsArrayBuffer(buffer.slice(currentOffset, currentEnd));
+    //                 currentOffset += chunkSize;
+    //         } else {
+    //                 // We've finished processing the file
+    //                 resolve(sha1.hex());
+    //             }
+    //         };
+    //         var dataReady = () => {
+    //             var data = new Uint8Array(reader.result);
+    //             sha1.update(data);
+
+    //             readNextChunk();
+    //         };
+
+    //         reader.onload = dataReady;
+    //         reader.onerror = () => { reject(reader.error || Error("Unknown error reading a file")) };
+
+    //         // start it off
+    //         readNextChunk();
+    //     } else {
+    //         reject(Error('unknown input type'));
+    //     }
+    // });
+}
+
 function crc16Async(buffer) {
     return Promise.resolve(crc16(buffer));
 }
 
 
-export { sha1, crc16, sha1Async, crc16Async };
+export { sha1, crc16, sha1Async, crc16Async, md5Async };

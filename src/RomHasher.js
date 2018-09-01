@@ -49,7 +49,7 @@ class RomHasher {
     _queueHashTasks() {
         this.hashlist.forEach(item => {
             // Avoid queueing identical tasks
-            var existingTask = this.hashTasks.find(task => task.region.isSameRegion(item.region));
+            var existingTask = this.hashTasks.find(task => task.region.isSameRegion(item.region) && task.algoName === item.algoName);
             if (!existingTask) this.hashTasks.push({
                 region: item.region,
                 algoName: item.algoName,
@@ -61,8 +61,10 @@ class RomHasher {
      * @returns {Promise<{algoName: string, region: RomRegion, value: string}[]>}
     */
     performHashes() {
+        console.log(this.hashTasks);
         var hashPromises = this.hashTasks.map(task => {
             /** @type {function(): Promise<string>} */
+            console.log("Performing " + task.algoName);
             var algoFunc = hasher[task.algoName + 'Async'];
             if (!algoFunc) return Promise.reject("Hash algorithm " + task.algoName + " is not available");
     
@@ -71,7 +73,7 @@ class RomHasher {
             if (rom instanceof Rom) rom = rom.file;
             return algoFunc(rom, task.region.offset, task.region.length)
                 .then(hash => {
-                    var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region));
+                    var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region) && item.algoName === task.algoName);
                     if (matches.length === 0) console.warn("task to result error");
                     matches.forEach(match => match.value = hash);
                 })

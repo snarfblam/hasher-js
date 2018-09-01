@@ -19,7 +19,7 @@ import Rom from './Rom';
  * the algorithm matches the name of a supported hash function in the Hasher module.
  */
 function RomData(rom, hashAlgos) {
-    hashAlgos = hashAlgos || ['file_sha1', 'rom_sha1'];
+    hashAlgos = hashAlgos || ['file_sha1', 'rom_sha1', 'file_md5', 'rom_md5'];
     var ext = rom.fileExtension; //getExtension(filename);
     var plat = platform.getAssociatedPlatform(rom, ext);
 
