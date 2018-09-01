@@ -61,10 +61,8 @@ class RomHasher {
      * @returns {Promise<{algoName: string, region: RomRegion, value: string}[]>}
     */
     performHashes() {
-        console.log(this.hashTasks);
         var hashPromises = this.hashTasks.map(task => {
             /** @type {function(): Promise<string>} */
-            console.log("Performing " + task.algoName);
             var algoFunc = hasher[task.algoName + 'Async'];
             if (!algoFunc) return Promise.reject("Hash algorithm " + task.algoName + " is not available");
     
