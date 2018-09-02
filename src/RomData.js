@@ -15,10 +15,11 @@ import Rom from './Rom';
  * @constructor
  * @param {Rom} rom ROM image to examine
  * @param {string[]} hashAlgos A string specifying the hash in the form 'content_algorithm',
+ * @param {function(number):void} [progressCallback]
  * where content matches a portion of the ROM identified by Platform.getHashRegions and
  * the algorithm matches the name of a supported hash function in the Hasher module.
  */
-function RomData(rom, hashAlgos) {
+function RomData(rom, hashAlgos, progressCallback) {
     hashAlgos = hashAlgos || ['file_sha1', 'rom_sha1', 'file_md5', 'rom_md5', 'file_crc32', 'rom_crc32'];
     var ext = rom.fileExtension; //getExtension(filename);
     var plat = platform.getAssociatedPlatform(rom, ext);
@@ -40,7 +41,7 @@ function RomData(rom, hashAlgos) {
     var hashPromise = plat.platform.getHashRegions(rom)
         .then(hashRegions => {
             this.hashRegions = hashRegions;
-            var hasher = new RomHasher(rom, this.hashRegions, hashAlgos);
+            var hasher = new RomHasher(rom, this.hashRegions, hashAlgos, progressCallback);
             return hasher.performHashes();
         })
         .then(hashlist => {
@@ -89,11 +90,12 @@ function RomData(rom, hashAlgos) {
 }
 
 /**
- * @param {Rom} rom 
+ *  @param {Rom} rom 
+ *  @param {function(number):void} [progressCallback]
  */
-function getData(rom) {
+function getData(rom, progressCallback) {
     return rom.loaded.then(() => {
-        var result = new RomData(rom);
+        var result = new RomData(rom, null, progressCallback);
         return result.processingCompletePromise.then(() => {
             delete result.processingCompletePromise; // done with this
             return result;

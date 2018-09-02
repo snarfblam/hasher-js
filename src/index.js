@@ -39,15 +39,16 @@ import Rom from './Rom';
 
 /** Returns a promise that resolves to an object containing metadata about a ROM
  *  @param {File} romFile
+ *  @param {function(number):void} [progressCallback]
  */
-function getRomData(romFile) {
+function getRomData(romFile, progressCallback) {
     // if (rom instanceof File || rom instanceof Blob) {
     //     return getFileBytes(rom).then(data => RomData.getData(data, filename));
     // } else {
     //     return RomData.getData(rom, filename);
     // }
     var rom = new Rom(romFile);
-    return RomData.getData(rom);
+    return RomData.getData(rom, progressCallback);
 }
 
 /**

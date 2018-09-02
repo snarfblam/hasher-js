@@ -46,9 +46,10 @@ function asBlob(data, offset, length) {
  * @param {Blob | Uint8Array} buffer 
  * @param {number} offset 
  * @param {number} length 
+ * @param {function(number): void} [progressCallback]
  * @returns {Promise<string>}
  */
-function hashAsync(algo, buffer, offset, length) {
+function hashAsync(algo, buffer, offset, length, progressCallback) {
     var end = offset + length;
     var hasher = algo.create(); // crypto.createHash('sha1');
 
@@ -60,6 +61,7 @@ function hashAsync(algo, buffer, offset, length) {
 
     /** When set to true, will abort the hash operation */
     var cancel = false;
+    var processedByteCount = 0;
     /** @type {Promise & {cancel?: function(): void}} */
     var resultPromise = new Promise((resolve, reject) => {
         if (buffer instanceof Blob) {
@@ -84,6 +86,8 @@ function hashAsync(algo, buffer, offset, length) {
             var dataReady = () => {
                 var data = new Uint8Array(reader.result);
                 hasher.update(data);
+                processedByteCount += data.length;
+                if (progressCallback) progressCallback(processedByteCount / length);
 
                 readNextChunk();
             };
@@ -107,10 +111,11 @@ function hashAsync(algo, buffer, offset, length) {
  * @param {Uint8Array} buffer 
  * @param {number} offset 
  * @param {number} length 
+ * @param {function(number): void} [progressCallback]
  * @returns {Promise<string>}
  */
-function md5Async(buffer, offset, length) {
-    return hashAsync(jsMd5, buffer, offset, length);
+function md5Async(buffer, offset, length, progressCallback) {
+    return hashAsync(jsMd5, buffer, offset, length, progressCallback);
 }
 
 
@@ -119,12 +124,13 @@ function md5Async(buffer, offset, length) {
  * @param {Uint8Array} buffer 
  * @param {number} offset 
  * @param {number} length 
+ * @param {function(number): void} [progressCallback]
  * @returns {Promise<string>}
  */
-function sha1Async(buffer, offset, length) {
+function sha1Async(buffer, offset, length, progressCallback) {
     // For some reason, jsSha1.create is not showing up in the type definition... but it's definitely there
     // @ts-ignore
-    return hashAsync(jsSha1, buffer, offset, length);
+    return hashAsync(jsSha1, buffer, offset, length, progressCallback);
 }
 
 /**
@@ -132,10 +138,11 @@ function sha1Async(buffer, offset, length) {
  * @param {Uint8Array} buffer 
  * @param {number} offset 
  * @param {number} length 
+ * @param {function(number): void} [progressCallback]
  * @returns {Promise<string>}
  */
-function crc16Async(buffer, offset, length) {
-    return hashAsync(crc16, buffer, offset, length);
+function crc16Async(buffer, offset, length, progressCallback) {
+    return hashAsync(crc16, buffer, offset, length, progressCallback);
 }
 
 /**
@@ -143,9 +150,10 @@ function crc16Async(buffer, offset, length) {
  * @param {Uint8Array} buffer 
  * @param {number} offset 
  * @param {number} length 
+ * @param {function(number): void} [progressCallback]
  * @returns {Promise<string>}
  */
-function crc32Async(buffer, offset, length) {
-    return hashAsync(crc32, buffer, offset, length);
+function crc32Async(buffer, offset, length, progressCallback) {
+    return hashAsync(crc32, buffer, offset, length, progressCallback);
 }
 export { jsSha1 as sha1, crc16, sha1Async, crc16Async, md5Async, crc32Async };

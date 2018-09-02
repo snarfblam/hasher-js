@@ -75,26 +75,10 @@ var regNameLookup = {
 }
 
 function processRom(file) { // fileContents, fileName) {
-    hasher.getRomData(file)
+    hasher.getRomData(file, i=>console.log(i))
         .then(function (result) {
             output.innerText += JSON.stringify(result, null, 4);
             
-            // var fileHash = result.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
-            // var romHash = result.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
-            // var dbString = "No database match.";
-            // if(result.dbInfo.name) {
-            //     dbString = "Database: " + result.dbInfo.name + "\nDatabase Version: " + result.dbInfo.version;
-            // }
-            // var dbMatch = result.dbMatch;
-
-            // var outputString = "Database match: " + result.dbMatch + "\n";
-            // outputString += dbString + "\n";
-            // if(fileHash === romHash) {
-            //     outputString += "File/ROM SHA-1: " + fileHash + "\n";
-            // } else {
-            //     outputString += "File SHA-1: " + fileHash + "\n";
-            //     outputString += "ROM SHA-1: " + romHash + "\n";
-            // }
             $('#result-box-content').text(createSummary(result));
 
 
