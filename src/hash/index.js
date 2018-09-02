@@ -72,7 +72,10 @@ function hashAsync(algo, buffer, offset, length, progressCallback) {
             var currentOffset = offset;
             var readNextChunk = () => {
                 if (currentOffset < end) {
-                    if (cancel) resolve(null);
+                    if (cancel) {
+                        resolve(null);
+                        return;
+                    }
 
                     // don't include anything beyond end of blob in length
                     var currentEnd = Math.min(currentOffset + chunkSize, end);
