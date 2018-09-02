@@ -22,8 +22,10 @@ class RomHasher {
 
         this._parseHashlist();
         this._queueHashTasks();
+        this._cancel = false;
+        this._cancelList = [];
 
-      
+        window.cancel = this.cancel.bind(this);
 
     }
 
@@ -40,7 +42,7 @@ class RomHasher {
             return {
                 algoName: algoName,
                 region: region,
-                value: null, // to be filled in when result is calculated
+                value: "(none)", // to be filled in when result is calculated
             };
         });
     }
@@ -66,21 +68,37 @@ class RomHasher {
             var algoFunc = hasher[task.algoName + 'Async'];
             if (!algoFunc) return Promise.reject("Hash algorithm " + task.algoName + " is not available");
     
-            // return { name: algo, value: algoFunc(romToHash.slice(region.start, region.length + region.start)) };
             var rom = task.region.rom;
             if (rom instanceof Rom) rom = rom.file;
-            return algoFunc(rom, task.region.offset, task.region.length)
-                .then(hash => {
-                    var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region) && item.algoName === task.algoName);
-                    if (matches.length === 0) console.warn("task to result error");
-                    matches.forEach(match => match.value = hash);
-                })
+
+            // If the hash operation is cancelled, skip over any pending hashes
+            if (this._cancel) return Promise.resolve(null);
+
+            var hashPromise = algoFunc(rom, task.region.offset, task.region.length);
+            var hashDonePromise = hashPromise.then(hash => {
+                var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region) && item.algoName === task.algoName);
+                if (matches.length === 0) console.warn("task to result error");
+                matches.forEach(match => match.value = hash || match.value);
+                console.log("Hash complete", task);
+            });
+            
+            // Keep references to the cancel function for each hash operation so we can abort
+            this._cancelList.push(hashPromise.cancel);
+            return hashDonePromise;
         });
 
         return Promise.all(hashPromises)
             .then(() => {
                 return this.hashlist;
             });
+    }
+
+    cancel() {
+        console.log(this._cancelList);
+        // Don't start any more hashes
+        this._cancel = true;
+        // Abort any currently running hashes
+        this._cancelList.forEach(cancelFunc => cancelFunc());
     }
 }
 

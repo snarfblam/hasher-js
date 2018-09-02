@@ -2,6 +2,11 @@
     Provides functions that perform both syncronous and asyncronous hashing.
     Currently the async functions do not implement any kind of explicit
     background worker or CPU-yielding mechanism.
+
+    Cancellation:
+        The Promise returned by the async functions includes a method, cancel(), which
+        will abort the operation. When a hash in cancelled, the promise will resolve to
+        null.
  */
 
 // @ts-check
@@ -15,6 +20,27 @@ import jsMd5 from 'js-md5';
 const chunkSize = 0x4000;
 
 /**
+ * Converts data from a Uint8Array to a blob
+ * @param {Uint8Array} data 
+ * @param {number} offset 
+ * @param {number} length 
+ */
+function asBlob(data, offset, length) {
+    var end = offset + length;
+    var subBuffer = data;
+
+    if (offset != 0 || length != data.length) {
+        if (data.subarray) {
+            subBuffer = data.subarray(offset, end);
+        } else {
+            subBuffer = data.slice(offset, end);
+        }
+    }
+
+    return new Blob([subBuffer]);
+}
+
+/**
  * 
  * @param {Hasher} algo An object that implements the appropriate digesting interface (create() method which produces an object with update() and hex() methods)
  * @param {Blob | Uint8Array} buffer 
@@ -25,37 +51,17 @@ const chunkSize = 0x4000;
 function hashAsync(algo, buffer, offset, length) {
     var end = offset + length;
     var hasher = algo.create(); // crypto.createHash('sha1');
-    return new Promise((resolve, reject) => {
 
-        // Convert byte array to a blob
-        if (buffer instanceof Uint8Array) {
-            var subBuffer = buffer;
+    // Convert byte array to a blob
+    if (buffer instanceof Uint8Array) {
+        buffer = asBlob(buffer, offset, length);
+        offset = 0;
+    };
 
-            if (offset != 0 || length != buffer.length) {
-                if (buffer.subarray) {
-                    subBuffer = buffer.subarray(offset, end);
-                } else {
-                    subBuffer = buffer.slice(offset, end);
-                }
-            }
-
-            buffer = new Blob([subBuffer]);
-        }
-
-        // if (buffer instanceof Uint8Array) {
-        //     var subBuffer = buffer;
-
-        //     if (offset != 0 || length != buffer.length) {
-        //         if (buffer.subarray) {
-        //             subBuffer = buffer.subarray(offset, end);
-        //         } else {
-        //             subBuffer = buffer.slice(offset, end);
-        //         }
-        //     }
-
-        //     hasher.update(subBuffer);
-        //     resolve(hasher.hex());
-        // } else
+    /** When set to true, will abort the hash operation */
+    var cancel = false;
+    /** @type {Promise & {cancel?: function(): void}} */
+    var resultPromise = new Promise((resolve, reject) => {
         if (buffer instanceof Blob) {
             end = Math.min(end, buffer.size);
 
@@ -64,6 +70,8 @@ function hashAsync(algo, buffer, offset, length) {
             var currentOffset = offset;
             var readNextChunk = () => {
                 if (currentOffset < end) {
+                    if (cancel) resolve(null);
+
                     // don't include anything beyond end of blob in length
                     var currentEnd = Math.min(currentOffset + chunkSize, end);
                     reader.readAsArrayBuffer(blob.slice(currentOffset, currentEnd));
@@ -89,6 +97,9 @@ function hashAsync(algo, buffer, offset, length) {
             reject(Error('unknown input type'));
         }
     });
+
+    resultPromise.cancel = () => cancel = true;
+    return resultPromise;
 }
 
 /**
