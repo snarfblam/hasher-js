@@ -17,4 +17,4 @@
 
 -n64 wordswapped and littleendian recognition and conversion
 
--need consistency in extended data re: yes/no vs true/false
+-stream each region once and calculate all algos at the same time

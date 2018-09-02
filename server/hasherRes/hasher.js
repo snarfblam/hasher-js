@@ -4,6 +4,10 @@ output.innerText += 'Output:\n\n'
 var btnRom, btnHashes, btnHeader;
 var detailRom, detailHashes, detailGeader;
 
+/** Set to true while a ROM is being processed */
+var isHashing = false;
+/** Length of time until the hashing modal will be shown, in milliseconds. */
+var hashModalDelay = 250;
 
 $(document).ready(function() {
     // $('#btn-hash').on('click', function(e) {
@@ -75,8 +79,15 @@ var regNameLookup = {
 }
 
 function processRom(file) { // fileContents, fileName) {
-    hasher.getRomData(file, i=>console.log(i))
+    isHashing = true;
+
+    displayHashingModal();    
+
+    hasher.getRomData(file, console.log)
         .then(function (result) {
+            isHashing = false;
+            hideHashingModal();
+
             output.innerText += JSON.stringify(result, null, 4);
             
             $('#result-box-content').text(createSummary(result));
@@ -109,6 +120,22 @@ function processRom(file) { // fileContents, fileName) {
             
         })
         .catch(console.error);
+}
+
+function displayHashingModal() {
+    $(document.body).addClass('modal modal-kill');
+    setTimeout(displayFullHashingModal, hashModalDelay);
+}
+
+function displayFullHashingModal() {
+    if(isHashing) {
+        $(document.body).removeClass('modal-kill');
+        $(document.body).addClass('modal modal-hashing');
+    }
+}
+
+function hideHashingModal() { 
+    $(document.body).removeClass('modal modal-kill modal-hashing');
 }
 
 /**

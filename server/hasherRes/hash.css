@@ -256,7 +256,118 @@ input:focus+* .fake-link-3 { /* include fake link inside label associated with i
     left: 10%;
 }
 
+/* Modal */
 
+/*
+    When a modal is to be displayed, the 'modal' class and a modal-specific class
+    will both be applied to the BODY, e.g. $(document.body).addClass('modal modal-hashing')
+*/
+
+body.modal {
+    /* overflow: hidden; */
+}
+
+body.modal-hashing {
+    overflow: hidden;
+}
+#killjoy {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 1000;
+    display: none;
+}
+
+.modal-kill #killjoy {
+    display: block;
+}
+
+#hashing-modal-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+
+    display:none;
+}
+
+.modal-hashing #hashing-modal-container {
+    display:block;
+}
+
+#hashing-modal {
+    width: 600px;
+    height: 400px;
+    margin: 100px auto 0 auto;
+    background: black;
+
+    text-align: center;
+    padding: 1em;
+    color: #ccc;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    /* color: #fff; */
+    background-color: #292929;
+    border: 1px solid #101010;
+    background-image: linear-gradient(bottom, rgb(34, 34, 34) 0%, rgb(66, 66, 66) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(34, 34, 34) 0%, rgb(66, 66, 66) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(34, 34, 34) 0%, rgb(66, 66, 66) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(34, 34, 34) 0%, rgb(66, 66, 66) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(34, 34, 34) 0%, rgb(66, 66, 66) 100%);
+ 
+    -webkit-box-shadow: 0px 12px 0px #1b1b1b, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.44), inset 0px 0px 3px rgba(255,255,255,.22), 0px 0px 20px white, 0px 12px 20px white;
+    -moz-box-shadow: 0px 12px 0px #1b1b1b, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.44), inset 0px 0px 3px rgba(255,255,255,.22), 0px 0px 20px white, 0px 12px 20px white;
+    box-shadow: 0px 12px 0px #1b1b1b, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.44), inset 0px 0px 3px rgba(255,255,255,.22), 0px 0px 20px white, 0px 12px 20px white;
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(34, 34, 34)),
+        color-stop(1, rgb(66, 66, 66))
+    );
+
+}
+
+#hashing-modal h3 {
+    margin-top: 0;
+    font-weight: normal;
+    font-size: 1.5rem;
+}
+
+hr.bevel {
+    width: 90%;
+    background: transparent;
+    color: transparent;
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.hash-modal-text-container {
+    margin: 1.5em 1em;
+}
+
+#hash-progress {
+    width: 480px;
+    height: 40px;
+    margin: 1em auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+
+    box-shadow: 1px 1px 3px #4c4c4c, -1px -1px 3px #222;
+}
 
 /* Everything else */
 
