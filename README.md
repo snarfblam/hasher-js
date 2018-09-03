@@ -8,9 +8,13 @@ Hasher-js includes a test page (a build is required), but eventually a more poli
 
 Hasher-js is currently being developed and tested with current versions of Node and Chrome. One all functionality is implemented, compatability testing will be done.
 
-## Test Server
+## Web Page / Sever
 
-When the `npm run build` command is run, the test server and database files are copied into the same directory as the bundle: `/dist`. Run `node index.js` from this directory to start the test server. Access the page at `http://localhost:8000`.
+Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally.
+
+When the `npm run build` command is run, the page, server, and database files are copied into the same directory as the bundle: `/dist`. Run `node index.js` from this directory to start the test server. Access the page at `http://localhost:8000`.
+
+To host the page on a web server, simply copy the contents of the `/dist` directory, omitting `/dist/index.js`.
 
 ## Files
 
@@ -18,10 +22,32 @@ When the `npm run build` command is run, the test server and database files are 
 * `/src` - Main source for the hasher-js library
 * `/dist` - Created when the bundle is built. Run the test server from here.
 
-## Output
+## Usage
 
-Using the hasher-js library, you'll be given the following output, as a javascript object:
+You can include the hasher bundle in your HTML or include the module in your javascript.
 
+* `<script src='hasher.js'></script>`
+* `const hasher = require('hasher-js');`
+* `import * as hasher from 'hasher-js`;
+
+Hasher-js exposes one function, `getRomData()`, which accepts a `File` object. The returned object is a Promise that resolves to a `RomData` object. The returned promise also has a method, `cancel()`, that can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). *Note that the `cancel()` method is not propogated to chained promises*. Keep a reference to the original promise if you need the option of cancelling the operation.
+
+```javascript
+/*
+    hasher.getRomData(
+        rom: File, 
+        progressCallback?: function(number): void
+    ) : Promise<RomData>
+*/
+
+var hashPromise = hasher.getRomData(myFile);
+document.getElementById('cancel-button').onclick = hashPromise.cancel;
+hashPromise.then(function(romData) {
+    // Display the name of the game to the console
+    console.log("No-Intro name: " + romData.dbMatch);
+});
+```
+Below is a complete listing of the `RomData` type.
 ```javascript
 {
     platformIdent: "none" | "contents" | "extension" | "contents extension",
@@ -40,12 +66,16 @@ Using the hasher-js library, you'll be given the following output, as a javascri
         name: string,
         version: string
     },
-    dbMatch: string | null,
-    extendedData: any[],
+    dbMatch: string,
+    extendedData: {
+        category?: string, 
+        label: string, 
+        value: string
+    } [],
     format: string,
     hashes: {
             name: string, // name is a concatenation of a hash region name and
-                          // algo identifier, e.g. rom_sha1 or file_md5
+                          // algorithm identifier, e.g. rom_sha1 or file_md5
             value: string // hex string
     } [],
 }

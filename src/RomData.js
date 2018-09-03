@@ -24,6 +24,9 @@ function RomData(rom, hashAlgos, progressCallback) {
     var ext = rom.fileExtension; //getExtension(filename);
     var plat = platform.getAssociatedPlatform(rom, ext);
 
+    this._cancel = null;
+    /* Cancels the ROM hashing operation */
+    this.cancel = () => { if (this._cancel) this._cancel() };
     this.platformIdent = plat.method;
     this.platform = plat.platform;
     console.log(plat);
@@ -42,6 +45,7 @@ function RomData(rom, hashAlgos, progressCallback) {
         .then(hashRegions => {
             this.hashRegions = hashRegions;
             var hasher = new RomHasher(rom, this.hashRegions, hashAlgos, progressCallback);
+            this._cancel = hasher.cancel;
             return hasher.performHashes();
         })
         .then(hashlist => {
@@ -94,13 +98,20 @@ function RomData(rom, hashAlgos, progressCallback) {
  *  @param {function(number):void} [progressCallback]
  */
 function getData(rom, progressCallback) {
-    return rom.loaded.then(() => {
-        var result = new RomData(rom, null, progressCallback);
-        return result.processingCompletePromise.then(() => {
-            delete result.processingCompletePromise; // done with this
-            return result;
+    /** @type {RomData} */
+    var romData;
+    var promise = rom.loaded.then(() => {
+        romData = new RomData(rom, null, progressCallback);
+        var result = romData.processingCompletePromise.then(() => {
+            delete romData.processingCompletePromise; // done with this
+            return romData;
         });
-    })
+
+        return result;
+    });
+
+    promise.cancel = () => romData.cancel();
+    return promise;
 }
 
 

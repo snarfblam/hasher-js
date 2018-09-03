@@ -1,3 +1,9 @@
+function $$(selector) {
+    var result = $(selector);
+    if (result.length == 0) console.error('bad selector', selector);
+    return result;
+}
+
 var output = document.getElementById('hasher-output');
 output.innerText += 'Output:\n\n'
 
@@ -8,21 +14,22 @@ var detailRom, detailHashes, detailGeader;
 var isHashing = false;
 /** Length of time until the hashing modal will be shown, in milliseconds. */
 var hashModalDelay = 250;
+var cancelFunction = 
 
 $(document).ready(function() {
-    // $('#btn-hash').on('click', function(e) {
+    // $$('#btn-hash').on('click', function(e) {
     //     var romFile = document.getElementById('file').files[0];
     //     console.log(romFile);
     //     // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
     //     processRom(romFile);
     // });
-    btnRom = $('#btn-rom');
-    btnHeader = $('#btn-header');
-    btnHashes = $('#btn-hashes');
-    detailRom = $('#detail-rom');
-    detailHeader = $('#detail-header');
-    detailHashes = $('#detail-hashes');
-    btnCopy = $('#btn-copy');
+    btnRom = $$('#btn-rom');
+    btnHeader = $$('#btn-header');
+    btnHashes = $$('#btn-hashes');
+    detailRom = $$('#detail-rom');
+    detailHeader = $$('#detail-header');
+    detailHashes = $$('#detail-hashes');
+    btnCopy = $$('#btn-copy');
 
     // tab selection
     btnRom.on('click', function() { selectDetailTab(btnRom, detailRom); });
@@ -30,13 +37,13 @@ $(document).ready(function() {
     btnHeader.on('click', function() { selectDetailTab(btnHeader, detailHeader); });
 
     btnCopy.on('click', function(){
-        copyText($('#result-box-content').text());
+        copyText($$('#result-box-content').text());
         btnCopy.blur();
     });
 
 
 
-    var fileInputBox = $('#file-input-box');
+    var fileInputBox = $$('#file-input-box');
     fileInputBox.on('drop', onFileDrop);
     fileInputBox.on('dragdrop', onFileDrop);
     fileInputBox.on('dragover', onDragOver);
@@ -44,7 +51,7 @@ $(document).ready(function() {
     fileInputBox.on('dragend', onDragEnd);
     fileInputBox.on('dragleave', onDragEnd);
 
-    $('#file-input').on('change', onFileSelected)
+    $$('#file-input').on('change', onFileSelected)
 });
 
 function selectDetailTab(tab, content) {
@@ -58,7 +65,7 @@ function selectDetailTab(tab, content) {
 }
 
 function copyText(text) {
-    var textContainer = $('<textarea>').addClass('clipboard-container');
+    var textContainer = $$('<textarea>').addClass('clipboard-container');
     $(document.body).append(textContainer);
     textContainer.val(text);
     textContainer.select();
@@ -83,43 +90,44 @@ function processRom(file) { // fileContents, fileName) {
 
     displayHashingModal();    
 
-    hasher.getRomData(file, console.log)
-        .then(function (result) {
-            isHashing = false;
-            hideHashingModal();
+    var hashPromise = hasher.getRomData(file, updateHashProgress);
+    $$('#abort-hash').on('click', function (ev) { hashPromise.cancel(); });
+    hashPromise.then(function (result) {
+        isHashing = false;
+        hideHashingModal();
 
-            output.innerText += JSON.stringify(result, null, 4);
+        output.innerText += JSON.stringify(result, null, 4);
             
-            $('#result-box-content').text(createSummary(result));
+        $$('#result-box-content').text(createSummary(result));
 
 
-            var table = $('<table>');
-            var romData = getRomData(result);
-            var hashData = result.hashes.map(function(hashItem) {
-                return {
-                    label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
-                    value: hashItem.value
-                };
-            })
-
-
-            var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
-            var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
-            var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
-            
-            hashDataExt.forEach(function (item) { hashData.push(item) });
-            romDataExt.forEach(function (item) { romData.push(item) });
-
-            detailHashes.empty().append(extDataToTable(hashData));
-            detailHeader.empty().append(extDataToTable(headerDataExt));
-            detailRom.empty().append(extDataToTable(romData));
-            
-            $('#file-input-outer').addClass('file-loaded');
-            $('#platform-icon').attr('src', 'hasherRes/' + result.platform.name + '.png')
-            $('#game-name').text(file.name);
-            
+        var table = $$('<table>');
+        var romData = getRomData(result);
+        var hashData = result.hashes.map(function (hashItem) {
+            return {
+                label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
+                value: hashItem.value
+            };
         })
-        .catch(console.error);
+
+
+        var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
+        var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
+        var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
+            
+        hashDataExt.forEach(function (item) { hashData.push(item) });
+        romDataExt.forEach(function (item) { romData.push(item) });
+
+        detailHashes.empty().append(extDataToTable(hashData));
+        detailHeader.empty().append(extDataToTable(headerDataExt));
+        detailRom.empty().append(extDataToTable(romData));
+            
+        $$('#file-input-outer').addClass('file-loaded');
+        $$('#platform-icon').attr('src', 'hasherRes/' + result.platform.name + '.png')
+        $$('#game-name').text(file.name);
+            
+    })
+    .catch(console.error);
 }
 
 function displayHashingModal() {
@@ -127,8 +135,14 @@ function displayHashingModal() {
     setTimeout(displayFullHashingModal, hashModalDelay);
 }
 
+
 function displayFullHashingModal() {
-    if(isHashing) {
+    if (isHashing) {
+        var randX = ~~(Math.random() * 80);
+        var randY = ~~(Math.random() * 5);
+        $$('#hash-progress').css({backgroundPosition: randX * 6 + 'px ' + randY * 8 + 'px'});
+        
+        updateHashProgress(0);
         $(document.body).removeClass('modal-kill');
         $(document.body).addClass('modal modal-hashing');
     }
@@ -136,6 +150,11 @@ function displayFullHashingModal() {
 
 function hideHashingModal() { 
     $(document.body).removeClass('modal modal-kill modal-hashing');
+}
+
+function updateHashProgress(amt) {
+    var ticks = ~~(amt * 80); // ~~ truncate
+    $$('#hash-progress-marker').css({ left: ticks * 6 + 'px' });
 }
 
 /**
@@ -181,14 +200,14 @@ function createSummary(romData) {
 }
 
 function extDataToTable(extData) {
-    var table = $('<table>');
+    var table = $$('<table>');
     extData.forEach(function (entry) {
         var value = entry.value;
         if (value === 'true' || value === true) value = "Yes";
         if (value === 'false' || value === false) value = "No";
-        var row = $('<tr>');
-        row.append($('<td>').text(entry.label));
-        row.append($('<td>').text(value));
+        var row = $$('<tr>');
+        row.append($$('<td>').text(entry.label));
+        row.append($$('<td>').text(value));
         table.append(row);
     });
 
@@ -206,7 +225,7 @@ function whereCategoryEquals(category) {
 }
 
 function onFileSelected(e) {
-    var fileInput = $('#file-input')[0]
+    var fileInput = $$('#file-input')[0]
     if(fileInput.files && fileInput.files.length > 0) {
         processRom(fileInput.files[0]);
     }
@@ -215,7 +234,7 @@ function onFileSelected(e) {
 function onFileDrop(e) {
     var dragEvent = e.originalEvent;
     console.log('drop');
-    $('#file-input-box').removeClass('file-input-filedrag');
+    $$('#file-input-box').removeClass('file-input-filedrag');
     dragEvent.preventDefault();
     if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
         // for (var i = 0; i < dragEvent.dataTransfer.items.length; i++) {
@@ -236,7 +255,7 @@ function onFileDrop(e) {
 
 function onDragOver(ev) {
     console.log('File(s) in drop zone');
-    $('#file-input-box').addClass('file-input-filedrag');
+    $$('#file-input-box').addClass('file-input-filedrag');
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -244,7 +263,7 @@ function onDragOver(ev) {
 
 function onDragEnd(ev) {
     console.log('File(s) left drop zone');
-    $('#file-input-box').removeClass('file-input-filedrag');
+    $$('#file-input-box').removeClass('file-input-filedrag');
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();

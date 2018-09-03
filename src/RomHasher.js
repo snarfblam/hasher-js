@@ -27,7 +27,7 @@ class RomHasher {
         this._cancelList = [];
         this._progressCallback = progressCallback;
 
-        window.cancel = this.cancel.bind(this);
+        this.cancel = this.cancel.bind(this);
 
     }
 
