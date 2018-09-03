@@ -1,16 +1,14 @@
 # Hasher-js
-Hasher-js is the javascript counterpart to ROM Hasher. It calculates checksums to validate ROMs and performs a database lookup.
+Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It calculates checksums to validate ROMs and performs a database lookup.
 
 ## What It Consists Of
-The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES.
+The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES. Hasher-js also includes an HTML user interface (see "Web Page / Server" below).
 
-Hasher-js includes a test page (a build is required), but eventually a more polished page will created for a stand-alone version of hasher-js.
-
-Hasher-js is currently being developed and tested with current versions of Node and Chrome. One all functionality is implemented, compatability testing will be done.
+Hasher-js is currently being developed and tested with current versions of Chrome and Firefox. Compatability with IE11 and Edge are short-term future goals.
 
 ## Web Page / Sever
 
-Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally.
+Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. A build is required to use these features. (A)
 
 When the `npm run build` command is run, the page, server, and database files are copied into the same directory as the bundle: `/dist`. Run `node index.js` from this directory to start the test server. Access the page at `http://localhost:8000`.
 
@@ -18,37 +16,59 @@ To host the page on a web server, simply copy the contents of the `/dist` direct
 
 ## Files
 
-* `/server` - Test server. Do not run from here
-* `/src` - Main source for the hasher-js library
+* `/server` - Web page and server. Do not run from here.
+* `/src` - Main source for the hasher-js library.
 * `/dist` - Created when the bundle is built. Run the test server from here.
+* `/dist/hasher.js` - Compiled Hasher script.
 
 ## Usage
 
-You can include the hasher bundle in your HTML or include the module in your javascript.
+You can include the hasher bundle in your HTML or include the module via javascript.
 
 * `<script src='hasher.js'></script>`
-* `const hasher = require('hasher-js');`
-* `import * as hasher from 'hasher-js`;
+* `const Hasher = require('hasher-js');`
+* `import * as Hasher from 'hasher-js`;
 
-Hasher-js exposes one function, `getRomData()`, which accepts a `File` object. The returned object is a Promise that resolves to a `RomData` object. The returned promise also has a method, `cancel()`, that can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). *Note that the `cancel()` method is not propogated to chained promises*. Keep a reference to the original promise if you need the option of cancelling the operation.
+Hasher-js exposes a constructor, `Hasher()`, which accepts a `File` object. The returned object has two methods:
+
+* **`getRomData()`** - begins processing the file and returns a Promise that resolves to a `RomData` object. `getRomData()` accepts an optional callback (`function(number)`) that is called with a value between 0 and 1 to report progress.
+* **`cancel()`** - can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). 
 
 ```javascript
 /*
-    hasher.getRomData(
-        rom: File, 
-        progressCallback?: function(number): void
-    ) : Promise<RomData>
+    new Hasher(rom: File):
+    {
+        getRomData: function(progressCallback?: function(number): void): Promise<RomData>,
+        cancel: function(): void
+    }
 */
 
-var hashPromise = hasher.getRomData(myFile);
-document.getElementById('cancel-button').onclick = hashPromise.cancel;
-hashPromise.then(function(romData) {
-    // Display the name of the game to the console
-    console.log("No-Intro name: " + romData.dbMatch);
-});
+var hashObj = new Hasher(myFile);
+
+// Output progress to the console
+var progressCallback = function(progress) { 
+    var percent = Math.floor(progress * 100);
+    console.log("% done: " + percent);
+};
+
+// Allow the user to cancel long operations
+document.getElementById('cancel-button').onclick = function() { 
+    hashObj.cancel(); 
+};
+
+// Display our ROM database match on the console
+hashObj.getRomData(progressCallback)
+    .then(function(romData) {
+        // Display the name of the game to the console
+        console.log("No-Intro name: " + romData.dbMatch);
+    });
 ```
+
 Below is a complete listing of the `RomData` type.
+
 ```javascript
+// Any properties not outlined here are subject to change in future versions
+
 {
     platformIdent: "none" | "contents" | "extension" | "contents extension",
     platform: {

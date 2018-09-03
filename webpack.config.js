@@ -7,7 +7,8 @@ module.exports = {
     stats: 'normal',
     output: {
         libraryTarget: 'var',
-        library: 'hasher',
+        library: 'Hasher',
+        filename: "hasher.js",
     },
     devtool: 'source-map',
     module: {

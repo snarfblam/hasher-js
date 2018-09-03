@@ -22,55 +22,44 @@
  *      http://localhost:8000/
  */
 
-
-import Buffer from './Buffer';
-// Apply Buffer shim (needed by sha1 library and for slice method)
-if (typeof window !== 'undefined') {
-    window.Buffer = Buffer;
-}
-
+//@ts-check
+"use strict";
 
 import RomData from './RomData';
 import Rom from './Rom';
 
-
-
-
-
-/** Returns a promise that resolves to an object containing metadata about a ROM
- *  @param {File} romFile
- *  @param {function(number):void} [progressCallback]
+/** Creates an object that can produce metadata for a ROM file
+ *  @param {File} romFile File to process. A blob can be processed provided 
+ *                that it has a name property containing a string
  */
-function getRomData(romFile, progressCallback) {
-    // if (rom instanceof File || rom instanceof Blob) {
-    //     return getFileBytes(rom).then(data => RomData.getData(data, filename));
-    // } else {
-    //     return RomData.getData(rom, filename);
-    // }
-    var rom = new Rom(romFile);
-    return RomData.getData(rom, progressCallback);
+class Hasher {
+    constructor(romFile) {
+        this._rom = new Rom(romFile);
+        this._cancel = null;
+    }
+
+    /** Begins processing the ROM. Returns a promise that resolves to a
+     *  @param {function(number):void} [progressCallback]
+     */
+    getRomData(progressCallback) {
+        if (this._rom == null) throw Error('Can not make multiple calls to getRomData');
+
+        /** @type {Promise<any> & {[x: string]: any}} */
+        var promise = RomData.getData(this._rom, progressCallback);
+        this._cancel = promise.cancel;
+
+        // Let things be collected
+        this._rom = null;
+        promise.then(() => this._cancel = null);
+
+        return promise;
+    }
+
+    cancel() {
+        if (this._cancel) this._cancel();
+        this._cancel = null;
+    }
 }
 
-/**
- * Accepts a File object and returns a promise that resolves to a Uint8Array
- * @param {File | Blob} file 
- */
-function getFileBytes(file) {
-    // What a pain
-    return new Promise((resolve, reject) => {
-        var reader = new FileReader();
-        reader.onload = function () {
-            resolve(this.result);
-        };
-        reader.onerror = function (er) {
-            reject();
-        };
-        reader.readAsArrayBuffer(file);
-    }).then(arrayBuffer => {
-        return new Buffer(arrayBuffer);
-    });
-}
-
-
-
-export { getRomData, getFileBytes };
+// export default produces an object {_deafult: Hasher}... not what we want
+module.exports = Hasher;

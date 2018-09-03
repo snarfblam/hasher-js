@@ -14,7 +14,6 @@ var detailRom, detailHashes, detailGeader;
 var isHashing = false;
 /** Length of time until the hashing modal will be shown, in milliseconds. */
 var hashModalDelay = 250;
-var cancelFunction = 
 
 $(document).ready(function() {
     // $$('#btn-hash').on('click', function(e) {
@@ -90,10 +89,15 @@ function processRom(file) { // fileContents, fileName) {
 
     displayHashingModal();    
 
-    var hashPromise = hasher.getRomData(file, updateHashProgress);
-    $$('#abort-hash').on('click', function (ev) { hashPromise.cancel(); });
-    hashPromise.then(function (result) {
-        isHashing = false;
+    var hasher = new Hasher(file);
+
+    // var hashPromise = hasher.getRomData(file, updateHashProgress);
+    // $$('#abort-hash').on('click', function (ev) { hashPromise.cancel(); });
+    $$('#abort-hash').on('click', function (ev) { hasher.cancel() });
+
+
+    // hashPromise.then(function (result) {
+    hasher.getRomData(updateHashProgress).then(function (result) {        isHashing = false;
         hideHashingModal();
 
         output.innerText += JSON.stringify(result, null, 4);
