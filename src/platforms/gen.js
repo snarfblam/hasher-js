@@ -96,7 +96,13 @@ class GenPlatform extends Platform {
     }
 
     _decodeHeader(rom) {
-        return new GenHeader(rom.preview);
+        return this.getBinFormat(rom)
+            .then(binRom => {
+                return binRom.getBytes(0, 0x1000);
+            })
+            .then(binRomData => {
+                return new GenHeader(binRomData);
+            })
     }
 }
 
