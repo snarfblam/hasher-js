@@ -25,9 +25,7 @@
     "js-sha1": "^0.6.0",
     "ts-loader": "^4.4.1"
   },
-  "optionalDependencies": {
-    "sha1": "^1.1.1"
-  },
+  "optionalDependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
