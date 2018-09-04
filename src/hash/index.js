@@ -10,6 +10,7 @@
  */
 
 // @ts-check
+
 import { Hasher } from './Hasher';
 import crc16 from './crc16';
 import crc32 from './crc32';
@@ -51,7 +52,7 @@ function asBlob(data, offset, length) {
  */
 function hashAsync(algo, buffer, offset, length, progressCallback) {
     var end = offset + length;
-    var hasher = algo.create(); // crypto.createHash('sha1');
+    var hasher = algo.create(); 
 
     // Convert byte array to a blob
     if (buffer instanceof Uint8Array) {
@@ -159,4 +160,4 @@ function crc16Async(buffer, offset, length, progressCallback) {
 function crc32Async(buffer, offset, length, progressCallback) {
     return hashAsync(crc32, buffer, offset, length, progressCallback);
 }
-export { jsSha1 as sha1, crc16, sha1Async, crc16Async, md5Async, crc32Async };
+export { jsSha1 as sha1, crc16, crc32, sha1Async, crc16Async, md5Async, crc32Async };

@@ -1,3 +1,8 @@
+/*
+    Extended Data
+
+    Used to accumulate miscellaneous data about a ROM.
+*/
 // @ts-check
 
 class ExtendedData {

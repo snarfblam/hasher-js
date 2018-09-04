@@ -1,8 +1,14 @@
-import {readBytesFromBlob, getFileExtension} from './util';
+/*
+    Rom
+
+    Wraps a File or Blob and provides helper methods.
+*/
+// @ts-check
+
+import { readBytesFromBlob, getFileExtension } from './util';
 
 class Rom {
     /**
-     * 
      * @param {File | Blob} romFile
      */
     constructor(romFile) {
@@ -112,7 +118,6 @@ class Rom {
 
 /** Number of bytes that will be loaded and readily accessible in the Rom.preview property. */
 Rom.contentsPreviewSize = 0x10000;
-
 
 
 export default Rom;

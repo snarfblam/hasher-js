@@ -1,7 +1,10 @@
+/*
+    Defines the Hasher and HasherObject interfaces
+
+    This exists purely for //@ts-check
+*/
+
 // @ts-check
-
-
-// // Platform interface
 
 /**
  * @typedef {Object} Hasher

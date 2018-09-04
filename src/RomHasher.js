@@ -1,4 +1,9 @@
-"use strict";
+/*
+    RomHasher
+
+    Orchestrates hashing operations, providing a mechanism to listen to
+    overall progress updates and cancel the overall operation.
+*/
 
 import RomRegion from './RomRegion';
 import * as hasher from './hash';

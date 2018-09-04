@@ -61,5 +61,5 @@ class Hasher {
     }
 }
 
-// export default produces an object {_deafult: Hasher}... not what we want
+// 'export default Hasher' produces an object {_deafult: Hasher}... not what we want
 module.exports = Hasher;

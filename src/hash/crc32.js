@@ -3,6 +3,7 @@
 
     Provides both a simple hash function and a hasher object
 */
+
 // @ts-check
 
 const poly32 = new Uint32Array([

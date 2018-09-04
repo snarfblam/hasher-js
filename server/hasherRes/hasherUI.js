@@ -1,76 +1,57 @@
+/*
+    Hasher-js UI
+
+    This file is *not* transpiled. It is written to work in browsers as-is, but
+    may require a Promise polyfill.
+*/
+
+// @ts-check
+"use strict";
+
+
+///////////////////// Variables //////////////////////////////////////////////
+
+
+// How do I declare a pre-existing global? (re: ts error checking)
+var $ = $;
+var Hasher = Hasher;
+
+/** Contains a collection of jQuery objects for DOM elements */
+var ui;
+
+/** Set to true while a ROM is being processed */
+var isHashing = false;
+
+/** Length of time until the hashing modal will be shown, in milliseconds. */
+var hashModalDelay = 250;
+
+/** The Hasher object associated with the data currently being processed or displayed */
+var hasher;
+
+/** Lookup to for pretty casing of RomRegion names */
+var regNameLookup = {
+    file: "File",
+    rom: "ROM",
+}
+
+
+///////////////////// Helper Functions ///////////////////////////////////////
+
+/** Performs a jQuery call, but writes an error to the console if the selector
+ *  does not match any elements on the page
+ */
 function $$(selector) {
     var result = $(selector);
     if (result.length == 0) console.error('bad selector', selector);
     return result;
 }
 
-var output = document.getElementById('hasher-output');
-output.innerText += 'Output:\n\n'
-
-var btnRom, btnHashes, btnHeader;
-var detailRom, detailHashes, detailGeader;
-
-/** Set to true while a ROM is being processed */
-var isHashing = false;
-/** Length of time until the hashing modal will be shown, in milliseconds. */
-var hashModalDelay = 250;
-
-$(document).ready(function() {
-    // $$('#btn-hash').on('click', function(e) {
-    //     var romFile = document.getElementById('file').files[0];
-    //     console.log(romFile);
-    //     // hasher.getFileBytes(romFile).then(rom => processRom(rom, romFile.name));
-    //     processRom(romFile);
-    // });
-    btnRom = $$('#btn-rom');
-    btnHeader = $$('#btn-header');
-    btnHashes = $$('#btn-hashes');
-    detailRom = $$('#detail-rom');
-    detailHeader = $$('#detail-header');
-    detailHashes = $$('#detail-hashes');
-    btnCopy = $$('#btn-copy');
-
-    // tab selection
-    btnRom.on('click', function() { selectDetailTab(btnRom, detailRom); });
-    btnHashes.on('click', function() { selectDetailTab(btnHashes, detailHashes); });
-    btnHeader.on('click', function() { selectDetailTab(btnHeader, detailHeader); });
-
-    btnCopy.on('click', function(){
-        copyText($$('#result-box-content').text());
-        btnCopy.blur();
-    });
-
-
-
-    var fileInputBox = $$('#file-input-box');
-    fileInputBox.on('drop', onFileDrop);
-    fileInputBox.on('dragdrop', onFileDrop);
-    fileInputBox.on('dragover', onDragOver);
-    fileInputBox.on('dragenter', onDragOver);
-    fileInputBox.on('dragend', onDragEnd);
-    fileInputBox.on('dragleave', onDragEnd);
-
-    $$('#file-input').on('change', onFileSelected)
-});
-
-function selectDetailTab(tab, content) {
-     setClass(btnRom, btnRom == tab, 'tab-item-select');
-     setClass(btnHeader, btnHeader == tab, 'tab-item-select');
-     setClass(btnHashes, btnHashes == tab, 'tab-item-select');
-
-     setClass(detailRom, detailRom == content, 'detail-box-content-selected');
-     setClass(detailHashes, detailHashes == content, 'detail-box-content-selected');
-     setClass(detailHeader, detailHeader == content, 'detail-box-content-selected');
-}
-
-function copyText(text) {
-    var textContainer = $$('<textarea>').addClass('clipboard-container');
-    $(document.body).append(textContainer);
-    textContainer.val(text);
-    textContainer.select();
-    document.execCommand('copy');
-    textContainer.remove();
-}
+/** Adds or removes one or more classes (space-separated) to a jQuery object
+ *  based on the specified state.
+ *  @param {*} obj jQuery object
+ *  @param {boolean} state If true, the class(es) will be added, if false they'll be removed.
+ *  @param {string} className Class(es) to add or remove
+ */
 function setClass(obj, state, className){
     if(state){
         obj.addClass(className);
@@ -79,72 +60,146 @@ function setClass(obj, state, className){
     }
 }
 
-var regNameLookup = {
-    file: "File",
-    rom: "ROM",
+
+///////////////////// Event Handlers /////////////////////////////////////////
+
+
+/** Page initialization */
+$(document).ready(function() {
+    ui = {
+        btnRom: $$('#btn-rom'),
+        btnHeader: $$('#btn-header'),
+        btnHashes: $$('#btn-hashes'),
+        detailRom: $$('#detail-rom'),
+        detailHeader: $$('#detail-header'),
+        detailHashes: $$('#detail-hashes'),
+        btnCopy: $$('#btn-copy'),
+        fileInput: $$('#file-input'),
+        fileInputBox: $$('#file-input-box'),
+        abortHash: $$('#abort-hash'),
+        file: {
+            input: $$('#file-input'),
+            inputBox: $$('#file-input-box'),
+            inputBoxOuter: $$('#file-input-outer'),
+            platformIcon: $$('#platform-icon'),
+            gameName: $$('#game-name'),
+        },
+        progressBar: $$('#hash-progress'),
+        progressBarMarker: $$('#hash-progress-marker'),
+        outputSummary: $$('#result-box-content'),
+        body: $$(document.body),
+        output: document.getElementById('hasher-output'),
+    };
+
+    // tab selection
+    ui.btnRom.on('click', function() { selectDetailTab(ui.btnRom, ui.detailRom); });
+    ui.btnHashes.on('click', function() { selectDetailTab(ui.btnHashes, ui.detailHashes); });
+    ui.btnHeader.on('click', function() { selectDetailTab(ui.btnHeader, ui.detailHeader); });
+    ui.btnCopy.on('click', function(){
+        copyText(ui.outputSummary.text());
+        ui.btnCopy.blur();
+    });
+
+    // File drag and drop
+    ui.fileInputBox.on('drop', onFileDrop);
+    ui.fileInputBox.on('dragdrop', onFileDrop);
+    ui.fileInputBox.on('dragover', onDragOver);
+    ui.fileInputBox.on('dragenter', onDragOver);
+    ui.fileInputBox.on('dragend', onDragEnd);
+    ui.fileInputBox.on('dragleave', onDragEnd);
+
+    // File dialog
+    ui.fileInput.on('change', onFileSelected);
+
+    // 'Cancel' button
+    ui.abortHash.on('click', function (ev) { hasher.cancel() });
+});
+
+/** Handles the selection of a file via the file dialog */
+function onFileSelected(e) {
+    var files = ui.file.input[0].files;
+    if(files && files.length > 0) {
+        processRom(files[0]);
+    }
 }
 
-function processRom(file) { // fileContents, fileName) {
-    isHashing = true;
+/** Handles file selection via drag and drop */
+function onFileDrop(e) {
+    ui.file.inputBox.removeClass('file-input-filedrag');
 
-    displayHashingModal();    
+    var dragEvent = e.originalEvent;
+    dragEvent.preventDefault();
 
-    var hasher = new Hasher(file);
+    if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
+        var file = dragEvent.dataTransfer.items[0].getAsFile();
+        processRom(file);
+    }
 
-    // var hashPromise = hasher.getRomData(file, updateHashProgress);
-    // $$('#abort-hash').on('click', function (ev) { hashPromise.cancel(); });
-    $$('#abort-hash').on('click', function (ev) { hasher.cancel() });
-
-
-    // hashPromise.then(function (result) {
-    hasher.getRomData(updateHashProgress).then(function (result) {        isHashing = false;
-        hideHashingModal();
-
-        output.innerText += JSON.stringify(result, null, 4);
-            
-        $$('#result-box-content').text(createSummary(result));
-
-
-        var table = $$('<table>');
-        var romData = getRomData(result);
-        var hashData = result.hashes.map(function (hashItem) {
-            return {
-                label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
-                value: hashItem.value
-            };
-        })
-
-
-        var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
-        var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
-        var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
-            
-        hashDataExt.forEach(function (item) { hashData.push(item) });
-        romDataExt.forEach(function (item) { romData.push(item) });
-
-        detailHashes.empty().append(extDataToTable(hashData));
-        detailHeader.empty().append(extDataToTable(headerDataExt));
-        detailRom.empty().append(extDataToTable(romData));
-            
-        $$('#file-input-outer').addClass('file-loaded');
-        $$('#platform-icon').attr('src', 'hasherRes/' + result.platform.name + '.png')
-        $$('#game-name').text(file.name);
-            
-    })
-    .catch(console.error);
 }
 
+function onDragOver(ev) {
+    ui.file.inputBox.addClass('file-input-filedrag');
+
+    // Prevent default behavior (Prevent file from being downloaded/opened in browser)
+    ev.preventDefault();
+}
+
+function onDragEnd(ev) {
+    console.log('File(s) left drop zone');
+    ui.file.inputBox.removeClass('file-input-filedrag');
+
+    // Prevent default behavior (Prevent file from being downloaded/opened in browser)
+    ev.preventDefault();
+}
+
+
+///////////////////// UI Manipulation ////////////////////////////////////////
+
+
+/** Selects the specified tab and tab page
+ *  @param {*} tab jQuery object representing the tab
+ *  @param {*} content jQuery object representing the tab page
+ */
+function selectDetailTab(tab, content) {
+    // Select specified tab
+    setClass(ui.btnRom, ui.btnRom == tab, 'tab-item-select');
+    setClass(ui.btnHeader, ui.btnHeader == tab, 'tab-item-select');
+    setClass(ui.btnHashes, ui.btnHashes == tab, 'tab-item-select');
+    
+    // Select specified tab page
+    setClass(ui.detailRom, ui.detailRom == content, 'detail-box-content-selected');
+    setClass(ui.detailHashes, ui.detailHashes == content, 'detail-box-content-selected');
+    setClass(ui.detailHeader, ui.detailHeader == content, 'detail-box-content-selected');
+}
+
+/** Copies the specified text to the clipboard
+ *  @param {string} text 
+ */
+function copyText(text) {
+    var textContainer = $('<textarea>').addClass('clipboard-container');
+    ui.body.append(textContainer);
+    textContainer.val(text);
+    textContainer.select();
+    document.execCommand('copy');
+    textContainer.remove();
+}
+
+/** Prompts the display the hashing progress modal. */
 function displayHashingModal() {
+    // The modal does not actually become visible until after a short period so
+    // that it does not quickly flash on and off the screen for small files.
+
     $(document.body).addClass('modal modal-kill');
     setTimeout(displayFullHashingModal, hashModalDelay);
 }
 
-
+/** Displays the hashing progress modal.
+ *  Invoked after the 'grace period' by displayHashingModal. */
 function displayFullHashingModal() {
     if (isHashing) {
         var randX = ~~(Math.random() * 80);
         var randY = ~~(Math.random() * 5);
-        $$('#hash-progress').css({backgroundPosition: randX * 6 + 'px ' + randY * 8 + 'px'});
+        ui.progressBar.css({backgroundPosition: randX * 6 + 'px ' + randY * 8 + 'px'});
         
         updateHashProgress(0);
         $(document.body).removeClass('modal-kill');
@@ -152,20 +207,79 @@ function displayFullHashingModal() {
     }
 }
 
+/** Hides the hashing progress modal */
 function hideHashingModal() { 
     $(document.body).removeClass('modal modal-kill modal-hashing');
 }
 
+/** Updates the hashing progress bar */
 function updateHashProgress(amt) {
     var ticks = ~~(amt * 80); // ~~ truncate
-    $$('#hash-progress-marker').css({ left: ticks * 6 + 'px' });
+    ui.progressBarMarker.css({ left: ticks * 6 + 'px' });
 }
+
+
+///////////////////// ROM Processing /////////////////////////////////////////
+
+
+function processRom(file) {
+    isHashing = true;
+    displayHashingModal();    
+
+    hasher = new Hasher(file);
+    hasher.getRomData(updateHashProgress).then(function (result) {        isHashing = false;
+        hideHashingModal();
+        ui.output.innerText += JSON.stringify(result, null, 4);
+        ui.outputSummary.text(createSummary(result));
+
+        // Grab random bits from RomData to show in the details panes
+        var romDetails = getRomDetails(result);
+        var hashDetails = result.hashes.map(function (hashItem) {
+            return {
+                label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
+                value: hashItem.value
+            };
+        })
+
+        // Grab additional 'extended data' to show in the detail panes
+        var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
+        var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
+        var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
+            
+        // Mash em together
+        hashDataExt.forEach(function (item) { hashDetails.push(item) });
+        romDataExt.forEach(function (item) { romDetails.push(item) });
+
+        // Update detail panes
+        ui.detailHashes.empty().append(extDataToTable(hashDetails));
+        ui.detailHeader.empty().append(extDataToTable(headerDataExt));
+        ui.detailRom.empty().append(extDataToTable(romDetails));
+            
+        // Update file box
+        ui.file.inputBoxOuter.addClass('file-loaded');
+        ui.file.platformIcon.attr('src', 'hasherRes/' + result.platform.name + '.png')
+        ui.file.gameName.text(file.name);
+            
+    })
+    .catch(console.error);
+}
+
+/** 
+ * Returns a predicate function that matches objects with a category property that
+ * matches the specified value.
+ */
+function whereCategoryEquals(category) {
+    return function(item) {
+        return item.category === category;
+    }
+}
+
 
 /**
  * Gets an array of {label: string, category: "rom", value: string} objects
- * @param {RomData} romData 
+ * @param {*} romData 
  */
-function getRomData(romData) {
+function getRomDetails(romData) {
     var result = [];
 
     var fileSize = romData.hashes.find(function (hash) { return hash.region.name === 'file' }).region.length;
@@ -203,83 +317,18 @@ function createSummary(romData) {
     return outputString;
 }
 
+
 function extDataToTable(extData) {
-    var table = $$('<table>');
+    var table = $('<table>');
     extData.forEach(function (entry) {
         var value = entry.value;
         if (value === 'true' || value === true) value = "Yes";
         if (value === 'false' || value === false) value = "No";
-        var row = $$('<tr>');
-        row.append($$('<td>').text(entry.label));
-        row.append($$('<td>').text(value));
+        var row = $('<tr>');
+        row.append($('<td>').text(entry.label));
+        row.append($('<td>').text(value));
         table.append(row);
     });
 
     return table;
-}
-
-/** 
- * Returns a predicate function that matches objects with a category property that
- * matches the specified value.
- */
-function whereCategoryEquals(category) {
-    return function(item) {
-        return item.category === category;
-    }
-}
-
-function onFileSelected(e) {
-    var fileInput = $$('#file-input')[0]
-    if(fileInput.files && fileInput.files.length > 0) {
-        processRom(fileInput.files[0]);
-    }
-}
-
-function onFileDrop(e) {
-    var dragEvent = e.originalEvent;
-    console.log('drop');
-    $$('#file-input-box').removeClass('file-input-filedrag');
-    dragEvent.preventDefault();
-    if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
-        // for (var i = 0; i < dragEvent.dataTransfer.items.length; i++) {
-        //     // If dropped items aren't files, reject them
-        //     if (dragEvent.dataTransfer.items[i].kind === 'file') {
-        //         var file = dragEvent.dataTransfer.items[i].getAsFile();
-        //         console.log('... file[' + i + '].name = ' + file.name);
-        //     }
-        // }
-        var file = dragEvent.dataTransfer.items[0].getAsFile();
-        console.log(file);
-        processRom(file);
-    }
-
-    // removeDragData(dragEvent);
-
-}
-
-function onDragOver(ev) {
-    console.log('File(s) in drop zone');
-    $$('#file-input-box').addClass('file-input-filedrag');
-
-    // Prevent default behavior (Prevent file from being opened)
-    ev.preventDefault();
-}
-
-function onDragEnd(ev) {
-    console.log('File(s) left drop zone');
-    $$('#file-input-box').removeClass('file-input-filedrag');
-
-    // Prevent default behavior (Prevent file from being opened)
-    ev.preventDefault();
-}
-function removeDragData(ev) {
-    console.log('Removing drag data')
-
-    if (ev.dataTransfer.items) {
-        // Use DataTransferItemList interface to remove the drag data
-        ev.dataTransfer.items.clear();
-    } else {
-        // Use DataTransfer interface to remove the drag data
-        ev.dataTransfer.clearData();
-    }
 }
