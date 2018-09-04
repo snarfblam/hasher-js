@@ -395,6 +395,7 @@ hr.bevel {
     background: black;
     position: absolute;
     bottom: 20px;
+    left: 50%;
     width: 180px;
     margin-left: -90px;
 

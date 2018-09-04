@@ -88,12 +88,19 @@ function hashAsync(algo, buffer, offset, length, progressCallback) {
                 }
             };
             var dataReady = () => {
+                // @ts-ignore
                 var data = new Uint8Array(reader.result);
                 hasher.update(data);
                 processedByteCount += data.length;
                 if (progressCallback) progressCallback(processedByteCount / length);
 
-                readNextChunk();
+                // @ts-ignore
+                if (window.poopMode) {
+                    // IE will freeze if we don't explicitly yield the CPU
+                    setTimeout(readNextChunk, 1);
+                } else {
+                    readNextChunk();
+                }
             };
 
             reader.onload = dataReady;
