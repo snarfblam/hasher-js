@@ -125,6 +125,9 @@ function onFileSelected(e) {
 
 /** Handles file selection via drag and drop */
 function onFileDrop(e) {
+    console.log('drop', e.originalEvent.dataTransfer);
+    console.log('drop', e.originalEvent);
+
     ui.file.inputBox.removeClass('file-input-filedrag');
 
     var dragEvent = e.originalEvent;
@@ -133,23 +136,26 @@ function onFileDrop(e) {
     if (dragEvent.dataTransfer.items && dragEvent.dataTransfer.items.length > 0) {
         var file = dragEvent.dataTransfer.items[0].getAsFile();
         processRom(file);
+    } else if (dragEvent.dataTransfer.files && dragEvent.dataTransfer.files.length > 0) {
+        processRom(dragEvent.dataTransfer.files[0]);
     }
-
 }
 
 function onDragOver(ev) {
     ui.file.inputBox.addClass('file-input-filedrag');
+    console.log('file in drop zone');
 
     // Prevent default behavior (Prevent file from being downloaded/opened in browser)
     ev.preventDefault();
+    ev.stopPropagation();
 }
 
 function onDragEnd(ev) {
-    console.log('File(s) left drop zone');
     ui.file.inputBox.removeClass('file-input-filedrag');
 
     // Prevent default behavior (Prevent file from being downloaded/opened in browser)
     ev.preventDefault();
+    ev.stopPropagation();
 }
 
 
