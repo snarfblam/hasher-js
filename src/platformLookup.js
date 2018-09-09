@@ -24,7 +24,6 @@ var platformLookup = {
      * to identify the platform
      */
     getAssociatedPlatform: function (rom, ext) {
-        // TODO: return unknown platform object when no match is found
         var platformMatches = [];
 
         // Match by contents

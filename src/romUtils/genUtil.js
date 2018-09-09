@@ -180,13 +180,6 @@ var genUtil = {
     /** Gets ROM layout and platform (gen vs. 32x) information based on internal header. */
     getRomInfo: getRomInfo,
 
-    // /** Gets the ROM in a raw ROM image (not interleaved or headered) if it is not already. */
-    // getBinFormat: getBinFormat,
-
-    hasValidSmdHeader: function(romImage) {
-        // todo: remove?
-    },
-
     convertRomToBin: convertRomToBin,
 
     externalHeaderSize: externalHeaderSize,

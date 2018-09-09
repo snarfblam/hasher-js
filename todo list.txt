@@ -1,9 +1,4 @@
-- review snes platform and consider whether rom preview should be expanded to a large enough size to verify
-  internal header checksum via Rom.preview
-    - Alternatively, it would be nice if the ROM could be deserialized only after a presumtive (checksum vs. complement) match
-    - Additionally, it's perfectly reasonable to check if rom.preview.length == rom.size and if so calc and check the checksum
 - there should be something built into Platform to parse and persist internal header
-- consider merging util modules with platform modules
 
 - neaten up boilerplate comments, imports, formatting
 
@@ -17,6 +12,3 @@
     - When you getRomData, you can specify a bool for all hashes. 
     - If you specify false, the RomData will have a method to compute the addl' hashes and return a promise
         - Promise will resolve to original RomData object, which will be updated
-
-- ROM databases should specify whether they're looking for a ROM or file hash. 
-    - RomData should select a hash to search by accordingly
