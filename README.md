@@ -120,7 +120,7 @@ These features are implemented via polyfill.io in the included front end.
 
 After identifying the platform of a ROM image, the software attempts to request the appropriate database at the relative URL `db/*platform-name*.json`. The default databases are No-Intro databases, converted to JSON. The JSON objects contain a property, `meta`, with additional information about the database.
 
-The following regexs are used to convert the No-Intro databases to json (using VSCode) (additional massaging will be required):
+The following regexes are used to convert the No-Intro databases to json (using VSCode) (additional massaging will be required):
 
 ``` regex
 Clr-Mame-Pro format
@@ -138,21 +138,11 @@ with:
 
 ## License
 
-The source code of this version of Hasher-js is distributed under 
-WTFPL 2.0. This applies to any code included in the original repository 
-unless otherwise indicated in the relevant file or this readme, and
-does not apply to third-party components that are referenced by but 
-not distributed with this source code, nor does it apply to any bundled 
-version of this software. 
-
-"Bundles" are files that include processed and modified versions of
-the source code from both Hasher-js and third-party components and
-as such are subject to the licenses of said components, which are
-included below for convenience.
+Hasher-js is distributed under WTFPL 2.0 (see license.txt.). Hasher-js uses 
+the following third-party components that are referenced by the Hasher-js 
+source code and included in the compiled bundle:
 
 ### js-sha1
-
-js-sha1 is released under the MIT license:
 
     Copyright 2014-2017 Chen, Yi-Cyuan
     
@@ -177,7 +167,6 @@ js-sha1 is released under the MIT license:
 
 ### js-md5
 
-js-md5 is released under the MIT license
     Copyright 2014-2017 Chen, Yi-Cyuan
     
     Permission is hereby granted, free of charge, to any person obtaining
