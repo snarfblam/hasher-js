@@ -90,7 +90,6 @@ class GenPlatform extends Platform {
     _convertToBin(rom) {
         return genUtil.convertRomToBin(rom)
             .then(result => {
-                console.log('size: ', result.size);
                 return result;
             });
     }

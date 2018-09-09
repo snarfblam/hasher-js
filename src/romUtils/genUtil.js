@@ -135,7 +135,6 @@ function convertRomToBin(rom) {
         var deinterleaveBuffer = new Uint8Array(interleaveChunkSize);
 
         var chunkReady = (/**@type {Uint8Array} */ bytes) => {
-            console.log(bytes.length, interleaveChunkSize, bytes.length == interleaveChunkSize, bytes.length === interleaveChunkSize);
             if (bytes.length === interleaveChunkSize) {
                 // De-interleave into a separate buffer
                 deinterleaveChunk(bytes, 0, deinterleaveBuffer, 0);

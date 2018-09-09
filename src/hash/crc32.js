@@ -64,7 +64,6 @@ crc32.create = function() {
 class Crc32HasherObject {
     constructor() {
         this.currentValue = null;
-        console.log('created');
     }
 
     update(data) {

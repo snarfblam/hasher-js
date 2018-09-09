@@ -125,9 +125,6 @@ function onFileSelected(e) {
 
 /** Handles file selection via drag and drop */
 function onFileDrop(e) {
-    console.log('drop', e.originalEvent.dataTransfer);
-    console.log('drop', e.originalEvent);
-
     ui.file.inputBox.removeClass('file-input-filedrag');
 
     var dragEvent = e.originalEvent;
@@ -143,7 +140,6 @@ function onFileDrop(e) {
 
 function onDragOver(ev) {
     ui.file.inputBox.addClass('file-input-filedrag');
-    console.log('file in drop zone');
 
     // Prevent default behavior (Prevent file from being downloaded/opened in browser)
     ev.preventDefault();

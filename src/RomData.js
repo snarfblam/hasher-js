@@ -46,6 +46,10 @@ function RomData(rom, hashAlgos, progressCallback) {
     var extendedDataPromise = plat.platform.getExtendedData(rom)
         .then(extendedData => {
             this.extendedData = extendedData.getData();
+        })
+        .catch(err => {
+            console.error(err);
+            this.extendedData = [];
         });
     
     var hashPromise = plat.platform.getHashRegions(rom)
@@ -57,6 +61,10 @@ function RomData(rom, hashAlgos, progressCallback) {
         })
         .then(hashlist => {
             this.hashes = hashlist;
+        })
+        .catch(err => {
+            console.error(err);
+            this.hashes = [];
         });
     
     var dbGetPromise = romDb(this.platform.name)

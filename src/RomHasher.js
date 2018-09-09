@@ -97,7 +97,6 @@ class RomHasher {
                 var matches = this.hashlist.filter(item => item.region.isSameRegion(task.region) && item.algoName === task.algoName);
                 if (matches.length === 0) console.warn("task to result error");
                 matches.forEach(match => match.value = hash || match.value);
-                console.log("Hash complete", task);
             });
             
             // Keep references to the cancel function for each hash operation so we can abort
@@ -112,7 +111,6 @@ class RomHasher {
     }
 
     cancel() {
-        console.log(this._cancelList);
         // Don't start any more hashes
         this._cancel = true;
         // Abort any currently running hashes
