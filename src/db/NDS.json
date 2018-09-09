@@ -1,10 +1,11 @@
 
 {
-    "meta" : {
-        "name" : "No-Intro: DS (all)",
-        "version" : "20180806-120027",
-        "comment": "no-intro | www.no-intro.org"
-    },
+"meta" : {
+    "name" : "No-Intro: DS (all)",
+    "version" : "20180806-120027",
+    "hashContent": "rom",
+    "comment": "no-intro | www.no-intro.org"
+},
 "7E8942C85FB9B1BF303BC0C7C786BA8C2FB594D2": "Fire Emblem Musou (Japan)",
 "8E8E2A3235E855806B93E895B5C00C55F37AC470": "Fire Emblem Warriors (Europe) (En,Fr,De,Es,It)",
 "FAA8CA4DA3C63DEC52548D2AE23BA99E9776EF98": "Fire Emblem Warriors (USA)",

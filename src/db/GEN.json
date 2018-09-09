@@ -2,6 +2,7 @@
 "meta" : {
     "name" : "No-Intro: Genesis",
     "version" : "20180824-045026",
+    "hashContent": "rom",
     "comment" : "no-intro | www.no-intro.org"
 },
 "219D284DCF63CE366A4DC6D1FF767A0D2EEA283D": "[BIOS] Aiwa CSD G1M (Japan) (v2.11)",

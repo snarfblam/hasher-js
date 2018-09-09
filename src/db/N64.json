@@ -2,6 +2,7 @@
 "meta" : {
     "name" : "No-Intro: Nintendo 64",
     "version" : "20180814-043336",
+    "hashContent": "rom",
     "comment": "no-intro | www.no-intro.org"
 },	
 "167C3C433DEC1F1EB921736F7D53FAC8CB45EE31": "007 - GoldenEye (Europe)",

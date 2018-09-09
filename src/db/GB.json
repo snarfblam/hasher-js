@@ -3,6 +3,7 @@
     "name" : "No-Intro: Game Boy/Color",
     "version" : "20180815-131105",
     "comment": "no-intro | www.no-intro.org",
+    "hashContent": "rom",
     "regex": "game \\(.*\\n\\Wname\\W\"(.*)\\\".*\\n.*\\n?.*\\n.*sha1 ([a-zA-Z0-9]*).*\\n\\W?\\)\\W\\n"
 },
 "4ED31EC6B0B175BB109C0EB5FD3D193DA823339F": "[BIOS] Nintendo Game Boy Boot ROM (World) (Rev A)",

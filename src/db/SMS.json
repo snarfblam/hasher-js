@@ -2,6 +2,7 @@
     "meta" : {
         "name" : "No-Intro: Master System",
         "version" : "20180825-190228",
+        "hashContent": "rom",
         "comment": "no-intro | www.no-intro.org"
     },
     "2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17": "[BIOS] Alex Kidd in Miracle World (Korea)",

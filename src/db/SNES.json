@@ -3,7 +3,8 @@
 "meta" : {
     "name" : "No-Intro: Super Nintendo Entertainment System",
     "version" : "20180813-062835",
-    "comment": "no-intro | www.no-intro.org"
+        "hashContent": "rom",
+        "comment": "no-intro | www.no-intro.org"
 },
 "005CCD8362DC41491F89F31FC9326A6688300E0C": "'96 Zenkoku Koukou Soccer Senshuken (Japan)",
 "FE448AE2C065DFF8B0C2AACC35F9D9EE9432B04F": "2020 Super Baseball (Japan)",

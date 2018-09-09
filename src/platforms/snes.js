@@ -1,9 +1,5 @@
 // @ts-check
 
-/**
- * Object containing NES-specific data and functions
- */
-
 import snesUtil from '../romUtils/snesUtil';
 import { toHex } from '../util';
 import SnesHeader from '../romUtils/SnesHeader';

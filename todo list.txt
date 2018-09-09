@@ -1,7 +1,3 @@
-- credit and license for js-sha1: https://github.com/emn178/js-sha1
-- refactoring: there is both a "platform.js" and a "Platform.js". rename "platform.js" to reduce confusion
-    - (or incorporate it into RomData)
-
 - review snes platform and consider whether rom preview should be expanded to a large enough size to verify
   internal header checksum via Rom.preview
     - Alternatively, it would be nice if the ROM could be deserialized only after a presumtive (checksum vs. complement) match

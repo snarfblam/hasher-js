@@ -75,8 +75,8 @@ function RomData(rom, hashAlgos, progressCallback) {
                     };
                 }
 
-                // TODO: DB should specify what kind of hash it's looking for, e.g. TOSEC wants FILE hashes
-                var rom_sha1 = this.hashes.find(hash => hash.algoName === 'sha1' && hash.region.name === 'rom');
+                var hashRegion = db.meta.hashContent;
+                var rom_sha1 = this.hashes.find(hash => hash.algoName === 'sha1' && hash.region.name === hashRegion);
                 if (rom_sha1) {
                     return db.getTitle(rom_sha1.value);
                 }
