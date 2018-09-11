@@ -1,7 +1,5 @@
 - n64 wordswapped and littleendian recognition and conversion
 
-- stream each region once and calculate all algos at the same time
-
 - It would be nice to have md5/crc be optional. Have a checkbox for all hashes
     - When you getRomData, you can specify a bool for all hashes. 
     - If you specify false, the RomData will have a method to compute the addl' hashes and return a promise

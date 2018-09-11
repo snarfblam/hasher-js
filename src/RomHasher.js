@@ -23,10 +23,12 @@ class RomHasher {
         /** @type {{algoName: string, region: RomRegion, value: string}[]} */
         this.hashlist = [];
         
-        /** @type {{algoName: string, region: RomRegion}[]} */
+        /** NO LONGER USED -- See hachTaskBuckets
+         *  @type {{algoName: string, region: RomRegion}[]} */
         this.hashTasks = [];
 
-        /** @type {{algoNames: string[], region: RomRegion}[]} */
+        /** List of hash tasks. Each item in the bucket represents a list of algorithms and a region of data to operate on
+         *  @type {{algoNames: string[], region: RomRegion}[]} */
         this.hashTaskBuckets = [];
 
         this._parseHashlist();
@@ -82,6 +84,7 @@ class RomHasher {
             var [bucket, remainder] = partition(hashlist, predicate);
             // Separated items go into a bucket
             hashBuckets.push(bucket);
+            console.log(bucket);
             // Remaining items will be processed in same manner
             hashlist = remainder;
         }
@@ -199,7 +202,7 @@ function partition(array, predicate) {
     var match = [];
     var nonmatch = [];
     array.forEach(item => {
-        if (predicate) {
+        if (predicate(item)) {
             match.push(item);
         } else {
             nonmatch.push(item);
