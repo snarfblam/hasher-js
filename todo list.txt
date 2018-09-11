@@ -1,9 +1,3 @@
-- there should be something built into Platform to parse and persist internal header
-
-- neaten up boilerplate comments, imports, formatting
-
-- need error handling code on ROM streaming
-
 - n64 wordswapped and littleendian recognition and conversion
 
 - stream each region once and calculate all algos at the same time
