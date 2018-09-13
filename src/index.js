@@ -39,13 +39,23 @@ class Hasher {
     }
 
     /** Begins processing the ROM. Returns a promise that resolves to a
+     *  @param {string[]} [algos] An array of hashing algorithms to use, from: 'sha1', 'md5', 'crc32'
      *  @param {function(number):void} [progressCallback]
      */
-    getRomData(progressCallback) {
+    getRomData(algos, progressCallback) {
         if (this._rom == null) throw Error('Can not make multiple calls to getRomData');
 
+        // RomData class expects requested algoithms to take the form content_algorithm
+        var algoList = null;
+        if (algos) {
+            // Apply the specified algorightms to both the file and the ROM
+            var fileAlgos = algos.map(algo => 'file_' + algo);
+            var romAlgos = algos.map(algo => 'rom_' + algo);
+            algoList = fileAlgos.concat(romAlgos);
+        }
+
         /** @type {Promise<any> & {[x: string]: any}} */
-        var promise = RomData.getData(this._rom, progressCallback);
+        var promise = RomData.getData(this._rom, algoList, progressCallback);
         this._cancel = promise.cancel;
 
         // Let things be collected

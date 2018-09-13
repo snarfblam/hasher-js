@@ -105,13 +105,14 @@ function RomData(rom, hashAlgos, progressCallback) {
  *  a cancel method that will stop analyzing the ROM. The promise will 
  *  return the RomData object with any available information populated.
  *  @param {Rom} rom 
+ *  @param {string[]} [algos] A string specifying the hash in the form 'content_algorithm',
  *  @param {function(number):void} [progressCallback]
  */
-function getData(rom, progressCallback) {
+function getData(rom, algos, progressCallback) {
     /** @type {RomData} */
     var romData;
     var promise = rom.loaded.then(() => {
-        romData = new RomData(rom, null, progressCallback);
+        romData = new RomData(rom, algos, progressCallback);
         var result = romData._processingCompletePromise.then(() => {
             delete romData._processingCompletePromise; // done with this
             return romData;

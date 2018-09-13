@@ -77,6 +77,7 @@ $(document).ready(function() {
         fileInput: $$('#file-input'),
         fileInputBox: $$('#file-input-box'),
         abortHash: $$('#abort-hash'),
+        chkSha1: $$('#chk-sha1'),
         file: {
             input: $$('#file-input'),
             inputBox: $$('#file-input-box'),
@@ -228,8 +229,10 @@ function processRom(file) {
     isHashing = true;
     displayHashingModal();    
 
+    var sha1Only = ui.chkSha1[0].checked;
+    var algoList = sha1Only ? ['sha1'] : null;
     hasher = new Hasher(file);
-    hasher.getRomData(updateHashProgress).then(function (result) {        isHashing = false;
+    hasher.getRomData(algoList, updateHashProgress).then(function (result) {        isHashing = false;
         hideHashingModal();
         ui.output.innerText += JSON.stringify(result, null, 4);
         ui.outputSummary.text(createSummary(result));
