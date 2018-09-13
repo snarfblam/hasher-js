@@ -437,6 +437,23 @@ hr.bevel {
 
 /* Everything else */
 
+#chk-sha1 {
+    /* display: inline-block; */
+    /* display: block; */
+    vertical-align: text-bottom;
+    /* float: right; */
+    /* margin-top: 12px; */
+}
+
+label[for='chk-sha1'] {
+    /* display: inline-block; */
+    display: block;
+    /* vertical-align: text-bottom; */
+    float: right;
+    margin-top: 12px;
+}
+
+
 .clipboard-container {
     position: absolute;
     left: -9999;
@@ -496,6 +513,7 @@ hr.bevel {
 .result-toolbar {
     position: absolute;
     left: 0;
+    width: 100%;
     bottom: 0;
     padding: 6px 6px;
 }
