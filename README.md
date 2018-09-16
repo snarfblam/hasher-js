@@ -1,6 +1,21 @@
 # Hasher-js
 Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It calculates checksums to validate ROMs and performs a database lookup.
 
+## Contents
+- [Hasher-js](#hasher-js)
+  * [Contents](#contents)
+  * [What It Consists Of](#what-it-consists-of)
+  * [Web Page / Sever](#web-page---sever)
+  * [Tests](#tests)
+  * [Files](#files)
+  * [Usage](#usage)
+    + [Configuration](#configuration)
+    + [Polyfill](#polyfill)
+  * [Notes](#notes)
+    + [Databases](#databases)
+  * [License](#license)
+    + [js-sha1](#js-sha1)
+    + [js-md5](#js-md5)
 ## What It Consists Of
 The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES. Hasher-js also includes an HTML user interface (see "Web Page / Server" below).
 
@@ -8,9 +23,15 @@ Hasher-js is currently being developed and tested with current versions of Chrom
 
 ## Web Page / Sever
 
-Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. A build is required to use these features.
+Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. When a build is performed, in addition to creating the bundle, any necessary files for the page and server are copied to the `/dist` directory.
 
-When the `npm run build` command is run, the page, server, and database files are copied into the same directory as the bundle: `/dist`. Run `node index.js` from this directory to start the test server. Access the page at `http://localhost:8000`.
+First run the command `npm run build` to build the hasher-js library and test server, then run the command `npm run start` start the test server. Access the page at `http://localhost:8000`. 
+
+To host the page on a web server, simply copy the contents of the `/dist` directory, omitting `/dist/index.js`.
+
+## Tests
+
+Unit tests are found in the `/test` directory. After building the project, run launch the local server (`npm run start`). Tests are performed in the browser by accessing the page at `http://localhost:8000/test`.
 
 To host the page on a web server, simply copy the contents of the `/dist` directory, omitting `/dist/index.js`.
 
@@ -19,6 +40,7 @@ To host the page on a web server, simply copy the contents of the `/dist` direct
 * `/server` - Web page and server. Do not run from here.
 * `/src` - Main source for the hasher-js library.
 * `/dist` - Created when the bundle is built. Run the test server from here.
+* `/test` - Testing page and files.
 * `/dist/hasher.js` - Compiled Hasher script.
 
 ## Usage
@@ -102,6 +124,12 @@ Below is a complete listing of the `RomData` type.
 ```
 
 Note that although the items in the `hashes` array contain `offset` and `length` properties, these values may not refer to the file itself. They may (or may not) refer to a location withing an extracted and/or converted ROM image, e.g. unheadered and/or de-interleaved ROM.
+
+### Configuration
+
+The only configurable aspect of hasher-js is the path of the ROM database. 
+
+* **`window.hasherDbPath`** - Specifies the path containing the JSON files. Should not include a trailing slash. If not specified, the default relative path of `"db/"` is used.
 
 ### Polyfill
 

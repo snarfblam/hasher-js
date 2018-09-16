@@ -27,7 +27,12 @@ function getDB(name) {
     if (db) return db;
 
     if (!dbNameValidator.test(name)) return Promise.reject(Error('Invalid platform database name.'));
-    return axios.get('db/' + name + '.json')
+
+    var dbPath = 'db/' + name + '.json';
+    // @ts-ignore
+    if (typeof window !== 'undefined' && window.hasherDbPath) dbPath = window.hasherDbPath + '/' + name + '.json';
+
+    return axios.get(dbPath)
         .then(response => {
             if (response.status == 200) {
                 db = response.data;

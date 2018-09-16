@@ -15,8 +15,10 @@ class Rom {
         /** The File object that is encapsulated */
         this.file = romFile;
 
-        if (romFile instanceof File) {
+        // @ts-ignore
+        if (romFile instanceof File || romFile.name) {
             /** The name of the file */
+            // @ts-ignore
             this.filename = romFile.name;
             /** The file extension, not including the dot. */
             this.fileExtension = getFileExtension(this.filename);
@@ -97,6 +99,7 @@ class Rom {
             }
 
             var serveChunk = () => {
+                // @ts-ignore 
                 callback(new Uint8Array(reader.result), currentOffset); // result is ArrayBuffer
 
                 currentOffset += chunkSize;
