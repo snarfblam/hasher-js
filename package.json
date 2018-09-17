@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test/server.js",
     "build": "npx webpack && cpx \"src/db/*.*\" \"dist/db\" && cpx \"server/*.*\" \"dist\" && cpx \"server/hasherRes/*.*\" \"dist/hasherRes\"",
-    "start": "node dist/index.js",
+    "start": "node testServer.js",
     "build-test": "npx webpack --config webpack.testconfig.js"
   },
   "repository": {
