@@ -11,11 +11,12 @@ const PORT = 8000;
 var app = express();
 
 // localhost/test/...
-var testDir = path.join(__dirname, '../test');
+const testDir = path.join(__dirname, '/test');
 console.log(testDir);
 app.use('/test', express.static(testDir));
+const distDir = path.join(__dirname, '/dist');
 // localhost/...
-app.use(express.static(__dirname));
+app.use(express.static(distDir));
 
 app.listen(PORT , function () {
     console.log("listening on " + PORT);

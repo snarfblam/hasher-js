@@ -9,6 +9,7 @@ Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It c
   * [Tests](#tests)
   * [Files](#files)
   * [Usage](#usage)
+    + [Deployment](#deployment)
     + [Configuration](#configuration)
     + [Polyfill](#polyfill)
   * [Notes](#notes)
@@ -26,8 +27,6 @@ Hasher-js is currently being developed and tested with current versions of Chrom
 Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. When a build is performed, in addition to creating the bundle, any necessary files for the page and server are copied to the `/dist` directory.
 
 First run the command `npm run build` to build the hasher-js library and test server, then run the command `npm run start` start the test server. Access the page at `http://localhost:8000`. 
-
-To host the page on a web server, simply copy the contents of the `/dist` directory, omitting `/dist/index.js`.
 
 ## Tests
 
@@ -126,13 +125,32 @@ Below is a complete listing of the `RomData` type.
 }
 ```
 
-Note that although the items in the `hashes` array contain `offset` and `length` properties, these values may not refer to the file itself. They may (or may not) refer to a location withing an extracted and/or converted ROM image, e.g. unheadered and/or de-interleaved ROM.
+Note that although the items in the `hashes` array contain `offset` and 
+`length` properties, these values may not refer to the file itself. They may 
+(or may not) refer to a location withing an extracted and/or converted ROM 
+image, e.g. unheadered and/or de-interleaved ROM.
+
+### Deployment
+
+While hasher-js may be incorporated into a site as a module or as a bundle, 
+it can also be deployed as a stand-alone web application using the included 
+HTML front-end.
+
+When used as a library, the databases should be present and are requested via 
+a relative URL: `db/<platform>.json`. The path of the directory can be
+configured (see below).
+
+When deployed as a stand-alone application, build the project via the command 
+`npm run build`. All the necessary files are output to the `/dist` directory, 
+which may be copied to the server and served statically.
 
 ### Configuration
 
 The only configurable aspect of hasher-js is the path of the ROM database. 
 
-* **`window.hasherDbPath`** - Specifies the path containing the JSON files. Should not include a trailing slash. If not specified, the default relative path of `"db/"` is used.
+* **`window.hasherDbPath`** - Specifies the path containing the JSON files. 
+Should not include a trailing slash. If not specified, the default relative 
+path of `"db/"` is used.
 
 ### Polyfill
 
