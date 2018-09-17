@@ -31,9 +31,12 @@ To host the page on a web server, simply copy the contents of the `/dist` direct
 
 ## Tests
 
-Unit tests are found in the `/test` directory. After building the project, run launch the local server (`npm run start`). Tests are performed in the browser by accessing the page at `http://localhost:8000/test`.
+Tests are found in the `/test` directory. First make sure to build the project: `npm run build`, then build the tests: `npm run build-test`. After building launch the local server: `npm run start`. Tests are performed in the browser by accessing the page at `http://localhost:8000/test`.
 
-To host the page on a web server, simply copy the contents of the `/dist` directory, omitting `/dist/index.js`.
+If changes are made inside the `/src` directory, you need to rebuild the project
+*first*, then rebuild the test. Failure to build the project first means you will 
+be testing an old version of the bundle. Unit tests, however, will still test code
+in its current state. If changes are made inside the `/test` directory, you only need to re-build the tests. 
 
 ## Files
 
