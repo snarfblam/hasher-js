@@ -1,15 +1,18 @@
 # Hasher-js
+
+![Hasher Logo](hasher.png "Logo hasher-js")
+
 Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It calculates checksums to validate ROMs and performs a database lookup.
 
 ## Contents
-- [Hasher-js](#hasher-js)
-  * [Contents](#contents)
   * [What It Consists Of](#what-it-consists-of)
   * [Web Page / Sever](#web-page---sever)
   * [Tests](#tests)
   * [Files](#files)
   * [Usage](#usage)
     + [Deployment](#deployment)
+    + [NPM Commands](#npm-commands)
+    + [As A Library](#as-a-library)
     + [Configuration](#configuration)
     + [Polyfill](#polyfill)
   * [Notes](#notes)
@@ -47,6 +50,28 @@ in its current state. If changes are made inside the `/test` directory, you only
 
 ## Usage
 
+### Deployment
+
+While hasher-js may be incorporated into a site as a module or as a bundle, 
+it can also be deployed as a stand-alone web application using the included 
+HTML front-end.
+
+When used as a library, the databases should be present and are requested via 
+a relative URL: `db/<platform>.json`. The path of the directory can be
+configured (see below).
+
+When deployed as a stand-alone application, build the project via the command 
+`npm run build`. All the necessary files are output to the `/dist` directory, 
+which may be copied to the server and served statically.
+
+### NPM Commands
+
+* **`npm run build`** - Production build. Outputs minified bundle, front-end, and database in `/dist` directory.
+* **`npm run build-dev`** - Development build. Same as production build, except bundle is not minified and includes inline source-map.
+* **`npm run build-test`** - Builds tests. Perform a build (development or production) first as the tests expect the bundle to be present.
+* **`npm start`** - Starts the development server. Front-end is accessible at `http://localhost:8000/`. Tests are accessible at `http://localhost:8000/test/`.
+
+### As A Library
 You can include the hasher bundle in your HTML or include the module via javascript.
 
 * `<script src='hasher.js'></script>`
@@ -129,20 +154,6 @@ Note that although the items in the `hashes` array contain `offset` and
 `length` properties, these values may not refer to the file itself. They may 
 (or may not) refer to a location withing an extracted and/or converted ROM 
 image, e.g. unheadered and/or de-interleaved ROM.
-
-### Deployment
-
-While hasher-js may be incorporated into a site as a module or as a bundle, 
-it can also be deployed as a stand-alone web application using the included 
-HTML front-end.
-
-When used as a library, the databases should be present and are requested via 
-a relative URL: `db/<platform>.json`. The path of the directory can be
-configured (see below).
-
-When deployed as a stand-alone application, build the project via the command 
-`npm run build`. All the necessary files are output to the `/dist` directory, 
-which may be copied to the server and served statically.
 
 ### Configuration
 

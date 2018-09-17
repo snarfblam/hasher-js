@@ -5,52 +5,6 @@ import RomHasher from '../src/RomHasher';
 import testfiles from './testfiles';
 var files = testfiles.files;
 
-// function createTestFile(name, descriptor) {
-//     var parts = [];
-
-//     descriptor.forEach(entry => {
-//         if (entry[0] == 'raw') {
-//             parts.push(new Uint8Array(entry[1]));
-//         } else if (entry[0] == 'repeat') {
-//             var repeatLen = entry[1];
-//             var repeatValue = entry[2];
-
-//             if (repeatValue instanceof Array) {
-//                 var data = new Uint8Array(repeatLen * repeatValue.length);
-
-//                 for (var i = 0; i < data.length; i += repeatValue.length) {
-//                     for (var iByte = 0; iByte < repeatValue.length; iByte++) {
-//                         data[i + iByte] = repeatValue[iByte];
-//                     }
-//                 }
-//                 parts.push(data);
-//             } else {
-//                 var data = new Uint8Array(repeatLen);
-//                 data.fill(repeatValue);
-//                 parts.push(data);
-//             }
-//         } else {
-//             throw Error('Unknown data in file descriptor: ' + entry[0]);
-//         }
-//     });
-
-//     var result = new Blob(parts);
-//     result.name = name;
-//     return result;
-// }
-
-// var nesRom = createTestFile("test.n64",
-//     [
-//         ["raw", [0x4e, 0x45, 0x53, 0x1A]], // "INES"
-//         ["raw", [0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]], // Most basic possible INES header
-//         ["repeat", 0x4000, 0xFF], // PRG
-//         ["repeat", 0x2000, 0xFF], // CHR
-//     ]);
-// var ambiguousRom = createTestFile("test.smd",
-//     [
-//         ["repeat", 0x1000, 0x00]
-//     ]);
-
 var expect = chai.expect;
 var romData;
 
@@ -126,12 +80,6 @@ describe('RomHasher', function () {
             });
     });
 
-    // it('should identify regions that dont reference the same span of the same buffer', function () {
-    //     var rgnC = new RomRegion("cheese", files.ambiguous, 1, 266);
-    //     var rgnD = new RomRegion("cheese", files.ambiguous, 0, 266);
-    //     expect(rgnC.isSameRegion(rgnD)).to.equal(false);
-    // });
-
 });
 
 
@@ -158,8 +106,6 @@ describe('hasher bundle', function () {
             var value = romData.hashes.find(item => item.name === check.name).value;
             expect(value).to.equal(check.value);
         })
-        // do a foreach on hashchecks
-        // var file_sha1 = romData.hashes.find(item => item.name == "file_sha1").value;
 
     })
 

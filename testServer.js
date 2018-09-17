@@ -1,6 +1,8 @@
 /*
 
-    small test server to debug hasher-js
+    Small test server to debug hasher-js.
+
+    Launch by running the command "npm start" from the project root.
 
 */
 const path = require('path');
