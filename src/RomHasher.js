@@ -162,7 +162,10 @@ class RomHasher {
                     var algoName = bucket.algoNames[i];
                     var matches = this.hashlist.filter(item => item.region.isSameRegion(bucket.region) && item.algoName === algoName);
                     if (matches.length === 0) console.warn("bucket to result error");
-                    matches.forEach(match => match.value = hashResults[i] || match.value);
+                    matches.forEach(match => {
+                        match.value = hashResults[i] || match.value;
+                        match.name = match.region.name + "_" + match.algoName;
+                    });
                 }
             });
             

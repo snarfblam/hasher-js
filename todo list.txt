@@ -1,5 +1,3 @@
-- n64 wordswapped and littleendian recognition and conversion
-
 - somebody needs to test little-endian and word-swapped n64 formats. I don't have ROMs to test with.
 
 - It would be nice to have md5/crc be optional. Have a checkbox for all hashes
