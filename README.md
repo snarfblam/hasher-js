@@ -2,11 +2,11 @@
 
 ![Hasher Logo](hasher.png "Logo hasher-js")
 
-Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It calculates checksums to validate ROMs and performs a database lookup.
+Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It 
+calculates checksums to validate ROMs and performs a database lookup.
 
 ## Contents
   * [What It Consists Of](#what-it-consists-of)
-  * [Web Page / Sever](#web-page---sever)
   * [Tests](#tests)
   * [Files](#files)
   * [Usage](#usage)
@@ -20,43 +20,49 @@ Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It c
   * [License](#license)
     + [js-sha1](#js-sha1)
     + [js-md5](#js-md5)
+
 ## What It Consists Of
-The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES. Hasher-js also includes an HTML user interface (see "Web Page / Server" below).
+The primary component of hasher-js is a javascript library that accepts a file and 
+returns platform and rom database identification. Additional platform-specific 
+"extended data" may also be provided, e.g. internal header decoding, or layout 
+information for multipart ROMs such as iNES. 
 
-## Web Page / Sever
+Hasher-js also includes an optional HTML front-end. Additionally, a simple 
+development server is included to run the page locally. When a build is performed, 
+in addition to creating the bundle, any necessary files for the front-end are 
+copied to the `/dist` directory.
 
-Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. When a build is performed, in addition to creating the bundle, any necessary files for the page and server are copied to the `/dist` directory.
-
-First run the command `npm run build` to build the hasher-js library and test server, then run the command `npm run start` start the test server. Access the page at `http://localhost:8000`. 
+First run the command `npm run build` to build the hasher-js library and front-end, 
+then run the command `npm run start` start the development server. Access the page 
+at `http://localhost:8000`.
 
 ## Tests
 
-Tests are found in the `/test` directory. First make sure to build the project: `npm run build`, then build the tests: `npm run build-test`. After building launch the local server: `npm run start`. Tests are performed in the browser by accessing the page at `http://localhost:8000/test`.
-
-If changes are made inside the `/src` directory, you need to rebuild the project
-*first*, then rebuild the test. Failure to build the project first means you will 
-be testing an old version of the bundle. Unit tests, however, will still test code
-in its current state. If changes are made inside the `/test` directory, you only need to re-build the tests. 
+Tests are found in the `/test` directory. First make sure to build the project: 
+`npm run build`, then build the tests: `npm run build-test`. After building launch 
+the local server: `npm run start`. Tests are performed in the browser by accessing 
+the page at `http://localhost:8000/test`.
 
 ## Files
 
-* `/server` - Web page and server. Do not run from here.
+* `/frontend` - HTML and related resources for front-end.
 * `/src` - Main source for the hasher-js library.
-* `/dist` - Created when the bundle is built. Run the test server from here.
-* `/test` - Testing page and files.
-* `/dist/hasher.js` - Compiled Hasher script.
+* `/src/db` - No-Intro database in JSON format.
+* `/test` - Tests. Test page is served from here.
+* `/dist` - Created when the bundle is built. Front-end served from here.
+* `/dist/hasher.js` - Compiled Hasher bundle.
 
 ## Usage
 
 ### Deployment
 
-While hasher-js may be incorporated into a site as a module or as a bundle, 
-it can also be deployed as a stand-alone web application using the included 
-HTML front-end.
+While hasher-js may be used as a module or as a bundle,  it can also be 
+deployed as a stand-alone web application using the included HTML 
+front-end.
 
-When used as a library, the databases should be present and are requested via 
-a relative URL: `db/<platform>.json`. The path of the directory can be
-configured (see below).
+When used as a library, the databases should be present and by default 
+are requested via a relative URL: `db/<platform>.json`. The path of the 
+directory can be configured (see below).
 
 When deployed as a stand-alone application, build the project via the command 
 `npm run build`. All the necessary files are output to the `/dist` directory, 
@@ -76,11 +82,13 @@ You can include the hasher bundle in your HTML or include the module via javascr
 * `const Hasher = require('hasher-js');`
 * `import * as Hasher from 'hasher-js'`;
 
-Hasher-js exports a constructor, `Hasher()`, which accepts a `File` object. The returned object has two methods:
+Hasher-js exports a constructor, `Hasher()`, which accepts a `File` object. The 
+returned object has two methods:
 
-* **`getRomData()`** - begins processing the file and returns a Promise that resolves to a `RomData` object. `getRomData()` accepts an optional callback (`function(number)`) that is called with a value between 0 and 1 to report progress.
+* **`getRomData()`** - begins processing the file and returns a Promise that resolves to a `RomData` object. `getRomData()` accepts an optional callback (`function(number)`) that is called with a fractional value between 0 and 1 to report progress.
 * **`cancel()`** - can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). 
 
+Sample usage:
 ```javascript
 /*
     new Hasher(rom: File):
@@ -111,7 +119,7 @@ hashObj.getRomData(progressCallback)
     });
 ```
 
-Below is a complete listing of the `RomData` type.
+`RomData` type:
 
 ```javascript
 // Any properties not outlined here are subject to change in future versions
@@ -149,13 +157,12 @@ Below is a complete listing of the `RomData` type.
 ```
 
 Note that although the items in the `hashes` array contain `offset` and 
-`length` properties, these values may not refer to the file itself. They may 
-(or may not) refer to a location withing an extracted and/or converted ROM 
-image, e.g. unheadered and/or de-interleaved ROM.
+`length` properties, these values may not refer to the file itself. They could refer to a location within an extracted and/or converted ROM 
+image, e.g. deheadered/de-interleaved ROM.
 
 ### Configuration
 
-The only configurable aspect of hasher-js is the path of the ROM database. 
+The path of the ROM database can be configured at runtime:
 
 * **`window.hasherDbPath`** - Specifies the path containing the JSON files. 
 Should not include a trailing slash. If not specified, the default relative 
@@ -176,9 +183,14 @@ These features are implemented via polyfill.io in the included front end.
 
 ### Databases
 
-After identifying the platform of a ROM image, the software attempts to request the appropriate database at the relative URL `db/*platform-name*.json`. The default databases are No-Intro databases, converted to JSON. The JSON objects contain a property, `meta`, with additional information about the database.
+After identifying the platform of a ROM image, the software attempts to 
+request the appropriate database at the relative URL 
+`db/*platform-name*.json`. The default databases are No-Intro databases, 
+converted to JSON. The JSON objects contain a property, `meta`, with 
+additional information about the database.
 
-The following regexes are used to convert the No-Intro databases to json (using VSCode) (additional massaging will be required):
+The following regexes are used to convert the No-Intro databases to json 
+(using VSCode) (additional massaging will be required):
 
 ``` regex
 Clr-Mame-Pro format
