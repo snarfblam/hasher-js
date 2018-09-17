@@ -5,9 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "test": "node test/server.js",
-    "build": "npx webpack && cpx \"src/db/*.*\" \"dist/db\" && cpx \"server/*.*\" \"dist\" && cpx \"server/hasherRes/*.*\" \"dist/hasherRes\"",
-    "start": "node testServer.js",
-    "build-test": "npx webpack --config webpack.testconfig.js"
+    "build": "npx webpack --config webpack.prod.js && cpx \"src/db/*.*\" \"dist/db\" && cpx \"server/*.*\" \"dist\" && cpx \"server/hasherRes/*.*\" \"dist/hasherRes\"",
+    "build-dev": "npx webpack --config webpack.dev.js && cpx \"src/db/*.*\" \"dist/db\" && cpx \"server/*.*\" \"dist\" && cpx \"server/hasherRes/*.*\" \"dist/hasherRes\"",
+    "build-test": "npx webpack --config webpack.test.js",
+    "start": "node testServer.js"
   },
   "repository": {
     "type": "git",

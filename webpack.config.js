@@ -1,8 +1,9 @@
 var webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
     // mode: 'production',
-    mode: 'development',
+    mode: 'development', // overridden
     entry: './src/index.js',
     stats: 'normal',
     output: {
