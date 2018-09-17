@@ -23,8 +23,6 @@ Hasher-js is the javascript counterpart to the C# application *ROM Hasher*. It c
 ## What It Consists Of
 The primary component of hasher-js is a javascript library that accepts a file and returns platform and rom database identification. Additional platform-specific "extended data" may also be provided, e.g. internal header decoding, or layout information for multipart ROMs such as iNES. Hasher-js also includes an HTML user interface (see "Web Page / Server" below).
 
-Hasher-js is currently being developed and tested with current versions of Chrome and Firefox. Compatability with IE11 and Edge are short-term future goals.
-
 ## Web Page / Sever
 
 Hasher-js includes a page that can be used as a front-end. Additionally, a very simple server is included to run the page locally. When a build is performed, in addition to creating the bundle, any necessary files for the page and server are copied to the `/dist` directory.
