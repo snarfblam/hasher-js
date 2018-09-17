@@ -1,5 +1,6 @@
 import getDB from '../src/romDb';
 import RomRegion from '../src/RomRegion';
+import RomHasher from '../src/RomHasher';
 
 import testfiles from './testfiles';
 var files = testfiles.files;
@@ -84,13 +85,13 @@ describe('romDB.getTitle', function () {
 
 
 describe('RomRegion.isSameRegion', function () {
-    it('should identify regions that reference the same span of the same buffer', function () {
+    it('identifies regions that reference the same span of the same buffer', function () {
         var rgnA = new RomRegion("cheese", files.ambiguous, 1, 266);
         var rgnB = new RomRegion("fried_dough", files.ambiguous, 1, 266);
         expect(rgnA.isSameRegion(rgnB)).to.equal(true);
     });
 
-    it('should identify regions that dont reference the same span of the same buffer', function () {
+    it('identifies regions that dont reference the same span of the same buffer', function () {
         var rgnC = new RomRegion("cheese", files.ambiguous, 1, 266);
         var rgnD = new RomRegion("cheese", files.ambiguous, 0, 266);
         expect(rgnC.isSameRegion(rgnD)).to.equal(false);
@@ -98,9 +99,44 @@ describe('RomRegion.isSameRegion', function () {
 
 });
 
+describe('RomHasher', function () {
+    var rgnJunk = new RomRegion('junk', files.ambiguous, 0, 0x10);
+    var rgnStuff = new RomRegion('stuff', files.ambiguous, 1, 0x10);
+    const junkSha = "56178b86a57fac22899a9964185c2cc96e7da589";
+    const stuffMd5 = "190c4c105786a2121d85018939108a6c";
+
+    it('should produce hashes with names in the form of regionName_algoName', function () {
+        var hasher = new RomHasher(files.ambiguous, [rgnJunk, rgnStuff], ['junk_sha1', 'junk_crc32', 'stuff_sha1', 'stuff_crc32']);
+        hasher.performHashes()
+            .then(hashes => {
+                expect(hashes.find(hash => hash.name === 'junk_sha1')).to.exist;
+                expect(hashes.find(hash => hash.name === 'junk_crc32')).to.exist;
+                expect(hashes.find(hash => hash.name === 'stuff_sha1')).to.exist;
+                expect(hashes.find(hash => hash.name === 'stuff_crc32')).to.exist;
+            });
+    });
+
+    
+    it('should produce proper hash for file, range, and algo specified', function () {
+        var hasher = new RomHasher(files.ambiguous, [rgnJunk, rgnStuff], ['junk_sha1', 'stuff_md5']);
+        hasher.performHashes()
+            .then(hashes => {
+                expect(hashes.find(hash => hash.name === 'junk_sha1').value).to.equal(junkSha);
+                expect(hashes.find(hash => hash.name === 'stuff_md5').value).to.equal(stuffMd5);
+            });
+    });
+
+    // it('should identify regions that dont reference the same span of the same buffer', function () {
+    //     var rgnC = new RomRegion("cheese", files.ambiguous, 1, 266);
+    //     var rgnD = new RomRegion("cheese", files.ambiguous, 0, 266);
+    //     expect(rgnC.isSameRegion(rgnD)).to.equal(false);
+    // });
+
+});
+
 
 describe('hasher bundle', function () {
-    it('should process a file', function () {
+    it('process a file', function () {
         var hasher = new Hasher(files.nes);
         return hasher.getRomData()
             .then(function (data) {
@@ -108,7 +144,7 @@ describe('hasher bundle', function () {
             });
     });
 
-    it('should produce correct ROM/file hashes', function () {
+    it('produces correct ROM/file hashes', function () {
         var hashChecks = [
             { name: "file_sha1", value: "59f5993874a83eec67f3fa14b1feec1d19551c62" },
             { name: "file_md5", value: "c9b2fee3f8455f419beb08c148a429e6" },
@@ -127,11 +163,11 @@ describe('hasher bundle', function () {
 
     })
 
-    it('should prefer platform heuristic over extension', function () {
+    it('prefers platform heuristic over extension', function () {
         expect(romData.platform.name).to.equal('NES');
     });
 
-    it('should fall back on extension for disambiguation', function () {
+    it('falls back on extension for disambiguation', function () {
         var hasher = new Hasher(files.ambiguous);
         return hasher.getRomData()
             .then(function (data) {

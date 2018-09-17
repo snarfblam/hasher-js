@@ -9,6 +9,9 @@
     ["repeat", count, value] // Specifies a single byte value, repeated _count_  times
     ["repeat", count, number[]] // Specifies a pattern of bytes to repeat _count_ times.
     
+    NOTE: Some tests are dependant upon the contents of the files. Modifying these pseudo-
+    files should be avoided, and done with care when necessary.
+
 */
 
 import nesDescriptor from './nes';
