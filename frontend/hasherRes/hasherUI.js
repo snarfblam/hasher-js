@@ -304,8 +304,10 @@ function createSummary(romData) {
     var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
     
     var dbString = "No database match.";
-    if(romData.dbInfo.name) {
-        dbString = "Database: " + romData.dbInfo.name + " (v. " + romData.dbInfo.version + ")";
+    var dbMatch = "";
+    if(romData.dbInfo.name && romData.dbInfo.name !== 'not found') {
+        dbString = "Database: " + romData.dbInfo.name + " (v. " + romData.dbInfo.version + ")\n";
+        dbMatch = "Database match: " + romData.dbMatch + "\n";
     }
     
     var outputString = "";
@@ -316,8 +318,8 @@ function createSummary(romData) {
         outputString += "ROM SHA-1: " + romHash + "\n";
     }
 
-    outputString += "Database match: " + romData.dbMatch + "\n";
-    outputString += dbString + "\n";
+    outputString += dbMatch; // "Database match: " + romData.dbMatch + "\n";
+    outputString += dbString; // dbString + "\n";
 
     return outputString;
 }
