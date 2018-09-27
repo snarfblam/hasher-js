@@ -12,17 +12,29 @@
 </head>
 
 <body>
+    <div class='app-container'>
+        <div class='app-container-content'>
+            <h3 class='warning-header'>Beta Version</h3>
+            <p>
+                This is a beta version of ROM hasher. Please report problems on RHDN (or, if you 
+                don't have an RHDN account, you can also contact me via the front page at 
+                <a href="https://snarfblam.com/">https://snarfblam.com/</a>). Please include 
+                any text from the debug console, if possible (accessible via CTRL+SHIFT+I in Chrome
+                and Firefox), as well as any information that is available about the file you're hashing.
+            </p>
+        </div>
+    </div>
 
     <div class='app-container'>
     <h1>Hasher-js</h1>
     <div class='app-container-content'>
-    <p>
+    <!-- <p>
         Patching a ROM?
         <span class='hasher-logo'>Hasher-js</span> computes ROM hashes to help you verify that 
         you're patching the correct file. If you're creating a patch, use
         <span class='hasher-logo'>Hasher-js</span> to get hashes of the original, unmodified file
         and share the hashes with your patch. 
-    </p>
+    </p> -->
     <!-- <p>See
         <tt>/src/index.js</tt> for the main hasher-js entry point and more info.</p> -->
     <!-- <input type='file' id='file'>
@@ -91,6 +103,9 @@
         <div class='app-container-content'>
             <h3>Hasher-js</h3>
             <ul class='list-square'>
+                <li>When applying a patch, use <span class='hasher-logo'>Hasher-js</span> to verify that you're patching the correct file.</li>
+                <li>When creating a patch, use <span class='hasher-logo'>Hasher-js</span> to calculate hashes for the file that 
+                    end users should apply the patch to. Distribute these hashes with your patch.</li>
                 <li><span class='hasher-logo'>Hasher-js</span> does not upload your ROM—all the work is done right in your browser.</li>
                 <li>The source for <span class='hasher-logo'>Hasher-js</span> is available for 
                     <a href="https://github.com/snarfblam/hasher-js/archive/master.zip">download</a>.
@@ -101,21 +116,18 @@
             <h3>What does it all mean?</h3>
             <p>
                 <span class='hasher-logo'>Hasher-js</span> gives you a lot of info. The most important things to look at are the 
-                 file hashes and database matches. Skip ahead if you want to learn what all this "hashing" business is about.
+                 hashes and database matches. Skip ahead if you want to learn more about this "hashing" business.
             </p>
             <ul class='list-square'>
                 <li>A database match is a step in the right direction but it does not necessarily mean you have exactly the right file. Always check the hashes.</li>
                 <li>
                     If you have the right ROM hash but the wrong file hash, here's what it might mean:
                     <ul class='list-arrow'>
-                        <li><strong>NES</strong> - Most likely, there is "garbage" in the header (extra data that shouldn't be there). 
-                            This won't typically cause a problem, but it can be removed using a 
-                            <a href="https://www.romhacking.net/utilities/683/">header cleaner program</a>. However, it's also possible 
+                        <li><strong>NES</strong> - You're probably fine. Most likely, there is "garbage" in the header (extra data that shouldn't be there), which is
+                            usually harmless. It can be removed using a <a href="https://www.romhacking.net/utilities/683/">header cleaner program</a>. It's also possible 
                             that the header contains <em>incorrect</em> data which might cause a problem with certain emulators when using a patched ROM.</li>
-                        <li><strong>SNES</strong> - Generally caused by external headers. There are tools that can add
-                            or remove external headers (such as <a href='https://www.smwcentral.net/?p=section&a=details&id=4613'>SNESStuff</a>).
-                            If your ROM hash matches and the ROM meets the header requirements of the patch, you should be safe, even if the file
-                            hash doesn't match.</li>
+                        <li><strong>SNES</strong> - If your ROM meets the header or file-size requirements of the patch, you're probably fine. If not, there
+                            are tools that can add or remove external headers (such as <a href='https://www.smwcentral.net/?p=section&a=details&id=4613'>SNESStuff</a>).
                         <li><strong>Genesis</strong> - Genesis ROMs typically come in two different formats: SMD and BIN. A tool such as 
                             <a href="https://www.romhacking.net/utilities/383/">SBWin</a> can convert between these formats.</li>
                         <li><strong>N64</strong> - ROMs may be big-endian, byte-swapped or little-endian. A tool such as
@@ -131,8 +143,8 @@
             </p>
             <p>
                 Hashing is like a form of fingerprinting for data. Checking the hash of a file helps you determe whether you have exactly 
-                what you're looking for. <span class='hasher-logo'>Hasher-js</span> provides a hash for both the whole file and the ROM image
-                contained inside the file (for formats it can understand), plus some additional data, to help you figure out whether you have the right thing in the right
+                what you're looking for. <span class='hasher-logo'>Hasher-js</span> provides a hash for both the whole file and the raw ROM image
+                contained inside the file, plus some additional data, to help you figure out whether you have the right thing in the right
                 format.
             </p>
             <h3>Copyright</h3>

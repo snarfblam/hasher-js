@@ -140,7 +140,10 @@
         text-shadow: 1px 1px 1px #96a5b9;
     }
 
-
+    .warning-header {
+        color: #BB0000;
+        margin: .5em 1.5em;
+    }
 /*** App Container *********************************************/
 
     .app-container {
