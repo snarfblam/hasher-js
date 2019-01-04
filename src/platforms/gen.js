@@ -8,7 +8,7 @@ import Rom from '../Rom';
 import Platform from './Platform';
 import RomRegion from '../RomRegion';
 import genUtil from '../romUtils/genUtil';
-import {toHex} from '../util'
+import {toHex, HexValue} from '../util'
 import GenHeader from '../romUtils/GenHeader';
 const category = Platform.exDataCategories;
 
@@ -57,7 +57,7 @@ class GenPlatform extends Platform {
                     data.addHeader("Region", header.region);
                     data.addHeader("Copyright", header.copyrightFormatted);
                     data.addHeader("Product ID", header.productID);
-                    data.addHeader("Checksum", toHex(header.checksum, 4));
+                    data.addHeader("Checksum",  HexValue.justHex(header.checksum, 4));
                     data.addHeader("IO Devices", header.ioSupportFormatted);
                     data.addHeader("Memo", header.memo);
                     data.addHeader("Modem", header.modem);

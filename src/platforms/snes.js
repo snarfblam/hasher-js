@@ -1,7 +1,7 @@
 // @ts-check
 
 import snesUtil from '../romUtils/snesUtil';
-import { toHex } from '../util';
+import { toHex, HexValue } from '../util';
 import SnesHeader from '../romUtils/SnesHeader';
 import RomRegion from '../RomRegion';
 import Platform from './Platform';
@@ -67,13 +67,13 @@ class SnesPlatform extends Platform {
                 var checksum = snesUtil.calculateChecksum(romImage);
                 var mapping = { hirom: "HiROM", lorom: "LoROM" }[header.mapping] || header.mapping;
         
-                data.addRom("Actual checksum", toHex(checksum, 4));
+                data.addRom("Actual checksum", HexValue.hex(checksum, 4));
                 data.addRom("Mapping", mapping);
                     
                 if (header.valid) {
-                    data.addHeader("Header offset", header.internalHeaderOffset);
-                    data.addHeader("Checksum", toHex(header.checksum, 2));
-                    data.addHeader("Checksum complement", toHex(header.checksumComplement, 2));
+                    data.addHeader("Header offset", HexValue.hex(header.internalHeaderOffset));
+                    data.addHeader("Checksum", HexValue.justHex(header.checksum, 2));
+                    data.addHeader("Checksum complement", HexValue.justHex(header.checksumComplement, 2));
                 }
                 
                 return data;

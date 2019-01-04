@@ -4,7 +4,7 @@
  * Object containing NES-specific data and functions
  */
 
-import { toHex } from '../util';
+import { toHex, HexValue } from '../util';
 import RomRegion from '../RomRegion';
 import gbUtil from '../romUtils/gbUtil';
 import GbHeader from '../romUtils/GbHeader';
@@ -52,13 +52,13 @@ class GbPlatform extends Platform {
             })
             .then(([header, data]) => {
                 if (header) {
-                    data.addRom("ROM checksum", toHex(header.romChecksum, 4));
+                    data.addRom("ROM checksum", HexValue.justHex(header.romChecksum, 4));
                     data.addRom("Checksum valid", header.romChecksumValid);
             
                     data.addHeader("Logo present", header.validGbLogo);
-                    data.addHeader("Header checksum", toHex(header.headerChecksum, 2));
+                    data.addHeader("Header checksum", HexValue.justHex(header.headerChecksum, 2));
                     data.addHeader("Header checksum valid", header.headerChecksumValid);
-                    data.addHeader("ROM checksum", toHex(header.romChecksum,4));
+                    data.addHeader("ROM checksum", HexValue.justHex(header.romChecksum,4));
                     data.addHeader("ROM checksum valid", header.romChecksumValid);
                     data.addHeader("Title", header.title);
                     data.addHeader("Manufacturer", header.manufacturer);
@@ -72,7 +72,7 @@ class GbPlatform extends Platform {
                     data.addHeader("Mask ROM version", header.romVersion);
             
             
-                    data.addHeader("Licensee code", "$" + toHex(header.licensee, 2));
+                    data.addHeader("Licensee code", HexValue.hex(header.licensee, 2));
                     data.addHeader("Licensee code (extended)", header.lincenseeEx);  
                 }
 

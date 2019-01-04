@@ -5,7 +5,7 @@
  */
 
 import smsUtil from '../romUtils/smsUtil';
-import { toHex } from '../util';
+import { toHex, HexValue } from '../util';
 import RomRegion from '../RomRegion';
 import Platform from './Platform';
 import Rom from '../Rom';
@@ -69,7 +69,8 @@ class Platform_gg_sms extends Platform {
                 data.addHeader("Header found", headerValid.toString());
 
                 if (headerValid) {
-                    data.addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
+                    //data.addHeader("Checksum", toHex(smsUtil.getChecksum(romImage, headerOffset), 4));
+                    data.addHeader("Checksum", HexValue.hex(smsUtil.getChecksum(romImage, headerOffset), 4));
                     data.addHeader("Region", smsUtil.regionCodes[smsUtil.getRegionCode(romImage, headerOffset)]);
                     data.addHeader("Version", smsUtil.getVersion(romImage, headerOffset).toString());
                     data.addHeader("Product code", smsUtil.getProductCode(romImage, headerOffset));

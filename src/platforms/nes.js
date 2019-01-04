@@ -8,6 +8,7 @@ import RomRegion from '../RomRegion';
 import iNESHeader from '../romUtils/iNESHeader';
 import Platform from './Platform';
 import Rom from '../Rom';
+import { HexValue } from '../util';
 const category = Platform.exDataCategories;
 
 
@@ -50,7 +51,7 @@ class NesPlatform extends Platform {
                     data.addHeader("CHR banks", header.chrRomCount);
                     data.addHeader("PRG banks", header.prgRomCount);
                     data.addHeader("Battery backed", header.hasBattery);
-                    data.addHeader("Mapper #", header.mapper);
+                    data.addHeader("Mapper #", HexValue.hexParen(header.mapper));
                     data.addHeader("Mapper name", header.mapperName || 'unknown');
                     data.addHeader("Mirroring", header.mirroring);
                     data.addHeader("Region", header.palFlagSet ? "PAL" : "NTSC");

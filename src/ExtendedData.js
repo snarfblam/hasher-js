@@ -1,3 +1,5 @@
+import { HexValue } from "./util";
+
 /*
     Extended Data
 
@@ -14,20 +16,20 @@ class ExtendedData {
     /**
      * Adds data to the header category
      * @param {string} name 
-     * @param {string} value 
+     * @param {string | HexValue} value 
      */
     addHeader(name, value) {
-        this.addAny('header', name, value);
+        this.addAny('header', name, value.toString());
     }
 
     
     /**
      * Adds data to the header category
      * @param {string} name 
-     * @param {string} value 
+     * @param {string | HexValue} value 
      */
     addRom(name, value) {
-        this.addAny('rom', name, value);
+        this.addAny('rom', name, value.toString());
     }
 
 
@@ -35,13 +37,13 @@ class ExtendedData {
      * Adds data to the specified category
      * @param {string} category 
      * @param {string} name 
-     * @param {string} value  
+     * @param {string | HexValue} value  
      */
     addAny(category, name, value) {
         this.data.push({
             category: category,
             label: name,
-            value: value
+            value: value.toString()
         });
     }
 
