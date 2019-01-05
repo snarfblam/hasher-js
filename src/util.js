@@ -134,6 +134,9 @@ class HexValue {
             result = result.toUpperCase();
         }
 
+        while (result.length < this.hexLength) {
+            result = "0" + result;
+        }
         return result;
     }
 

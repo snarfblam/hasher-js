@@ -67,12 +67,12 @@ class SnesPlatform extends Platform {
                 var checksum = snesUtil.calculateChecksum(romImage);
                 var mapping = { hirom: "HiROM", lorom: "LoROM" }[header.mapping] || header.mapping;
         
-                data.addRom("Actual checksum", HexValue.hex(checksum, 4));
+                data.addRom("Actual checksum", HexValue.justHex(checksum, 4));
                 data.addRom("Mapping", mapping);
                     
                 if (header.valid) {
                     data.addHeader("Header offset", HexValue.hex(header.internalHeaderOffset));
-                    data.addHeader("Checksum", HexValue.justHex(header.checksum, 2));
+                    data.addHeader("Checksum", HexValue.justHex(header.checksum, 4));
                     data.addHeader("Checksum complement", HexValue.justHex(header.checksumComplement, 2));
                 }
                 
