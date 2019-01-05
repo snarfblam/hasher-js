@@ -27,6 +27,7 @@
 
 import RomData from './RomData';
 import Rom from './Rom';
+import { HexValue } from './util';
 
 /** Creates an object that can produce metadata for a ROM file
  *  @param {File} romFile File to process. A blob can be processed provided 
@@ -68,6 +69,20 @@ class Hasher {
     cancel() {
         if (this._cancel) this._cancel();
         this._cancel = null;
+    }
+}
+
+/**
+ * Returns a number formatted as hex with a style consistent with Hasher-js's output.
+ * @param {number} value - Value to format
+ * @param {number} [minLength] - Minimum number of digits to use. Values will be zero-padded if necessary.
+ * @param {boolean} [prefixed] - If true, a hexidecimal prefix such as a dollar sign will be prepended
+ */
+Hasher.FormatHex = function (value, minLength, prefixed) { 
+    if (prefixed) {
+        return HexValue.hex(value, minLength || 0).toString();
+    } else {
+        return HexValue.justHex(value, minLength || 0).toString();
     }
 }
 

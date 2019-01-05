@@ -88,6 +88,9 @@ returned object has two methods:
 * **`getRomData()`** - begins processing the file and returns a Promise that resolves to a `RomData` object. `getRomData()` accepts an optional callback (`function(number)`) that is called with a fractional value between 0 and 1 to report progress.
 * **`cancel()`** - can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). 
 
+Hasher-js also exports the following utility method(s):
+* **`Hasher.FormatHex`**`(value: number, minLength: number, prefixed?: boolean)` - Formats a number with the same casing and, optionally, the same prefix, that Hasher-js uses internally
+
 Sample usage:
 ```javascript
 /*

@@ -176,7 +176,7 @@ HexValue.hex = function (value, len, prefix) {
 }
 
 /**
- * Convenience method that gets a hex-formatted object.
+ * Convenience method that gets a hex-formatted object without a hexadecimal specifier.
  * @param {string} [prefix]
  * @param {number} value 
  * @param {number} [len]

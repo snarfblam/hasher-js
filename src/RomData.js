@@ -11,6 +11,7 @@ import * as hasher from './hash';
 import romDb from './romDb';
 import RomHasher from './RomHasher';
 import Rom from './Rom';
+import { HexValue } from './util';
 
 /**
  * @constructor
@@ -61,6 +62,10 @@ function RomData(rom, hashAlgos, progressCallback) {
         })
         .then(hashlist => {
             this.hashes = hashlist;
+            // Hash casing should be consistent with everything else.
+            if (HexValue.upperCaseHex) {
+                this.hashes.forEach(hash => hash.value = hash.value.toUpperCase());
+            }
         })
         .catch(err => {
             console.error(err);
