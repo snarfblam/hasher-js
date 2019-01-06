@@ -120,7 +120,7 @@ class Rom {
 }
 
 /** Number of bytes that will be loaded and readily accessible in the Rom.preview property. */
-Rom.contentsPreviewSize = 0x10000;
+Rom.contentsPreviewSize = 0x800000;
 
 
 export default Rom;

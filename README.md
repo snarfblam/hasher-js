@@ -89,7 +89,7 @@ returned object has two methods:
 * **`cancel()`** - can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). 
 
 Hasher-js also exports the following utility method(s):
-* **`Hasher.FormatHex`**`(value: number, minLength: number, prefixed?: boolean)` - Formats a number with the same casing and, optionally, the same prefix, that Hasher-js uses internally
+* **`Hasher.FormatHex`**`(value: number, minLength?: number, prefixed?: boolean)` - Formats a number with the same casing and, optionally, the same prefix, that Hasher-js uses internally
 
 Sample usage:
 ```javascript

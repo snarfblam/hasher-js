@@ -8,7 +8,7 @@ import Platform from './Platform';
 const category = Platform.exDataCategories;
 import Rom from '../Rom';
 
-const maxRomBufferSize = 4200000; // bytes
+const maxRomBufferSize = 8200000; // bytes
 
 class SnesPlatform extends Platform {
     constructor() {
