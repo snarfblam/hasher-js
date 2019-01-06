@@ -83,6 +83,7 @@
 
 
     h1 {
+        text-align: center;
         font-size: 2em;
         font-weight: bold;
         /* margin: -8px -8px 0 -8px; */
@@ -94,6 +95,7 @@
     }
     
     h2 {
+        text-align: center;
         font-size: 1.5em;
         padding: .8rem 16px;
         background: #666;
