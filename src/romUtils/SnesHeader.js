@@ -26,7 +26,9 @@ class SnesHeader{
             
             var layout = snesUtil.checkHiromOrLorom(romImage);
     
-            if (layout.lorom && !layout.hirom) {
+            if (layout.exhirom) {
+                this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.exhiromHeaderOffset;
+            } else if (layout.lorom && !layout.hirom) {
                 this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
                 this.mapping = "lorom";
             } else if (layout.hirom && !layout.lorom) {
@@ -61,6 +63,7 @@ class SnesHeader{
 
 SnesHeader.loromHeaderOffset = 0x7fc0;
 SnesHeader.hiromHeaderOffset = 0xffc0;
+SnesHeader.exhiromHeaderOffset = 0x40ffc0;
 SnesHeader.minimumRomSize = 0x10000;
 
 export default SnesHeader;

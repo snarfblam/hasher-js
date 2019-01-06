@@ -11,6 +11,10 @@ var snesUtil = {
         // which mirrors data to a power-of-two size, and one of
         // which mirrors data to a multiple of 4 MBits. Both failed
         // some of the ROMs tested.
+        // 
+        // Hello past self. This is future self. I've received yet a third explanation:
+        // The largest power of two that is less than or equal the size of the ROM is 
+        // checksummed, then the remainder (if any) is mirrored to the next power of two
         if (romImage.byteLength < 0x1000) return 0;
 
         var size = snesUtil.getRomSize(romImage);
@@ -79,33 +83,39 @@ var snesUtil = {
         }
     },
 
-    /**
-     * Returns the internal checksum. The result may be incorrect or NULL if the ROM is not
-     * large enough or HIROM/LOROM can't be detected.
-     * @param romImage {Uint8Array}
-     * @returns {number | null}
-     */
-    getInternalChecksum: function (romImage) {
-        var romImageOffset = snesUtil.hasExternalHeader(romImage) ? snesUtil.externalHeaderSize : 0;
+    // /**
+    //  * Returns the internal checksum. The result may be incorrect or NULL if the ROM is not
+    //  * large enough or HIROM/LOROM can't be detected.
+    //  * @param romImage {Uint8Array}
+    //  * @param {number} [size]
+    //  * @returns {number | null}
+    //  */
+    // getInternalChecksum: function (romImage, size) {
+    //     var romImageOffset = snesUtil.hasExternalHeader(romImage) ? snesUtil.externalHeaderSize : 0;
 
-        //if (offset + 1 >= rom.Length) return 0;
-        //return (ushort)(rom[offset] | (rom[offset + 1] << 8));
-        var mapping = snesUtil.checkHiromOrLorom(romImage);
-        //HiromOrLorom(romImage, romImageOffset, out lorom, out hirom);
+    //     //if (offset + 1 >= rom.Length) return 0;
+    //     //return (ushort)(rom[offset] | (rom[offset + 1] << 8));
+    //     var mapping = snesUtil.checkHiromOrLorom(romImage, size);
+    //     //HiromOrLorom(romImage, romImageOffset, out lorom, out hirom);
         
-        if (mapping.hirom && (romImage.byteLength >= snesUtil.hiromChecksumOffset + 1)) {
-            return (
-                romImage[romImageOffset + snesUtil.hiromChecksumOffset] |
-                romImage[romImageOffset + snesUtil.hiromChecksumOffset + 1] << 8
-            );
-        } else if (romImage.byteLength >= snesUtil.loromChecksumOffset + 1) {
-            return (
-                romImage[romImageOffset + snesUtil.loromChecksumOffset] |
-                romImage[romImageOffset + snesUtil.loromChecksumOffset + 1] << 8
-            );
-        }
-        return null;
-    },
+    //     if (mapping.exhirom && (romImage.byteLength >= snesUtil.exhiromChecksumOffset + 1)) {
+    //         return (
+    //             romImage[romImageOffset + snesUtil.exhiromChecksumOffset] |
+    //             romImage[romImageOffset + snesUtil.exhiromChecksumOffset + 1] << 8
+    //         );
+    //     } else if (mapping.hirom && (romImage.byteLength >= snesUtil.hiromChecksumOffset + 1)) {
+    //         return (
+    //             romImage[romImageOffset + snesUtil.hiromChecksumOffset] |
+    //             romImage[romImageOffset + snesUtil.hiromChecksumOffset + 1] << 8
+    //         );
+    //     } else if (romImage.byteLength >= snesUtil.loromChecksumOffset + 1) {
+    //         return (
+    //             romImage[romImageOffset + snesUtil.loromChecksumOffset] |
+    //             romImage[romImageOffset + snesUtil.loromChecksumOffset + 1] << 8
+    //         );
+    //     }
+    //     return null;
+    // },
 
     /**
      * Identifies whether the ROM has an external ROM header (SMC, SWC, or Pro Fighter)
@@ -165,23 +175,27 @@ var snesUtil = {
     /**
      * Returns an object that indicates whether the ROM matches the heuristic
      * for detecting HiROM, LoRom, both, or neither.
-     * @param {*} romImage
-     * @returns {{lorom: boolean, hirom: boolean}}
+     * @param {*} romImagePreview - An array containing at least the first 64 KB of the ROM
+     * @param {number} [size] - Optional. Used as a heuristic in determining ROM layout.
+     * @returns {{lorom: boolean, hirom: boolean, exhirom: boolean}}
      */
-    checkHiromOrLorom: function (romImage) {
-        var romImageOffset = snesUtil.hasExternalHeader(romImage) ? snesUtil.externalHeaderSize : 0;
+    checkHiromOrLorom: function (romImagePreview, size) {
+        var romImageOffset = snesUtil.hasExternalHeader(romImagePreview) ? snesUtil.externalHeaderSize : 0;
 
-        var result = { hirom: false, lorom: false };
+        var result = { hirom: false, lorom: false, exhirom: false };
 
-        if (romImage.byteLength < romImageOffset + 0x10000) {
+        if (romImagePreview.byteLength < romImageOffset + 0x10000) {
             return result;
         }
 
-        var loromCheckum = getWord(romImage, romImageOffset + snesUtil.loromChecksumOffset);
-        var loromComplement = getWord(romImage, romImageOffset + snesUtil.loromChecksumCompOffset);
+        var loromCheckum = getWord(romImagePreview, romImageOffset + snesUtil.loromChecksumOffset);
+        var loromComplement = getWord(romImagePreview, romImageOffset + snesUtil.loromChecksumCompOffset);
 
-        var hiromCheckum = getWord(romImage, romImageOffset + snesUtil.hiromChecksumOffset);
-        var hiromComplement = getWord(romImage, romImageOffset + snesUtil.hiromChecksumCompOffset);
+        var hiromCheckum = getWord(romImagePreview, romImageOffset + snesUtil.hiromChecksumOffset);
+        var hiromComplement = getWord(romImagePreview, romImageOffset + snesUtil.hiromChecksumCompOffset);
+
+        var exhiromCheckum = getWord(romImagePreview, romImageOffset + snesUtil.exhiromChecksumOffset);
+        var exhiromComplement = getWord(romImagePreview, romImageOffset + snesUtil.exhiromChecksumCompOffset);
 
         result.lorom =
             ((loromCheckum.lo ^ loromComplement.lo) == 0xFF) &&
@@ -189,7 +203,11 @@ var snesUtil = {
         result.hirom =
             ((hiromCheckum.lo ^ hiromComplement.lo) == 0xFF) &&
             ((hiromCheckum.hi ^ hiromComplement.hi) == 0xFF);
-
+        //result.exhirom = Math.max(romImagePreview.byteLength, (size || 0)) >= snesUtil.exhiromThreshold;
+        result.exhirom =
+            ((exhiromCheckum.lo ^ exhiromComplement.lo) == 0xFF) &&
+            ((exhiromCheckum.hi ^ exhiromComplement.hi) == 0xFF);
+        
         return result;
     },
 
@@ -198,10 +216,16 @@ var snesUtil = {
     hiromChecksumOffset: 0xFFDE,
     /// <summary>Location of checksum in a LOROM game</summary>
     loromChecksumOffset: 0x7FDE,
+    /// <summary>Location of checksum in a EXHIROM game</summary>
+    exhiromChecksumOffset: 0x40FFDE,
     /// <summary>Location of checksum complement in a HIROM game</summary>
     hiromChecksumCompOffset: 0xFFDC,
     /// <summary>Location of checksum complement in a LOROM game</summary>
     loromChecksumCompOffset: 0x7FDC,
+    /// <summary>Location of checksum complement in a EXHIROM game</summary>
+    exhiromChecksumCompOffset: 0x40FFDC,
+    /// <summary>The minimum size of a ROM image that can be considered EXHIROM</summary>
+    exhiromThreshold: 0x400001,
     
 };
 
