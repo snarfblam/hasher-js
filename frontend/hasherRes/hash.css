@@ -167,6 +167,16 @@
         height: 64px;
     }
 
+     /* Goes after a .app-container */
+    .footnote {
+        color: black;
+        max-width: 800px;
+        margin: -.8em auto 1em auto;
+    }
+    .footnote::before {
+        content: "\2001";
+    }
+
 
 /*** File Drop *************************************************/
 
@@ -663,3 +673,4 @@
 #hasher-output {
     display: none;
 }
+

@@ -28,6 +28,7 @@ class SnesHeader{
     
             if (layout.exhirom) {
                 this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.exhiromHeaderOffset;
+                this.mapping = "exhirom";
             } else if (layout.lorom && !layout.hirom) {
                 this.internalHeaderOffset = this.externalHeaderSize + SnesHeader.loromHeaderOffset;
                 this.mapping = "lorom";
