@@ -302,6 +302,8 @@ function getRomDetails(romData) {
 function createSummary(romData) {
     var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
     var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
+    var fileHashCrc = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'crc32'; }).value;
+    var romHashCrc = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'crc32'; }).value;
     
     var dbString = "No database match.";
     var dbMatch = "";
@@ -311,13 +313,25 @@ function createSummary(romData) {
     }
     
     var outputString = "";
-    if(fileHash === romHash) {
+    var sha1matches = fileHash === romHash;
+    var crc32matches = fileHashCrc === romHashCrc;
+    
+    if (sha1matches) {
         outputString += "File/ROM SHA-1: " + fileHash + "\n";
     } else {
         outputString += "File SHA-1: " + fileHash + "\n";
+    }
+    if (crc32matches) {
+        outputString += "File/ROM CRC32: " + fileHashCrc + "\n";
+    } else {
+        outputString += "File CRC32: " + fileHashCrc + "\n";
+    }
+    if(!sha1matches) {
         outputString += "ROM SHA-1: " + romHash + "\n";
     }
-
+    if (!crc32matches) {
+        outputString += "ROM CRC32: " + romHashCrc + "\n";
+    }
     outputString += dbMatch; // "Database match: " + romData.dbMatch + "\n";
     outputString += dbString; // dbString + "\n";
 
