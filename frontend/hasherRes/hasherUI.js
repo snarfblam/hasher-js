@@ -52,10 +52,10 @@ function $$(selector) {
  *  @param {boolean} state If true, the class(es) will be added, if false they'll be removed.
  *  @param {string} className Class(es) to add or remove
  */
-function setClass(obj, state, className){
-    if(state){
+function setClass(obj, state, className) {
+    if (state) {
         obj.addClass(className);
-    }else {
+    } else {
         obj.removeClass(className);
     }
 }
@@ -65,7 +65,7 @@ function setClass(obj, state, className){
 
 
 /** Page initialization */
-$(document).ready(function() {
+$(document).ready(function () {
     ui = {
         btnRom: $$('#btn-rom'),
         btnHeader: $$('#btn-header'),
@@ -93,10 +93,10 @@ $(document).ready(function() {
     };
 
     // tab selection
-    ui.btnRom.on('click', function() { selectDetailTab(ui.btnRom, ui.detailRom); });
-    ui.btnHashes.on('click', function() { selectDetailTab(ui.btnHashes, ui.detailHashes); });
-    ui.btnHeader.on('click', function() { selectDetailTab(ui.btnHeader, ui.detailHeader); });
-    ui.btnCopy.on('click', function(){
+    ui.btnRom.on('click', function () { selectDetailTab(ui.btnRom, ui.detailRom); });
+    ui.btnHashes.on('click', function () { selectDetailTab(ui.btnHashes, ui.detailHashes); });
+    ui.btnHeader.on('click', function () { selectDetailTab(ui.btnHeader, ui.detailHeader); });
+    ui.btnCopy.on('click', function () {
         copyText(ui.outputSummary.text());
         ui.btnCopy.blur();
     });
@@ -119,7 +119,7 @@ $(document).ready(function() {
 /** Handles the selection of a file via the file dialog */
 function onFileSelected(e) {
     var files = ui.file.input[0].files;
-    if(files && files.length > 0) {
+    if (files && files.length > 0) {
         processRom(files[0]);
     }
 }
@@ -168,7 +168,7 @@ function selectDetailTab(tab, content) {
     setClass(ui.btnRom, ui.btnRom == tab, 'tab-item-select');
     setClass(ui.btnHeader, ui.btnHeader == tab, 'tab-item-select');
     setClass(ui.btnHashes, ui.btnHashes == tab, 'tab-item-select');
-    
+
     // Select specified tab page
     setClass(ui.detailRom, ui.detailRom == content, 'detail-box-content-selected');
     setClass(ui.detailHashes, ui.detailHashes == content, 'detail-box-content-selected');
@@ -202,8 +202,8 @@ function displayFullHashingModal() {
     if (isHashing) {
         var randX = ~~(Math.random() * 80);
         var randY = ~~(Math.random() * 5);
-        ui.progressBar.css({backgroundPosition: randX * 6 + 'px ' + randY * 8 + 'px'});
-        
+        ui.progressBar.css({ backgroundPosition: randX * 6 + 'px ' + randY * 8 + 'px' });
+
         updateHashProgress(0);
         $(document.body).removeClass('modal-kill');
         $(document.body).addClass('modal modal-hashing');
@@ -211,7 +211,7 @@ function displayFullHashingModal() {
 }
 
 /** Hides the hashing progress modal */
-function hideHashingModal() { 
+function hideHashingModal() {
     $(document.body).removeClass('modal modal-kill modal-hashing');
 }
 
@@ -227,12 +227,13 @@ function updateHashProgress(amt) {
 
 function processRom(file) {
     isHashing = true;
-    displayHashingModal();    
+    displayHashingModal();
 
     var sha1Only = ui.chkSha1[0].checked;
     var algoList = sha1Only ? ['sha1'] : null;
     hasher = new Hasher(file);
-    hasher.getRomData(algoList, updateHashProgress).then(function (result) {        isHashing = false;
+    hasher.getRomData(algoList, updateHashProgress).then(function (result) {
+        isHashing = false;
         hideHashingModal();
         ui.output.innerText += JSON.stringify(result, null, 4);
         ui.outputSummary.text(createSummary(result));
@@ -250,7 +251,7 @@ function processRom(file) {
         var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
         var headerDataExt = result.extendedData.filter(whereCategoryEquals('header'));
         var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
-            
+
         // Mash em together
         hashDataExt.forEach(function (item) { hashDetails.push(item) });
         romDataExt.forEach(function (item) { romDetails.push(item) });
@@ -259,14 +260,14 @@ function processRom(file) {
         ui.detailHashes.empty().append(extDataToTable(hashDetails));
         ui.detailHeader.empty().append(extDataToTable(headerDataExt));
         ui.detailRom.empty().append(extDataToTable(romDetails));
-            
+
         // Update file box
         ui.file.inputBoxOuter.addClass('file-loaded');
         ui.file.platformIcon.attr('src', 'hasherRes/' + result.platform.name + '.png')
         ui.file.gameName.text(file.name);
-            
+
     })
-    .catch(console.error);
+        .catch(console.error);
 }
 
 /** 
@@ -274,7 +275,7 @@ function processRom(file) {
  * matches the specified value.
  */
 function whereCategoryEquals(category) {
-    return function(item) {
+    return function (item) {
         return item.category === category;
     }
 }
@@ -288,7 +289,7 @@ function getRomDetails(romData) {
     var result = [];
 
     var fileSize = romData.hashes.find(function (hash) { return hash.region.name === 'file' }).region.length;
-    var romSize =  romData.hashes.find(function (hash) { return hash.region.name === 'rom' }).region.length;
+    var romSize = romData.hashes.find(function (hash) { return hash.region.name === 'rom' }).region.length;
 
     result.push({ label: "Platform", value: romData.platform.longName });
     result.push({ label: "Format", value: romData.format });
@@ -299,38 +300,46 @@ function getRomDetails(romData) {
     return result;
 }
 
+var getHash = function (region, algo) { return function (item) { return item.region.name === region && item.algoName === algo; }; }
+var valOrNull = function (item) { return item ? item.value : null; }
+var formatHash = function (name, value) { return value ? name + ": " + value + "\n" : "";}
+
 function createSummary(romData) {
-    var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
-    var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
-    var fileHashCrc = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'crc32'; }).value;
-    var romHashCrc = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'crc32'; }).value;
-    
+    // var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
+    // var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
+    // var fileHashCrc = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'crc32'; }).value;
+    // var romHashCrc = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'crc32'; }).value;
+    var fileHash = valOrNull(romData.hashes.find(getHash('file', 'sha1')));
+    var romHash = valOrNull(romData.hashes.find(getHash('rom', 'sha1')));
+    var fileHashCrc = valOrNull(romData.hashes.find(getHash('file', 'crc32')));
+    var romHashCrc = valOrNull(romData.hashes.find(getHash('rom', 'crc32')));
+
     var dbString = "No database match.";
     var dbMatch = "";
-    if(romData.dbInfo.name && romData.dbInfo.name !== 'not found') {
+    if (romData.dbInfo.name && romData.dbInfo.name !== 'not found') {
         dbString = "Database: " + romData.dbInfo.name + " (v. " + romData.dbInfo.version + ")\n";
         dbMatch = "Database match: " + romData.dbMatch + "\n";
     }
-    
+
     var outputString = "";
     var sha1matches = fileHash === romHash;
     var crc32matches = fileHashCrc === romHashCrc;
-    
+
     if (sha1matches) {
-        outputString += "File/ROM SHA-1: " + fileHash + "\n";
+        outputString += formatHash("File/ROM SHA-1", fileHash);
     } else {
-        outputString += "File SHA-1: " + fileHash + "\n";
+        outputString += formatHash("File SHA-1", fileHash);
     }
     if (crc32matches) {
-        outputString += "File/ROM CRC32: " + fileHashCrc + "\n";
+        outputString += formatHash("File/ROM CRC32", fileHashCrc);
     } else {
-        outputString += "File CRC32: " + fileHashCrc + "\n";
+        outputString += formatHash("File CRC32", fileHashCrc);
     }
-    if(!sha1matches) {
-        outputString += "ROM SHA-1: " + romHash + "\n";
+    if (!sha1matches) {
+        outputString += formatHash("ROM SHA-1", romHash);
     }
     if (!crc32matches) {
-        outputString += "ROM CRC32: " + romHashCrc + "\n";
+        outputString += formatHash("ROM CRC32", romHashCrc);
     }
     outputString += dbMatch; // "Database match: " + romData.dbMatch + "\n";
     outputString += dbString; // dbString + "\n";
