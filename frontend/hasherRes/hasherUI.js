@@ -32,7 +32,7 @@ var hasher;
 var regNameLookup = {
     file: "File",
     rom: "ROM",
-}
+};
 
 
 ///////////////////// Helper Functions ///////////////////////////////////////
@@ -113,7 +113,7 @@ $(document).ready(function () {
     ui.fileInput.on('change', onFileSelected);
 
     // 'Cancel' button
-    ui.abortHash.on('click', function (ev) { hasher.cancel() });
+    ui.abortHash.on('click', function (ev) { hasher.cancel(); });
 });
 
 /** Handles the selection of a file via the file dialog */
@@ -245,7 +245,7 @@ function processRom(file) {
                 label: (regNameLookup[hashItem.region.name] || hashItem.region.name) + ' ' + hashItem.algoName.toUpperCase(),
                 value: hashItem.value
             };
-        })
+        });
 
         // Grab additional 'extended data' to show in the detail panes
         var hashDataExt = result.extendedData.filter(whereCategoryEquals('hashes'));
@@ -253,8 +253,8 @@ function processRom(file) {
         var romDataExt = result.extendedData.filter(whereCategoryEquals('rom'));
 
         // Mash em together
-        hashDataExt.forEach(function (item) { hashDetails.push(item) });
-        romDataExt.forEach(function (item) { romDetails.push(item) });
+        hashDataExt.forEach(function (item) { hashDetails.push(item); });
+        romDataExt.forEach(function (item) { romDetails.push(item); });
 
         // Update detail panes
         ui.detailHashes.empty().append(extDataToTable(hashDetails));
@@ -263,7 +263,7 @@ function processRom(file) {
 
         // Update file box
         ui.file.inputBoxOuter.addClass('file-loaded');
-        ui.file.platformIcon.attr('src', 'hasherRes/' + result.platform.name + '.png')
+        ui.file.platformIcon.attr('src', 'hasherRes/' + result.platform.name + '.png');
         ui.file.gameName.text(file.name);
 
     })
@@ -277,7 +277,7 @@ function processRom(file) {
 function whereCategoryEquals(category) {
     return function (item) {
         return item.category === category;
-    }
+    };
 }
 
 
@@ -288,8 +288,8 @@ function whereCategoryEquals(category) {
 function getRomDetails(romData) {
     var result = [];
 
-    var fileSize = romData.hashes.find(function (hash) { return hash.region.name === 'file' }).region.length;
-    var romSize = romData.hashes.find(function (hash) { return hash.region.name === 'rom' }).region.length;
+    var fileSize = romData.hashes.find(function (hash) { return hash.region.name === 'file'; }).region.length;
+    var romSize = romData.hashes.find(function (hash) { return hash.region.name === 'rom'; }).region.length;
 
     result.push({ label: "Platform", value: romData.platform.longName });
     result.push({ label: "Format", value: romData.format });
@@ -300,9 +300,9 @@ function getRomDetails(romData) {
     return result;
 }
 
-var getHash = function (region, algo) { return function (item) { return item.region.name === region && item.algoName === algo; }; }
-var valOrNull = function (item) { return item ? item.value : null; }
-var formatHash = function (name, value) { return value ? name + ": " + value + "\n" : "";}
+var getHash = function (region, algo) { return function (item) { return item.region.name === region && item.algoName === algo; }; };
+var valOrNull = function (item) { return item ? item.value : null; };
+var formatHash = function (name, value) { return value ? name + ": " + value + "\n" : ""; };
 
 function createSummary(romData) {
     // var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
