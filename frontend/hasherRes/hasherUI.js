@@ -305,10 +305,6 @@ var valOrNull = function (item) { return item ? item.value : null; };
 var formatHash = function (name, value) { return value ? name + ": " + value + "\n" : ""; };
 
 function createSummary(romData) {
-    // var fileHash = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'sha1'; }).value;
-    // var romHash = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'sha1'; }).value;
-    // var fileHashCrc = romData.hashes.find(function(item) { return item.region.name === 'file' && item.algoName === 'crc32'; }).value;
-    // var romHashCrc = romData.hashes.find(function(item) { return item.region.name === 'rom' && item.algoName === 'crc32'; }).value;
     var fileHash = valOrNull(romData.hashes.find(getHash('file', 'sha1')));
     var romHash = valOrNull(romData.hashes.find(getHash('rom', 'sha1')));
     var fileHashCrc = valOrNull(romData.hashes.find(getHash('file', 'crc32')));
@@ -322,6 +318,10 @@ function createSummary(romData) {
     }
 
     var outputString = "";
+
+    outputString += dbMatch; // "Database match: " + romData.dbMatch + "\n";
+    outputString += dbString; // dbString + "\n";
+
     var sha1matches = fileHash === romHash;
     var crc32matches = fileHashCrc === romHashCrc;
 
@@ -341,8 +341,6 @@ function createSummary(romData) {
     if (!crc32matches) {
         outputString += formatHash("ROM CRC32", romHashCrc);
     }
-    outputString += dbMatch; // "Database match: " + romData.dbMatch + "\n";
-    outputString += dbString; // dbString + "\n";
 
     return outputString;
 }
