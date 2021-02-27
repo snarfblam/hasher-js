@@ -85,7 +85,9 @@ You can include the hasher bundle in your HTML or include the module via javascr
 Hasher-js exports a constructor, `Hasher()`, which accepts a `File` object. The 
 returned object has two methods:
 
-* **`getRomData()`** - begins processing the file and returns a Promise that resolves to a `RomData` object. `getRomData()` accepts an optional callback (`function(number)`) that is called with a fractional value between 0 and 1 to report progress.
+* **`getRomData(algos?: string[] | null, progressCallback?: function(number))`** - begins processing the file and returns a Promise that resolves to a `RomData` object. 
+  * `algos` - Optional. A list of supported hash algorithms to calculate (e.g. "crc32", "sha1"). Omit this argument or specify null to use the default set of hashes.
+  * `progressCallback` - Optional. Called with a fractional value between 0 and 1 to report progress.
 * **`cancel()`** - can be called to cancel the file hashing. (The promise will still resolve and return any decoded data). 
 
 Hasher-js also exports the following utility method(s):
@@ -96,7 +98,10 @@ Sample usage:
 /*
     new Hasher(rom: File):
     {
-        getRomData: function(progressCallback?: function(number): void): Promise<RomData>,
+        getRomData: function(
+            algos?: string[] | null,
+            progressCallback?: function(number): void
+        ): Promise<RomData>,
         cancel: function(): void
     }
 */
@@ -115,7 +120,7 @@ document.getElementById('cancel-button').onclick = function() {
 };
 
 // Display our ROM database match on the console
-hashObj.getRomData(progressCallback)
+hashObj.getRomData(null, progressCallback)
     .then(function(romData) {
         // Display the name of the game to the console
         console.log("No-Intro name: " + romData.dbMatch);
